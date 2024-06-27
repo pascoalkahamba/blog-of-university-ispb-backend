@@ -6,6 +6,7 @@ const universityDataSchema = new mongoose.Schema({
   favorite: Boolean,
   content: String,
   date: Date,
+  views: Number,
 });
 
 const modalUniversityDataSchema = mongoose.model(
