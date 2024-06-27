@@ -1,15 +1,18 @@
 import express from "express";
 import cors from "cors";
+import "./config/dbConfig";
 import { userRoutes } from "./routes/userRoutes";
+import bodyParser from "body-parser";
 
 const app = express();
 
-const port = process.env.PORT;
+const port = process.env.PORT || 3001;
 
 app.use(cors());
 
 app.use(express.json());
-app.use("/user", userRoutes);
+app.use("/post", userRoutes);
+app.use(bodyParser.json());
 
 // function isIsomorphic(s: string, t: string): boolean {
 //   // check for corner case when two string are not equals by length
