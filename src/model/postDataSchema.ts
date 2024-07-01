@@ -5,8 +5,10 @@ const postDataSchema = new mongoose.Schema({
   university: String,
   favorite: Boolean,
   content: String,
-  image: Buffer,
-  date: Date,
+  image: String,
+  date: String,
+  // image: Buffer,
+  // date: Date,
   views: Number,
 });
 

@@ -8,10 +8,11 @@ export default class UserService {
 
     const post = await modalPostDataSchema.findOne({ title });
 
-    if (!post) {
+    if (post) {
       return;
     }
     const posted = await modalPostDataSchema.create({
+      title,
       content,
       date,
       favorite,

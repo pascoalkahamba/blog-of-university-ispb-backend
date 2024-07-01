@@ -15,37 +15,34 @@ app.use("/post", userRoutes);
 app.use(bodyParser.json());
 
 // function isIsomorphic(s: string, t: string): boolean {
-//   // check for corner case when two string are not equals by length
-//   if (s.length !== t.length) return false;
-//   // create map for s string mapping
-//   const smap = new Map<string, string>();
-//   // create map for t string mapping
-//   const tmap = new Map<string, string>();
-//   // iterate over strings:
+//   const mapLettersS = new Map<string, string>();
+//   const mapLettersT = new Map<string, string>();
+
 //   for (let i = 0; i < s.length; i++) {
-//     // take char from string s
-//     const schar = s[i];
-//     // take char from string t
-//     const tchar = t[i];
-//     // check that we have mapping in smap and it is valid with current tchar
-//     if (smap.has(schar) && smap.get(schar) !== tchar) {
-//       // if no return false
+//     const currLetterS = s[i];
+//     const currLetterT = t[i];
+
+//     if (
+//       mapLettersS.has(currLetterS) &&
+//       mapLettersS.get(currLetterS) !== currLetterT
+//     ) {
 //       return false;
 //     }
-//     // check that we have mapping in tmap and it is valid with current schar
-//     if (tmap.has(tchar) && tmap.get(tchar) !== schar) {
-//       // if no return false
+
+//     if (
+//       mapLettersT.has(currLetterT) &&
+//       mapLettersT.get(currLetterT) !== currLetterS
+//     ) {
 //       return false;
 //     }
-//     // create mapping for schar
-//     smap.set(schar, tchar);
-//     // create mapping for tchar
-//     tmap.set(tchar, schar);
+
+//     mapLettersS.set(currLetterS, currLetterT);
+//     mapLettersT.set(currLetterT, currLetterS);
 //   }
-//   // return true if all mappings are valid
+
 //   return true;
 // }
-// console.log("isIsomorphic ", isIsomorphic("aae", "xxa"));
+// console.log("isIsomorphic ", isIsomorphic("acc", "eec"));
 
 app.listen(port, () => {
   console.log("server is running!");

@@ -16,6 +16,7 @@ export default class UserController {
       userValidator.validate(newPost);
 
       const posted = await userService.create(newPost);
+      console.log("newPost", newPost);
 
       if (!posted) {
         console.log("Este titulo ja foi adicionado.");

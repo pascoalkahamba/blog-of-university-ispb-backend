@@ -3,7 +3,7 @@ export interface PostDataI {
   university: string;
   favorite: boolean;
   content: string;
-  date: Date;
+  date: Date | string;
   image: Buffer | string;
   views: number;
 }
