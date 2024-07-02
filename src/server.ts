@@ -14,35 +14,26 @@ app.use(express.json());
 app.use("/post", userRoutes);
 app.use(bodyParser.json());
 
-// function isIsomorphic(s: string, t: string): boolean {
-//   const mapLettersS = new Map<string, string>();
-//   const mapLettersT = new Map<string, string>();
+// function containsNearbyDuplicate(nums: number[], k: number): boolean {
+//   const hashNums: { [key: number]: number } = {};
 
-//   for (let i = 0; i < s.length; i++) {
-//     const currLetterS = s[i];
-//     const currLetterT = t[i];
+//   for (let i = 0; i < nums.length; i++) {
+//     const currNum = nums[i];
+//     const diff = i - hashNums[currNum];
 
-//     if (
-//       mapLettersS.has(currLetterS) &&
-//       mapLettersS.get(currLetterS) !== currLetterT
-//     ) {
-//       return false;
+//     if (currNum in hashNums && diff <= k) {
+//       return true;
 //     }
 
-//     if (
-//       mapLettersT.has(currLetterT) &&
-//       mapLettersT.get(currLetterT) !== currLetterS
-//     ) {
-//       return false;
-//     }
-
-//     mapLettersS.set(currLetterS, currLetterT);
-//     mapLettersT.set(currLetterT, currLetterS);
+//     hashNums[currNum] = i;
 //   }
 
-//   return true;
+//   return false;
 // }
-// console.log("isIsomorphic ", isIsomorphic("acc", "eec"));
+// console.log(
+//   "containsNearbyDuplicate ",
+//   containsNearbyDuplicate([1, 11, 2, 3, 2, 10, 111], 1)
+// );
 
 app.listen(port, () => {
   console.log("server is running!");

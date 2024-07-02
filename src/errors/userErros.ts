@@ -5,6 +5,9 @@ export default class UserErrors {
   static invalidContent(errorMessage: string) {
     return new BaseError(errorMessage, StatusCodes.BAD_REQUEST);
   }
+  static postNotFound() {
+    return new BaseError("Post não encontrado.", StatusCodes.NOT_FOUND);
+  }
   // static invalidTitle() {
   //   return new BaseError("Titulo invalido", StatusCodes.BAD_REQUEST);
   // }
