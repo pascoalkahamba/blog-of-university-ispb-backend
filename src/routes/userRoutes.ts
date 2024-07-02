@@ -8,7 +8,13 @@ userRoutes.post("/create", userController.create);
 
 userRoutes.post("/updatePost/:id", userController.updatePost);
 userRoutes.delete("/deletePost/:id", userController.postDeleted);
-userRoutes.get("/getAllPosts", userController.getAllPosts);
-userRoutes.get("/getOnePost/:id", userController.getOnePost);
+userRoutes.get("/allPosts", userController.allPosts);
+userRoutes.get("/onePost/:id", userController.onePost);
+userRoutes.get("/favoritePosts/:favorite", userController.favoritePosts);
+userRoutes.get(
+  "/favoritePostsOfCollege/:favorite",
+  userController.favoritePostsOfCollege
+);
+userRoutes.get("/collegeOfPosts/", userController.collegeOfPosts);
 
 export { userRoutes };

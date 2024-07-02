@@ -33,9 +33,9 @@ export default class UserController {
     }
   }
 
-  async getAllPosts(req: Request, res: Response) {
+  async allPosts(req: Request, res: Response) {
     try {
-      const allPosts = await userService.getAllPosts();
+      const allPosts = await userService.allPosts();
 
       return res.status(StatusCodes.OK).json(allPosts);
     } catch (error) {
@@ -43,11 +43,11 @@ export default class UserController {
     }
   }
 
-  async getOnePost(req: Request, res: Response) {
+  async onePost(req: Request, res: Response) {
     try {
       const { id } = req.params as { id: string };
 
-      const posted = await userService.getOnePost(id);
+      const posted = await userService.onePost(id);
 
       if (!posted) {
         console.log("Post nao encontrado.");
@@ -64,16 +64,16 @@ export default class UserController {
     try {
       const { id } = req.params as { id: string };
 
-      const { content, image, isChanged, title, university } =
+      const { content, image, isChanged, title, college } =
         req.body as PostDataT;
-      userValidator.validate({ content, title, image, university });
+      userValidator.validate({ content, title, image, college });
 
       const updatedPost = await userService.updatePost(id, {
         content,
         image,
         isChanged,
         title,
-        university,
+        college,
       });
 
       if (!updatedPost) {
@@ -96,6 +96,47 @@ export default class UserController {
       }
 
       return res.status(StatusCodes.ACCEPTED).json(postDeleted);
+    } catch (error) {
+      return handleError(error as BaseError, res);
+    }
+  }
+
+  async favoritePosts(req: Request, res: Response) {
+    try {
+      const { favorite } = req.params as unknown as { favorite: boolean };
+      const bestPosts = await userService.favoritePosts(favorite);
+
+      return res.status(StatusCodes.OK).json(bestPosts);
+    } catch (error) {
+      return handleError(error as BaseError, res);
+    }
+  }
+
+  async collegeOfPosts(req: Request, res: Response) {
+    try {
+      const { college } = req.body as { college: string };
+      userValidator.validateOnlyCollege(college);
+
+      const bestPostsOfCollege = await userService.collegePosts(college);
+
+      return res.status(StatusCodes.OK).json(bestPostsOfCollege);
+    } catch (error) {
+      return handleError(error as BaseError, res);
+    }
+  }
+
+  async favoritePostsOfCollege(req: Request, res: Response) {
+    try {
+      const { favorite } = req.params as unknown as { favorite: boolean };
+      const { college } = req.body as { college: string };
+      userValidator.validateOnlyCollege(college);
+
+      const bestPostsOfCollege = await userService.favoritePostsOfOneCollege(
+        favorite,
+        college
+      );
+
+      return res.status(StatusCodes.OK).json(bestPostsOfCollege);
     } catch (error) {
       return handleError(error as BaseError, res);
     }

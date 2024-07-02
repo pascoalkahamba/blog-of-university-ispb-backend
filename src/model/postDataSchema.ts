@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const postDataSchema = new mongoose.Schema({
   title: String,
-  university: String,
+  college: String,
   favorite: Boolean,
   content: String,
   image: String,

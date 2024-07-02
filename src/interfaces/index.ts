@@ -1,6 +1,6 @@
 export interface PostDataI {
   title: string;
-  university: string;
+  college: string;
   favorite: boolean;
   content: string;
   date: string;

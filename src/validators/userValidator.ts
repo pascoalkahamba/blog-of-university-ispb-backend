@@ -11,11 +11,17 @@ export class UserValidator {
       throw UserErrors.invalidContent("Titulo invalido.");
     }
 
-    if (postData.university.length <= 4) {
-      throw UserErrors.invalidContent("Nome da universidade invalida.");
+    if (postData.college.length <= 4) {
+      throw UserErrors.invalidContent("Nome da faculdade invalida.");
     }
     if (postData.image.length <= 4) {
       throw UserErrors.invalidContent("url da imagem não fornecida.");
+    }
+  }
+
+  validateOnlyCollege(college: string) {
+    if (college.length <= 4) {
+      throw UserErrors.invalidContent("Nome da faculdade invalida.");
     }
   }
 }

@@ -4,16 +4,8 @@ import { modalPostDataSchema } from "../model/postDataSchema";
 
 export default class UserService {
   async create(newPost: PostDataI) {
-    const {
-      content,
-      date,
-      favorite,
-      image,
-      title,
-      university,
-      views,
-      isChanged,
-    } = newPost;
+    const { content, date, favorite, image, title, college, views, isChanged } =
+      newPost;
 
     const post = await modalPostDataSchema.findOne({ title });
 
@@ -26,7 +18,7 @@ export default class UserService {
       date,
       favorite,
       image,
-      university,
+      college,
       views,
       isChanged,
     });
@@ -34,13 +26,13 @@ export default class UserService {
     return posted;
   }
 
-  async getAllPosts() {
+  async allPosts() {
     const allPosts = await modalPostDataSchema.find();
 
     return allPosts;
   }
 
-  async getOnePost(id: string) {
+  async onePost(id: string) {
     const post = await modalPostDataSchema.findOne({ _id: id });
 
     if (!post) {
@@ -52,7 +44,7 @@ export default class UserService {
   }
 
   async updatePost(id: string, newInfoPost: PostDataT) {
-    const { content, image, title, university, isChanged } = newInfoPost;
+    const { content, image, title, college, isChanged } = newInfoPost;
     const postUpdated = await modalPostDataSchema.findOne({ _id: id });
 
     if (!postUpdated) {
@@ -61,7 +53,7 @@ export default class UserService {
 
     (postUpdated.title = title),
       (postUpdated.content = content),
-      (postUpdated.university = university),
+      (postUpdated.college = college),
       (postUpdated.image = image),
       (postUpdated.isChanged = isChanged);
 
@@ -80,5 +72,26 @@ export default class UserService {
     }
 
     return postDeleted;
+  }
+
+  async favoritePosts(favorite: boolean) {
+    const bestPosts = await modalPostDataSchema.find({ favorite });
+
+    return bestPosts;
+  }
+
+  async favoritePostsOfOneCollege(favorite: boolean, college: string) {
+    const bestPostsOfCollege = await modalPostDataSchema.find({
+      favorite,
+      college,
+    });
+
+    return bestPostsOfCollege;
+  }
+
+  async collegePosts(college: string) {
+    const collegePosts = await modalPostDataSchema.find({ college });
+
+    return collegePosts;
   }
 }
