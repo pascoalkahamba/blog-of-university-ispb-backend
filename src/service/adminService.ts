@@ -104,4 +104,24 @@ export default class AdminService {
 
     return adminInfo;
   }
+
+  async allAdmins() {
+    const allAdmins = await modalUserAdminSchema.find();
+
+    return allAdmins;
+  }
+
+  async deleteAdmin(id: string) {
+    const adminDeleted = await modalUserAdminSchema.findOneAndDelete({
+      _id: id,
+    });
+
+    if (!adminDeleted) {
+      return;
+    }
+
+    const { password: _, ...adminInfo } = adminDeleted;
+
+    return adminInfo;
+  }
 }
