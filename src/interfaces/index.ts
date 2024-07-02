@@ -10,3 +10,9 @@ export interface PostDataI {
   // image: Buffer | string;
   views: number;
 }
+
+export interface AdminInfo {
+  username: string;
+  email: string;
+  password: string;
+}

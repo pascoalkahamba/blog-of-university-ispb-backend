@@ -13,17 +13,17 @@ const postDataSchema = new mongoose.Schema({
   views: Number,
 });
 
-// const userAdmin = new mongoose.Schema({
-//   username: String,
-//   email: String,
-//   password: String,
-// });
+const userAdmin = new mongoose.Schema({
+  username: String,
+  email: String,
+  password: String,
+});
 
 const modalPostDataSchema = mongoose.model(
   "blog-university-ispb",
   postDataSchema
 );
 
-// const modalUserAdminSchema = mongoose.model("adminInfomation", userAdmin);
+const modalUserAdminSchema = mongoose.model("adminInfomation", userAdmin);
 
-export { modalPostDataSchema };
+export { modalPostDataSchema, modalUserAdminSchema };
