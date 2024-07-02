@@ -57,7 +57,7 @@ export default class UserService {
       (postUpdated.image = image),
       (postUpdated.isChanged = isChanged);
 
-    postUpdated.save();
+    await postUpdated.save();
 
     return postUpdated;
   }
@@ -87,6 +87,19 @@ export default class UserService {
     });
 
     return bestPostsOfCollege;
+  }
+
+  async changeOneFavoritePost(id: string) {
+    const favoritePostsChanged = await modalPostDataSchema.findOne({ _id: id });
+
+    if (!favoritePostsChanged) {
+      return;
+    }
+
+    favoritePostsChanged.favorite = !favoritePostsChanged.favorite;
+    await favoritePostsChanged.save();
+
+    return favoritePostsChanged;
   }
 
   async collegePosts(college: string) {

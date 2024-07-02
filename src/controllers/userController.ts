@@ -141,4 +141,20 @@ export default class UserController {
       return handleError(error as BaseError, res);
     }
   }
+
+  async changeOneFavoritePost(req: Request, res: Response) {
+    try {
+      const { id } = req.params as { id: string };
+
+      const favoritePostChanged = await userService.changeOneFavoritePost(id);
+
+      if (!favoritePostChanged) {
+        throw UserErrors.postNotFound();
+      }
+
+      return res.status(StatusCodes.ACCEPTED).json(favoritePostChanged);
+    } catch (error) {
+      return handleError(error as BaseError, res);
+    }
+  }
 }
