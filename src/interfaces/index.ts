@@ -5,7 +5,7 @@ export interface PostDataI {
   content: string;
   date: string;
   image: string;
-  isChanged: boolean;
+  isChanged?: boolean;
   // date: Date | string;
   // image: Buffer | string;
   views: number;

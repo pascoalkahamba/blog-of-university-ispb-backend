@@ -6,7 +6,7 @@ import { BaseError } from "../errors/baseError";
 import UserService from "../service/userService";
 import { StatusCodes } from "http-status-codes";
 import UserErrors from "../errors/userErros";
-import { modalPostDataSchema } from "../model/postDataSchema";
+import { PostDataT } from "../@types";
 
 const userValidator = new UserValidator();
 const userService = new UserService();
@@ -50,10 +50,52 @@ export default class UserController {
       const posted = await userService.getOnePost(id);
 
       if (!posted) {
+        console.log("Post nao encontrado.");
         throw UserErrors.postNotFound();
       }
 
       return res.status(StatusCodes.OK).json(posted);
+    } catch (error) {
+      return handleError(error as BaseError, res);
+    }
+  }
+
+  async updatePost(req: Request, res: Response) {
+    try {
+      const { id } = req.params as { id: string };
+
+      const { content, image, isChanged, title, university } =
+        req.body as PostDataT;
+      userValidator.validate({ content, title, image, university });
+
+      const updatedPost = await userService.updatePost(id, {
+        content,
+        image,
+        isChanged,
+        title,
+        university,
+      });
+
+      if (!updatedPost) {
+        throw UserErrors.postNotFound();
+      }
+
+      return res.status(StatusCodes.ACCEPTED).json(updatedPost);
+    } catch (error) {
+      return handleError(error as BaseError, res);
+    }
+  }
+
+  async postDeleted(req: Request, res: Response) {
+    try {
+      const { id } = req.params as { id: string };
+      const postDeleted = await userService.deletePost(id);
+
+      if (!postDeleted) {
+        throw UserErrors.postNotFound();
+      }
+
+      return res.status(StatusCodes.ACCEPTED).json(postDeleted);
     } catch (error) {
       return handleError(error as BaseError, res);
     }

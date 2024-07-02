@@ -7,7 +7,7 @@ const postDataSchema = new mongoose.Schema({
   content: String,
   image: String,
   date: String,
-  idChanged: Boolean,
+  isChanged: Boolean,
   // image: Buffer,
   // date: Date,
   views: Number,

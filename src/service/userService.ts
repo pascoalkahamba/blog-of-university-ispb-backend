@@ -44,6 +44,7 @@ export default class UserService {
     const post = await modalPostDataSchema.findOne({ _id: id });
 
     if (!post) {
+      console.log("One post ", post);
       return;
     }
 
@@ -77,8 +78,6 @@ export default class UserService {
     if (!postDeleted) {
       return;
     }
-
-    await postDeleted.save();
 
     return postDeleted;
   }
