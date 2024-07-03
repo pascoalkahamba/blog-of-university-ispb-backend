@@ -8,6 +8,7 @@ export default class AdminService {
   async create(adminInfo: AdminInfoI) {
     const { email, password, username } = adminInfo;
     const hashPassword = bcript.hash(password, 10);
+    const safePassword = await hashPassword;
     const admin = await modalUserAdminSchema.findOne({ email });
 
     if (admin) {
@@ -17,12 +18,15 @@ export default class AdminService {
     const adminCreated = await modalUserAdminSchema.create({
       username,
       email,
-      password: hashPassword,
+      password: safePassword,
     });
 
-    const { password: _, ...succefullAdmin } = adminCreated;
+    const safeAdminInfo = modalUserAdminSchema
+      .findById(adminCreated._id)
+      .select("email username")
+      .lean();
 
-    return succefullAdmin;
+    return safeAdminInfo;
   }
 
   async login(adminInfoLogin: AdminInfoLogin) {
@@ -47,10 +51,13 @@ export default class AdminService {
       { expiresIn: "8h" }
     );
 
-    const { password: _, ...admin } = logged;
+    const safeAdminInfo = modalUserAdminSchema
+      .findById(logged._id)
+      .select("username email")
+      .lean();
 
     return {
-      admin,
+      safeAdminInfo,
       token,
     };
   }
@@ -67,9 +74,12 @@ export default class AdminService {
     admin.password = password;
     await admin.save();
 
-    const { password: _, ...adminInfo } = admin;
+    const safeAdminInfo = modalUserAdminSchema
+      .findById(admin._id)
+      .select("username email")
+      .lean();
 
-    return adminInfo;
+    return safeAdminInfo;
   }
 
   async updateAdminInfo(newAdminInfo: AdminInfoI, id: string) {
@@ -88,9 +98,12 @@ export default class AdminService {
     currAdmin.email = email;
     await currAdmin.save();
 
-    const { password: _, ...adminInfo } = currAdmin;
+    const safeAdminInfo = modalUserAdminSchema
+      .findById(currAdmin._id)
+      .select("username email")
+      .lean();
 
-    return adminInfo;
+    return safeAdminInfo;
   }
 
   async oneAdmin(id: string) {
@@ -100,9 +113,12 @@ export default class AdminService {
       return;
     }
 
-    const { password: _, ...adminInfo } = admin;
+    const safeAdminInfo = modalUserAdminSchema
+      .findById(admin._id)
+      .select("username email")
+      .lean();
 
-    return adminInfo;
+    return safeAdminInfo;
   }
 
   async allAdmins() {
@@ -120,8 +136,11 @@ export default class AdminService {
       return;
     }
 
-    const { password: _, ...adminInfo } = adminDeleted;
+    const safeAdminInfo = modalUserAdminSchema
+      .findById(adminDeleted._id)
+      .select("username email")
+      .lean();
 
-    return adminInfo;
+    return safeAdminInfo;
   }
 }

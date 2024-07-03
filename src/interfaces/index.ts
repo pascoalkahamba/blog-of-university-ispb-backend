@@ -16,3 +16,19 @@ export interface AdminInfoI {
   email: string;
   password: string;
 }
+export interface AdminInfoDatabaseI {
+  _id: string;
+  username: string;
+  email: string;
+  password: string;
+  __v: number;
+}
+
+export interface AdminDataI {
+  _doc: AdminInfoI;
+}
+
+export interface AdminInfoResultI {
+  username: string;
+  email: string;
+}
