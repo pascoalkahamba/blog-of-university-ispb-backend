@@ -1,11 +1,11 @@
 import { AdminInfoLogin } from "../@types";
-import { AdminInfo } from "../interfaces";
+import { AdminInfoI } from "../interfaces";
 import { modalUserAdminSchema } from "../model/postDataSchema";
 import bcript from "bcrypt";
 import jwtToken from "jsonwebtoken";
 
 export default class AdminService {
-  async create(adminInfo: AdminInfo) {
+  async create(adminInfo: AdminInfoI) {
     const { email, password, username } = adminInfo;
     const hashPassword = bcript.hash(password, 10);
     const admin = await modalUserAdminSchema.findOne({ email });
@@ -72,7 +72,7 @@ export default class AdminService {
     return adminInfo;
   }
 
-  async updateAdminInfo(newAdminInfo: AdminInfo, id: string) {
+  async updateAdminInfo(newAdminInfo: AdminInfoI, id: string) {
     const { email, password, username } = newAdminInfo;
     const hashPassword = bcript.hash(password, 10);
     const newPassword = await hashPassword;

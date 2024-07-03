@@ -24,6 +24,6 @@ const modalPostDataSchema = mongoose.model(
   postDataSchema
 );
 
-const modalUserAdminSchema = mongoose.model("adminInfomation", userAdmin);
+const modalUserAdminSchema = mongoose.model("adminInformation", userAdmin);
 
 export { modalPostDataSchema, modalUserAdminSchema };

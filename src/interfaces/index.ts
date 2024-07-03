@@ -11,7 +11,7 @@ export interface PostDataI {
   views: number;
 }
 
-export interface AdminInfo {
+export interface AdminInfoI {
   username: string;
   email: string;
   password: string;
