@@ -1,4 +1,4 @@
-import { AdminInfoLogin } from "../@types";
+import { AdminInfoLoginT } from "../@types";
 import { AdminInfoI } from "../interfaces";
 import { modalUserAdminSchema } from "../model/postDataSchema";
 import bcript from "bcrypt";
@@ -29,7 +29,7 @@ export default class AdminService {
     return safeAdminInfo;
   }
 
-  async login(adminInfoLogin: AdminInfoLogin) {
+  async login(adminInfoLogin: AdminInfoLoginT) {
     const { email, password } = adminInfoLogin;
 
     const logged = await modalUserAdminSchema.findOne({ email });

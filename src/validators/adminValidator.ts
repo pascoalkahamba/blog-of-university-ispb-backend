@@ -1,16 +1,28 @@
+import { Response } from "express";
+import { PathErrorT } from "../@types";
 import AdminError from "../errors/adminError";
-import { AdminInfoI } from "../interfaces";
+import { BaseError } from "../errors/baseError";
+import { handleError } from "../errors/handleError";
 
 export default class AdminValidator {
-  validator(adminInfo: AdminInfoI) {
-    if (adminInfo.username.length <= 4) {
-      throw AdminError.invalidInfo("Nome do admin está invalido.");
+  validator(pathError: PathErrorT, res: Response) {
+    if (pathError === "username") {
+      return handleError(
+        AdminError.invalidInfo("Nome do admin está invalido.") as BaseError,
+        res
+      );
     }
-    if (adminInfo.password.length <= 4) {
-      throw AdminError.invalidInfo("Senha do admin está invalido.");
+    if (pathError === "password") {
+      return handleError(
+        AdminError.invalidInfo("Senha do admin está invalido.") as BaseError,
+        res
+      );
     }
-    if (adminInfo.email.length <= 4) {
-      throw AdminError.invalidInfo("Email do admin está invalido.");
+    if (pathError === "email") {
+      return handleError(
+        AdminError.invalidInfo("Email do admin está invalido.") as BaseError,
+        res
+      );
     }
   }
 }

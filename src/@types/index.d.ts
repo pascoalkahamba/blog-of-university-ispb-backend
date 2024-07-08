@@ -1,4 +1,5 @@
 import { AdminInfo, PostDataI } from "../interfaces";
 
 type PostDataT = Omit<PostDataI, "date" | "views" | "favorite">;
-type AdminInfoLogin = Omit<AdminInfo, "username">;
+type AdminInfoLoginT = Omit<AdminInfo, "username">;
+type PathErrorT = "username" | "email" | "password";

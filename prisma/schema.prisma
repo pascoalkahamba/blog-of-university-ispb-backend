@@ -1,0 +1,153 @@
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Student {
+  id                 Int       @id @default(autoincrement())
+  email              String    @unique
+  name               String?
+  registrationNumber Int       @unique
+  course             Course?
+  photo              Photo?
+  active             Boolean
+  role               Role      @default(USER)
+  comments           Comment[]
+  contact            Int       @unique
+  replies            Reply[]
+  year               Int
+  profile            Profile?
+}
+
+model Adm {
+  id       Int       @id @default(autoincrement())
+  email    String    @unique
+  name     String?
+  photo    Photo?
+  role     Role      @default(ADMIN)
+  comments Comment[]
+  posts    Post[]
+  contact  Int       @unique
+  replies  Reply[]
+  profile  Profile?
+}
+
+model Coordinator {
+  id           Int        @id @default(autoincrement())
+  email        String     @unique
+  name         String?
+  photo        Photo?
+  role         Role       @default(COORDINATOR)
+  course       Course?
+  comments     Comment[]
+  posts        Post[]
+  contact      Int        @unique
+  department   Department @relation(fields: [departmentId], references: [id])
+  departmentId Int
+  replies      Reply[]
+  profile      Profile?
+}
+
+model Profile {
+  id            Int          @id @default(autoincrement())
+  bio           String
+  student       Student?     @relation(fields: [studentId], references: [id])
+  studentId     Int?         @unique
+  adm           Adm?         @relation(fields: [admId], references: [id])
+  admId         Int?         @unique
+  coordinator   Coordinator? @relation(fields: [coordinatorId], references: [id])
+  coordinatorId Int?         @unique
+}
+
+model Course {
+  id            Int          @id @default(autoincrement())
+  name          String
+  student       Student?     @relation(fields: [studentId], references: [id])
+  studentId     Int?         @unique
+  subjects      Subject[]
+  department    Department   @relation(fields: [departmentId], references: [id])
+  departmentId  Int
+  coordinator   Coordinator? @relation(fields: [coordinatorId], references: [id])
+  coordinatorId Int?         @unique
+}
+
+model Comment {
+  id            Int          @id @default(autoincrement())
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  title         String
+  published     Boolean      @default(false)
+  student       Student?     @relation(fields: [studentId], references: [id])
+  studentId     Int?
+  adm           Adm?         @relation(fields: [admId], references: [id])
+  admId         Int?
+  coordinator   Coordinator? @relation(fields: [coordinatorId], references: [id])
+  coordinatorId Int?
+}
+
+model Post {
+  id            Int          @id @default(autoincrement())
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  title         String
+  published     Boolean      @default(false)
+  adm           Adm          @relation(fields: [admId], references: [id])
+  admId         Int
+  coordinator   Coordinator? @relation(fields: [coordinatorId], references: [id])
+  coordinatorId Int?
+  departments   Department[]
+}
+
+model Reply {
+  id            Int          @id @default(autoincrement())
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  title         String
+  published     Boolean      @default(false)
+  student       Student?     @relation(fields: [studentId], references: [id])
+  studentId     Int?
+  adm           Adm?         @relation(fields: [admId], references: [id])
+  admId         Int?
+  coordinator   Coordinator? @relation(fields: [coordinatorId], references: [id])
+  coordinatorId Int?
+}
+
+model Department {
+  id           Int           @id @default(autoincrement())
+  name         String
+  posts        Post[]
+  courses      Course[]
+  coordinators Coordinator[]
+}
+
+model Subject {
+  id      Int      @id @default(autoincrement())
+  name    String
+  courses Course[]
+  years   Int
+}
+
+enum Role {
+  USER
+  ADMIN
+  COORDINATOR
+}
+
+model Photo {
+  id            Int          @id @default(autoincrement())
+  height        Int          @default(200)
+  width         Int          @default(100)
+  student       Student?     @relation(fields: [studentId], references: [id])
+  adm           Adm?         @relation(fields: [admId], references: [id])
+  admId         Int?         @unique
+  type          String
+  coordinator   Coordinator? @relation(fields: [coordinatorId], references: [id])
+  coordinatorId Int?         @unique
+  studentId     Int?         @unique
+  url           String
+}
