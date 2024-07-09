@@ -12,6 +12,8 @@ model Student {
   email              String    @unique
   username           String
   password           String?
+  blocked            Boolean
+  blockedQuantity    Int
   registrationNumber Int       @unique
   course             Course?
   photo              Photo?
@@ -39,20 +41,22 @@ model Admin {
 }
 
 model Coordinator {
-  id           Int        @id @default(autoincrement())
-  email        String     @unique
-  username     String
-  password     String
-  photo        Photo?
-  role         Role       @default(COORDINATOR)
-  course       Course?
-  comments     Comment[]
-  posts        Post[]
-  contact      Int        @unique
-  department   Department @relation(fields: [departmentId], references: [id])
-  departmentId Int
-  replies      Reply[]
-  profile      Profile?
+  id              Int        @id @default(autoincrement())
+  email           String     @unique
+  username        String
+  password        String
+  blocked         Boolean
+  blockedQuantity Int
+  photo           Photo?
+  role            Role       @default(COORDINATOR)
+  course          Course?
+  comments        Comment[]
+  posts           Post[]
+  contact         Int        @unique
+  department      Department @relation(fields: [departmentId], references: [id])
+  departmentId    Int
+  replies         Reply[]
+  profile         Profile?
 }
 
 model Profile {
