@@ -1,5 +1,7 @@
-import { AdminInfo, PostDataI } from "../interfaces";
+import { Admin, Student, Coordinator } from "@prisma/client";
 
-type PostDataT = Omit<PostDataI, "date" | "views" | "favorite">;
-type AdminInfoLoginT = Omit<AdminInfo, "username">;
-type PathErrorT = "username" | "email" | "password";
+export type DataBaseExtraValues = "createdAt" | "updatedAt" | "id" | "role";
+
+export type TAdminModal = Omit<Admin, DataBaseExtraValues>;
+export type TStudentModal = Omit<Student, DataBaseExtraValues>;
+export type TCoordinatorModal = Omit<Coordinator, DataBaseExtraValues>;

@@ -1,7 +1,7 @@
 import { BaseError } from "../errors/baseError";
 import { handleError } from "../errors/handleError";
 import { Response, Request } from "express";
-import AdminService from "../service/adminService";
+import AdminService from "../services/adminService";
 import AdminValidator from "../validators/adminValidator";
 import AdminError from "../errors/adminError";
 import { StatusCodes } from "http-status-codes";

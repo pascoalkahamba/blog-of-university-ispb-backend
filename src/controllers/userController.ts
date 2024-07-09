@@ -3,7 +3,7 @@ import { PostDataI } from "../interfaces";
 import { UserValidator } from "../validators/userValidator";
 import { handleError } from "../errors/handleError";
 import { BaseError } from "../errors/baseError";
-import UserService from "../service/userService";
+import UserService from "../services/userService";
 import { StatusCodes } from "http-status-codes";
 import UserErrors from "../errors/userErros";
 import { PostDataT } from "../@types";
