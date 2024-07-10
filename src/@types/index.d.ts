@@ -1,6 +1,12 @@
 import { Admin, Student, Coordinator } from "@prisma/client";
 
 export type DataBaseExtraValues = "createdAt" | "updatedAt" | "id" | "role";
+export type TPathError =
+  | "email"
+  | "password"
+  | "contact"
+  | "username"
+  | "emailAlreadyExist";
 
 export type TAdminModal = Omit<Admin, DataBaseExtraValues>;
 export type TAdminLogin = Pick<Admin, "email" | "password">;
