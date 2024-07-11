@@ -75,4 +75,29 @@ export default class AdminController {
       }
     }
   }
+
+  async forgotPassword(req: Request, res: Response) {
+    try {
+      const { email, password: newPassword } = loginAdminSchema.parse(req.body);
+      const newAdminInfo = await adminService.forgotPassword(
+        email,
+        newPassword
+      );
+
+      if (!newAdminInfo) {
+        throw AdminError.emailNotFound();
+      }
+
+      return res.status(StatusCodes.CREATED).json(newAdminInfo);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromError(error);
+        const { details } = validationError;
+        const pathError = details[0].path[0] as TPathError;
+        adminValidator.validator(pathError, res);
+      } else {
+        return handleError(error as BaseError, res);
+      }
+    }
+  }
 }

@@ -6,5 +6,6 @@ const adminRoutes = express.Router();
 
 adminRoutes.post("/create", adminController.create);
 adminRoutes.post("/login", adminController.login);
+adminRoutes.post("/forgotPassword", adminController.forgotPassword);
 
 export { adminRoutes };

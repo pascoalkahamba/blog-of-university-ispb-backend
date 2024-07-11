@@ -14,6 +14,10 @@ export default class AdminError {
   }
 
   static emailOrPasswordWrong() {
-    return new BaseError("Email ou senha errada.", StatusCodes.CONFLICT);
+    return new BaseError("Email ou senha errada.", StatusCodes.BAD_REQUEST);
+  }
+
+  static emailNotFound() {
+    return new BaseError("Email não foi encontrado.", StatusCodes.BAD_REQUEST);
   }
 }
