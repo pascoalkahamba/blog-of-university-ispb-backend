@@ -2,8 +2,9 @@ import { Response } from "express";
 import { TPathError } from "../@types";
 import AdminError from "../errors/adminError";
 import { handleError } from "../errors/handleError";
+import { CoordinatorError } from "../errors/coordinatorError";
 
-export default class AdminValidator {
+export default class CoordinatorValidator {
   validator(pathError: TPathError, res: Response) {
     if (pathError === "username") {
       return handleError(
@@ -17,11 +18,8 @@ export default class AdminValidator {
         res
       );
     }
-    if (pathError === "email") {
-      return handleError(
-        AdminError.invalidInfo("Email do admin invalido."),
-        res
-      );
+    if (pathError === "emailNotFound") {
+      return handleError(CoordinatorError.emailNotFound(), res);
     }
     if (pathError === "contact") {
       return handleError(

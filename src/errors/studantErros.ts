@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { BaseError } from "./baseError";
 
-export default class UserErrors {
+export default class StudantErrors {
   static invalidContent(errorMessage: string) {
     return new BaseError(errorMessage, StatusCodes.BAD_REQUEST);
   }

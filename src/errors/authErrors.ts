@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { BaseError } from "./baseError";
 
-export default class AuthError {
+export class AuthError {
   static typeOfAuthInvalid() {
     return new BaseError(
       "Tipo de autenticação não permitido",
@@ -9,11 +9,11 @@ export default class AuthError {
     );
   }
 
-  static tokenNotFound() {
+  static noTokenProvided() {
     return new BaseError("Token não fornecido", StatusCodes.UNAUTHORIZED);
   }
 
-  static tokenNotAccept() {
+  static invalidToken() {
     return new BaseError("Token não autorizado", StatusCodes.UNAUTHORIZED);
   }
 }

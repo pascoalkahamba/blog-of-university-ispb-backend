@@ -12,4 +12,8 @@ const loginAdminSchema = zod.object({
   email: zod.string().email(),
 });
 
-export { createAdminSchema, loginAdminSchema };
+const deleteCoordinatorSchema = zod.object({
+  email: zod.string().email(),
+});
+
+export { createAdminSchema, loginAdminSchema, deleteCoordinatorSchema };

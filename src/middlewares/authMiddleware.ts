@@ -1,44 +1,52 @@
 import { NextFunction, Request, Response } from "express";
-import AuthError from "../errors/authErrors";
-import jwtToken from "jsonwebtoken";
+import { AuthError } from "../errors/authErrors";
+import jwt, { JsonWebTokenError } from "jsonwebtoken";
 import { handleError } from "../errors/handleError";
-import { BaseError } from "../errors/baseError";
-
-export default function authMiddleware(
+import { TJsonWebTokenError } from "../@types";
+export async function authMiddleware(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const typeOfAuth = req.headers.authorization;
+    const authorization = req.headers.authorization;
 
-    if (!typeOfAuth) {
-      throw AuthError.tokenNotFound();
-    }
-    const [type, token] = typeOfAuth.split("");
-
-    if (type !== "bear") {
-      throw AuthError.typeOfAuthInvalid();
+    if (!authorization) {
+      AuthError.noTokenProvided();
+      return;
     }
 
-    if (token.length <= 0) {
-      throw AuthError.tokenNotAccept();
+    const [type, token] = authorization.split(" ");
+
+    if (type !== "Bearer") {
+      handleError(AuthError.typeOfAuthInvalid(), res);
+      return;
     }
 
-    const { id } = jwtToken.verify(
-      token,
-      process.env.JWT_SECRET_KEY as string
-    ) as {
-      id: string;
+    const { id } = jwt.verify(token, process.env.JWT_SECRET_KEY as string) as {
+      id: number;
     };
 
     if (!id) {
-      throw AuthError.tokenNotAccept();
+      AuthError.invalidToken();
+      return;
     }
-    req.id = id;
 
+    req.id = id;
     next();
   } catch (error) {
-    return handleError(error as BaseError, res);
+    if (error instanceof JsonWebTokenError) {
+      const errorMessage = error.message as TJsonWebTokenError;
+
+      if (errorMessage === "jwt malformed") {
+        handleError(AuthError.invalidToken(), res);
+        return;
+      }
+
+      if (errorMessage === "jwt must be provided") {
+        handleError(AuthError.noTokenProvided(), res);
+        return;
+      }
+    }
   }
 }

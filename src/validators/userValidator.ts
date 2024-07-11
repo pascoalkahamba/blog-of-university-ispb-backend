@@ -1,5 +1,5 @@
 import { PostDataT } from "../@types";
-import UserErrors from "../errors/userErros";
+import UserErrors from "../errors/studantErros";
 
 export class UserValidator {
   validate(postData: PostDataT) {
