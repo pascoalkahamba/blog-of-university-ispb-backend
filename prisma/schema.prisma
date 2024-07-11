@@ -20,7 +20,7 @@ model Student {
   active             Boolean
   role               Role      @default(USER)
   comments           Comment[]
-  contact            Int       @unique
+  contact            String    @unique
   replies            Reply[]
   year               Int
   profile            Profile?
@@ -35,7 +35,7 @@ model Admin {
   role     Role      @default(ADMIN)
   comments Comment[]
   posts    Post[]
-  contact  Int       @unique
+  contact  String    @unique
   replies  Reply[]
   profile  Profile?
 }
@@ -52,7 +52,7 @@ model Coordinator {
   course          Course?
   comments        Comment[]
   posts           Post[]
-  contact         Int        @unique
+  contact         String     @unique
   department      Department @relation(fields: [departmentId], references: [id])
   departmentId    Int
   replies         Reply[]
