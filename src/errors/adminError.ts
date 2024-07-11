@@ -7,6 +7,13 @@ export default class AdminError {
   }
 
   static emailAlreadyExist() {
-    return new BaseError("Email já cadastrado.", StatusCodes.CONFLICT);
+    return new BaseError(
+      "Email ou contacto já cadastrado.",
+      StatusCodes.CONFLICT
+    );
+  }
+
+  static emailOrPasswordWrong() {
+    return new BaseError("Email ou senha errada.", StatusCodes.CONFLICT);
   }
 }

@@ -15,8 +15,11 @@ export default class AdminService {
     const admin = await prismaService.prisma.admin.findFirst({
       where: { email },
     });
+    const contactOfAdmin = await prismaService.prisma.admin.findFirst({
+      where: { contact },
+    });
 
-    if (admin) {
+    if (admin || contactOfAdmin) {
       return;
     }
 
@@ -39,6 +42,7 @@ export default class AdminService {
     const logged = await prismaService.prisma.admin.findFirst({
       where: { email },
       select: {
+        id: true,
         username: true,
         password: true,
         email: true,

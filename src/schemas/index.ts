@@ -7,4 +7,9 @@ const createAdminSchema = zod.object({
   contact: zod.string().min(9).max(9),
 });
 
-export { createAdminSchema };
+const loginAdminSchema = zod.object({
+  password: zod.string().min(6),
+  email: zod.string().email(),
+});
+
+export { createAdminSchema, loginAdminSchema };
