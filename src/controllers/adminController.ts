@@ -116,11 +116,14 @@ export default class AdminController {
     try {
       const { email } = deleteCoordinatorSchema.parse(req.body);
       const coordinatorDeleted = await adminService.deleteCoordinator(email);
+      console.log("coordinator Started");
 
       if (!coordinatorDeleted) {
+        console.log("coordinator not found");
         throw CoordinatorError.emailNotFound();
       }
 
+      console.log("coordinator Deleted");
       return res.status(StatusCodes.ACCEPTED).json(coordinatorDeleted);
     } catch (error) {
       if (error instanceof ZodError) {

@@ -12,15 +12,13 @@ export async function authMiddleware(
     const authorization = req.headers.authorization;
 
     if (!authorization) {
-      AuthError.noTokenProvided();
-      return;
+      return AuthError.noTokenProvided();
     }
 
     const [type, token] = authorization.split(" ");
 
     if (type !== "Bearer") {
-      handleError(AuthError.typeOfAuthInvalid(), res);
-      return;
+      return handleError(AuthError.typeOfAuthInvalid(), res);
     }
 
     const { id } = jwt.verify(token, process.env.JWT_SECRET_KEY as string) as {
@@ -28,8 +26,7 @@ export async function authMiddleware(
     };
 
     if (!id) {
-      AuthError.invalidToken();
-      return;
+      return AuthError.invalidToken();
     }
 
     req.id = id;
