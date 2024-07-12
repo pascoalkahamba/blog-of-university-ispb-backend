@@ -7,5 +7,6 @@ const coordinatorRoutes = express.Router();
 
 coordinatorRoutes.post("/create", coordinatorController.create);
 coordinatorRoutes.post("/login", coordinatorController.login);
+coordinatorRoutes.post("/forgotPassword", coordinatorController.forgotPassword);
 
 export { coordinatorRoutes };

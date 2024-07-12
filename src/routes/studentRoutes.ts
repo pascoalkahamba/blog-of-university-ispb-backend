@@ -7,5 +7,6 @@ const studentRoutes = express.Router();
 
 studentRoutes.post("/create", studentController.create);
 studentRoutes.post("/login", studentController.login);
+studentRoutes.post("/forgotPassword", studentController.forgotPassword);
 
 export { studentRoutes };
