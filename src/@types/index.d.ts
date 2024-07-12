@@ -8,7 +8,8 @@ export type TPathError =
   | "contact"
   | "username"
   | "emailNotFound"
-  | "emailAlreadyExist";
+  | "emailAlreadyExist"
+  | "registrationNumber";
 
 export type TAdminModal = Omit<Admin, TDataBaseExtraValues>;
 export type TAdminLogin = Pick<Admin, "email" | "password">;
@@ -16,7 +17,10 @@ export type TCoordinatorLogin = Pick<Coordinator, "email" | "password">;
 export type TStudentLogin = Pick<Student, "email" | "password">;
 export type TKindsOfRole = "USER" | "ADMIN" | "COORDINATOR";
 
-export type TStudentModal = Omit<Student, TDataBaseExtraValues>;
+export type TStudentModal = Omit<
+  Student,
+  TDataBaseExtraValues | "blocked" | "blockedQuantity" | "active" | "year"
+>;
 export type TCoordinatorModal = Omit<
   Coordinator,
   TDataBaseExtraValues | "blocked" | "blockedQuantity" | "departmentId"

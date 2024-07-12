@@ -1,11 +1,12 @@
-import { TAdminModal, TStudentLogin } from "../@types";
+import { TStudentLogin, TStudentModal } from "../@types";
 import { DEFAULT_SELECT } from "./adminService";
 import { prismaService } from "./prismaService";
 import bcrypt from "bcrypt";
 
 export default class StudentService {
-  async create(StudentModal: TAdminModal) {
-    const { contact, email, password, username } = StudentModal;
+  async create(StudentModal: TStudentModal) {
+    const { contact, email, password, username, registrationNumber } =
+      StudentModal;
     const hashPassword = await bcrypt.hash(password, 10);
     const student = await prismaService.prisma.student.findFirst({
       where: {
@@ -18,6 +19,16 @@ export default class StudentService {
       },
     });
 
+    const registrationStudent = await prismaService.prisma.student.findFirst({
+      where: {
+        registrationNumber,
+      },
+    });
+
+    if (registrationStudent) {
+      return "registrationAlreadyExist";
+    }
+
     if (student || StudentN) {
       return;
     }
@@ -29,7 +40,7 @@ export default class StudentService {
         password: hashPassword,
         contact,
         active: true,
-        registrationNumber: "não definido",
+        registrationNumber,
         year: "não definido",
       },
       select: DEFAULT_SELECT,

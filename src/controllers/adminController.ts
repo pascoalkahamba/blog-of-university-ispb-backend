@@ -8,6 +8,7 @@ import { TPathError } from "../@types";
 import {
   createAdminSchema,
   deleteCoordinatorSchema,
+  deleteStudentSchema,
   loginAdminSchema,
 } from "../schemas";
 import AdminError from "../errors/adminError";
@@ -16,9 +17,12 @@ import { BaseError } from "../errors/baseError";
 import jwt from "jsonwebtoken";
 import { CoordinatorError } from "../errors/coordinatorError";
 import CoordinatorValidator from "../validators/coordinatorValidator";
+import StudentValidator from "../validators/studentValidator";
+import { StudentError } from "../errors/studantErros";
 const adminService = new AdminService();
 const adminValidator = new AdminValidator();
 const coordinatorValidator = new CoordinatorValidator();
+const studentValidator = new StudentValidator();
 
 export default class AdminController {
   async create(req: Request, res: Response) {
@@ -116,12 +120,38 @@ export default class AdminController {
       if (!coordinatorDeleted) {
         throw CoordinatorError.emailNotFound();
       }
+
+      return res.status(StatusCodes.ACCEPTED).json(coordinatorDeleted);
     } catch (error) {
       if (error instanceof ZodError) {
         const validationError = fromError(error);
         const { details } = validationError;
         const pathError = details[0].path[0] as TPathError;
         coordinatorValidator.validator(pathError, res);
+      } else {
+        return handleError(error as BaseError, res);
+      }
+    }
+  }
+
+  async deleteStudent(req: Request, res: Response) {
+    try {
+      const { registrationNumber } = deleteStudentSchema.parse(req.body);
+      const studentDeleted = await adminService.deleteStudent(
+        registrationNumber
+      );
+
+      if (!studentDeleted) {
+        throw StudentError.registrationNumberNotFound();
+      }
+
+      return res.status(StatusCodes.ACCEPTED).json(studentDeleted);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromError(error);
+        const { details } = validationError;
+        const pathError = details[0].path[0] as TPathError;
+        studentValidator.validator(pathError, res);
       } else {
         return handleError(error as BaseError, res);
       }

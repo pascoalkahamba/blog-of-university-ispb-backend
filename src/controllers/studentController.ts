@@ -5,7 +5,11 @@ import { TPathError } from "../@types";
 import { BaseError } from "../errors/baseError";
 import StudentValidator from "../validators/studentValidator";
 import { handleError } from "../errors/handleError";
-import { createAdminSchema, loginStudentSchema } from "../schemas";
+import {
+  createAdminSchema,
+  createStudentSchema,
+  loginStudentSchema,
+} from "../schemas";
 import StudentService from "../services/studentService";
 import { StudentError } from "../errors/studantErros";
 import { StatusCodes } from "http-status-codes";
@@ -17,16 +21,20 @@ const studentService = new StudentService();
 export default class StudentContoller {
   async create(req: Request, res: Response) {
     try {
-      const { contact, email, password, username } = createAdminSchema.parse(
-        req.body
-      );
+      const { contact, email, password, username, registrationNumber } =
+        createStudentSchema.parse(req.body);
 
       const student = await studentService.create({
         contact,
         email,
         password,
         username,
+        registrationNumber,
       });
+
+      if (student === "registrationAlreadyExist") {
+        throw StudentError.registrationNumberAlreadyExist();
+      }
 
       if (!student) {
         throw StudentError.emailAlreadyExist();

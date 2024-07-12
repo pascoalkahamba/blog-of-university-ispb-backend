@@ -13,6 +13,13 @@ export class StudentError {
     );
   }
 
+  static registrationNumberAlreadyExist() {
+    return new BaseError(
+      "Número de matriculo do estudante já cadastrado.",
+      StatusCodes.CONFLICT
+    );
+  }
+
   static emailOrPasswordWrong() {
     return new BaseError("Email ou senha errada.", StatusCodes.BAD_REQUEST);
   }
@@ -20,6 +27,12 @@ export class StudentError {
   static emailNotFound() {
     return new BaseError(
       "Email do estudante não encontrado.",
+      StatusCodes.NOT_FOUND
+    );
+  }
+  static registrationNumberNotFound() {
+    return new BaseError(
+      "Número de matriculo do estudante invalido.",
       StatusCodes.NOT_FOUND
     );
   }

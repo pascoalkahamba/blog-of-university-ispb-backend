@@ -31,5 +31,8 @@ export default class StudentValidator {
     if (pathError === "emailAlreadyExist") {
       return handleError(AdminError.invalidInfo("Email já cadastrado."), res);
     }
+    if (pathError === "registrationNumber") {
+      return handleError(StudentError.registrationNumberNotFound(), res);
+    }
   }
 }

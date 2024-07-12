@@ -8,13 +8,13 @@ export default class CoordinatorValidator {
   validator(pathError: TPathError, res: Response) {
     if (pathError === "username") {
       return handleError(
-        AdminError.invalidInfo("Nome do admin invalido."),
+        AdminError.invalidInfo("Nome do codernador invalido."),
         res
       );
     }
     if (pathError === "password") {
       return handleError(
-        AdminError.invalidInfo("Senha do admin invalido."),
+        AdminError.invalidInfo("Senha do codernador invalido."),
         res
       );
     }
@@ -23,7 +23,7 @@ export default class CoordinatorValidator {
     }
     if (pathError === "contact") {
       return handleError(
-        AdminError.invalidInfo("Contacto do admin invalido."),
+        AdminError.invalidInfo("Contacto do codernador invalido."),
         res
       );
     }
