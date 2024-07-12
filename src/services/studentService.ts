@@ -1,10 +1,10 @@
-import { TStudentLogin, TStudentModal } from "../@types";
+import { TAdminModal, TStudentLogin } from "../@types";
 import { DEFAULT_SELECT } from "./adminService";
 import { prismaService } from "./prismaService";
 import bcrypt from "bcrypt";
 
 export default class StudentService {
-  async create(StudentModal: TStudentModal) {
+  async create(StudentModal: TAdminModal) {
     const { contact, email, password, username } = StudentModal;
     const hashPassword = await bcrypt.hash(password, 10);
     const student = await prismaService.prisma.student.findFirst({
@@ -43,7 +43,7 @@ export default class StudentService {
 
     const student = await prismaService.prisma.student.findFirst({
       where: { email },
-      select: { ...DEFAULT_SELECT, password: true },
+      select: { ...DEFAULT_SELECT, password: true, id: true },
     });
 
     if (!student) {
@@ -56,6 +56,8 @@ export default class StudentService {
       return;
     }
 
-    return student;
+    const { password: _, ...studentInfo } = student;
+
+    return studentInfo;
   }
 }

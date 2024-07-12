@@ -129,7 +129,7 @@ export default class AdminService {
     return coordinatorDeleted;
   }
 
-  async deleteStudent(registrationNumber: number) {
+  async deleteStudent(registrationNumber: string) {
     const student = await prismaService.prisma.student.findFirst({
       where: { registrationNumber },
     });

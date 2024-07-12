@@ -1,20 +1,26 @@
 import { StatusCodes } from "http-status-codes";
 import { BaseError } from "./baseError";
 
-export default class StudantErrors {
-  static invalidContent(errorMessage: string) {
+export class StudentError {
+  static invalidInfo(errorMessage: string) {
     return new BaseError(errorMessage, StatusCodes.BAD_REQUEST);
   }
-  static postNotFound() {
-    return new BaseError("Post não encontrado.", StatusCodes.NOT_FOUND);
+
+  static emailAlreadyExist() {
+    return new BaseError(
+      "Email ou contacto já cadastrado.",
+      StatusCodes.CONFLICT
+    );
   }
-  // static invalidTitle() {
-  //   return new BaseError("Titulo invalido", StatusCodes.BAD_REQUEST);
-  // }
-  // static invalidUniversity() {
-  //   return new BaseError(
-  //     "Nome da universidade invalida",
-  //     StatusCodes.BAD_REQUEST
-  //   );
-  // }
+
+  static emailOrPasswordWrong() {
+    return new BaseError("Email ou senha errada.", StatusCodes.BAD_REQUEST);
+  }
+
+  static emailNotFound() {
+    return new BaseError(
+      "Email do estudante não encontrado.",
+      StatusCodes.NOT_FOUND
+    );
+  }
 }

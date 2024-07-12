@@ -19,5 +19,5 @@ export type TKindsOfRole = "USER" | "ADMIN" | "COORDINATOR";
 export type TStudentModal = Omit<Student, TDataBaseExtraValues>;
 export type TCoordinatorModal = Omit<
   Coordinator,
-  TDataBaseExtraValues | "blocked" | "blockedQuantity"
+  TDataBaseExtraValues | "blocked" | "blockedQuantity" | "departmentId"
 >;
