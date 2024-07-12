@@ -12,7 +12,12 @@ export type TPathError =
 
 export type TAdminModal = Omit<Admin, TDataBaseExtraValues>;
 export type TAdminLogin = Pick<Admin, "email" | "password">;
+export type TCoordinatorLogin = Pick<Coordinator, "email" | "password">;
+export type TStudentLogin = Pick<Student, "email" | "password">;
 export type TKindsOfRole = "USER" | "ADMIN" | "COORDINATOR";
 
-export type TStudentModal = Omit<Student, DataBaseExtraValues>;
-export type TCoordinatorModal = Omit<Coordinator, DataBaseExtraValues>;
+export type TStudentModal = Omit<Student, TDataBaseExtraValues>;
+export type TCoordinatorModal = Omit<
+  Coordinator,
+  TDataBaseExtraValues | "blocked" | "blockedQuantity"
+>;

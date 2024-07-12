@@ -11,10 +11,10 @@ model Student {
   id                 Int       @id @default(autoincrement())
   email              String    @unique
   username           String
-  password           String?
-  blocked            Boolean
-  blockedQuantity    Int
-  registrationNumber Int       @unique
+  password           String
+  blocked            Boolean?
+  blockedQuantity    Int?
+  registrationNumber String    @unique
   course             Course?
   photo              Photo?
   active             Boolean
@@ -22,7 +22,7 @@ model Student {
   comments           Comment[]
   contact            String    @unique
   replies            Reply[]
-  year               Int
+  year               String
   profile            Profile?
 }
 
@@ -45,8 +45,8 @@ model Coordinator {
   email           String     @unique
   username        String
   password        String
-  blocked         Boolean
-  blockedQuantity Int
+  blocked         Boolean?
+  blockedQuantity Int?
   photo           Photo?
   role            Role       @default(COORDINATOR)
   course          Course?

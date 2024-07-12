@@ -2,7 +2,7 @@ import { TAdminLogin, TAdminModal } from "../@types";
 import { prismaService } from "./prismaService";
 import bcrypt from "bcrypt";
 
-const DEFAULT_SELECT = {
+export const DEFAULT_SELECT = {
   username: true,
   email: true,
   contact: true,
