@@ -18,7 +18,7 @@ export async function authMiddleware(
     const [type, token] = authorization.split(" ");
 
     if (type !== "Bearer") {
-      return handleError(AuthError.typeOfAuthInvalid(), res);
+      return AuthError.typeOfAuthInvalid();
     }
 
     const { id } = jwt.verify(token, process.env.JWT_SECRET_KEY as string) as {

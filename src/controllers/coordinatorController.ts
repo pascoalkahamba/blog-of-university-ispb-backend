@@ -78,4 +78,31 @@ export default class CoordinatorContoller {
       }
     }
   }
+
+  async forgotPassword(req: Request, res: Response) {
+    try {
+      const { email, password: newPassword } = loginCoordinatorSchema.parse(
+        req.body
+      );
+      const newCoordinatorInfo = await coordinatorService.forgotPassword(
+        email,
+        newPassword
+      );
+
+      if (!newCoordinatorInfo) {
+        throw CoordinatorError.emailNotFound();
+      }
+
+      return res.status(StatusCodes.CREATED).json(newCoordinatorInfo);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromError(error);
+        const { details } = validationError;
+        const pathError = details[0].path[0] as TPathError;
+        coordinatorValidator.validator(pathError, res);
+      } else {
+        return handleError(error as BaseError, res);
+      }
+    }
+  }
 }

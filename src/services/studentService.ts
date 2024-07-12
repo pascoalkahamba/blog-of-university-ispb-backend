@@ -71,4 +71,26 @@ export default class StudentService {
 
     return studentInfo;
   }
+
+  async forgotPassword(email: string, newPassword: string) {
+    const hashPassword = await bcrypt.hash(newPassword, 10);
+
+    const student = await prismaService.prisma.student.findFirst({
+      where: { email },
+    });
+
+    if (!student) {
+      return;
+    }
+
+    const passwordUpdated = await prismaService.prisma.student.update({
+      where: { email },
+      data: {
+        password: hashPassword,
+      },
+      select: DEFAULT_SELECT,
+    });
+
+    return passwordUpdated;
+  }
 }

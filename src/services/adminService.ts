@@ -72,7 +72,18 @@ export default class AdminService {
       where: { id },
     });
 
-    if (admin) {
+    const sameEmail = await prismaService.prisma.admin.findFirst({
+      where: { email },
+    });
+    const sameContact = await prismaService.prisma.admin.findFirst({
+      where: { contact },
+    });
+
+    if (sameContact || sameEmail) {
+      return "sameInfo";
+    }
+
+    if (!admin) {
       return;
     }
 

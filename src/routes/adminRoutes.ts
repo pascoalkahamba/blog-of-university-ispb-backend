@@ -11,6 +11,7 @@ adminRoutes.post("/forgotPassword", adminController.forgotPassword);
 
 adminRoutes.use(authMiddleware);
 
+adminRoutes.post("/updateInfo/:id", adminController.updateInfo);
 adminRoutes.delete("/deleteCoordinator", adminController.deleteCoordinator);
 adminRoutes.delete("/deleteStudent", adminController.deleteStudent);
 

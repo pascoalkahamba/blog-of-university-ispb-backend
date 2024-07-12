@@ -62,4 +62,26 @@ export default class CoordinatorService {
 
     return coordinatorInfo;
   }
+
+  async forgotPassword(email: string, newPassword: string) {
+    const hashPassword = await bcrypt.hash(newPassword, 10);
+
+    const coordinator = await prismaService.prisma.coordinator.findFirst({
+      where: { email },
+    });
+
+    if (!coordinator) {
+      return;
+    }
+
+    const passwordUpdated = await prismaService.prisma.coordinator.update({
+      where: { email },
+      data: {
+        password: hashPassword,
+      },
+      select: DEFAULT_SELECT,
+    });
+
+    return passwordUpdated;
+  }
 }

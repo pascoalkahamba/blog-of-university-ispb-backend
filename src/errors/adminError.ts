@@ -18,6 +18,15 @@ export default class AdminError {
   }
 
   static emailNotFound() {
-    return new BaseError("Email não foi encontrado.", StatusCodes.BAD_REQUEST);
+    return new BaseError("Email não foi encontrado.", StatusCodes.NOT_FOUND);
+  }
+  static adminNotFound() {
+    return new BaseError("Admin não foi encontrado.", StatusCodes.NOT_FOUND);
+  }
+  static sameInformation() {
+    return new BaseError(
+      "Email vou contacto são semelhantes.",
+      StatusCodes.CONFLICT
+    );
   }
 }

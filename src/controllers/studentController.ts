@@ -5,11 +5,7 @@ import { TPathError } from "../@types";
 import { BaseError } from "../errors/baseError";
 import StudentValidator from "../validators/studentValidator";
 import { handleError } from "../errors/handleError";
-import {
-  createAdminSchema,
-  createStudentSchema,
-  loginStudentSchema,
-} from "../schemas";
+import { createStudentSchema, loginStudentSchema } from "../schemas";
 import StudentService from "../services/studentService";
 import { StudentError } from "../errors/studantErros";
 import { StatusCodes } from "http-status-codes";
@@ -73,6 +69,33 @@ export default class StudentContoller {
         admin: logged,
         token,
       });
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromError(error);
+        const { details } = validationError;
+        const pathError = details[0].path[0] as TPathError;
+        studentValidator.validator(pathError, res);
+      } else {
+        return handleError(error as BaseError, res);
+      }
+    }
+  }
+
+  async forgotPassword(req: Request, res: Response) {
+    try {
+      const { email, password: newPassword } = loginStudentSchema.parse(
+        req.body
+      );
+      const newStudentInfo = await studentService.forgotPassword(
+        email,
+        newPassword
+      );
+
+      if (!newStudentInfo) {
+        throw StudentError.emailNotFound();
+      }
+
+      return res.status(StatusCodes.CREATED).json(newStudentInfo);
     } catch (error) {
       if (error instanceof ZodError) {
         const validationError = fromError(error);

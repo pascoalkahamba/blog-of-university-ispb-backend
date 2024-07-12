@@ -112,18 +112,48 @@ export default class AdminController {
     }
   }
 
+  async updateInfo(req: Request, res: Response) {
+    try {
+      const { id } = req.params as { id: string };
+      const { email, password, username, contact } = createAdminSchema.parse(
+        req.body
+      );
+
+      const adminUpdated = await adminService.updateInfo(
+        { email, password, username, contact },
+        +id
+      );
+
+      if (!adminUpdated) {
+        throw AdminError.adminNotFound();
+      }
+
+      if (adminUpdated === "sameInfo") {
+        throw AdminError.sameInformation();
+      }
+
+      return res.status(StatusCodes.ACCEPTED).json(adminUpdated);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromError(error);
+        const { details } = validationError;
+        const pathError = details[0].path[0] as TPathError;
+        adminValidator.validator(pathError, res);
+      } else {
+        return handleError(error as BaseError, res);
+      }
+    }
+  }
+
   async deleteCoordinator(req: Request, res: Response) {
     try {
       const { email } = deleteCoordinatorSchema.parse(req.body);
       const coordinatorDeleted = await adminService.deleteCoordinator(email);
-      console.log("coordinator Started");
 
       if (!coordinatorDeleted) {
-        console.log("coordinator not found");
         throw CoordinatorError.emailNotFound();
       }
 
-      console.log("coordinator Deleted");
       return res.status(StatusCodes.ACCEPTED).json(coordinatorDeleted);
     } catch (error) {
       if (error instanceof ZodError) {
