@@ -72,8 +72,7 @@ model Profile {
 
 model Course {
   id            Int          @id @default(autoincrement())
-  username      String
-  password      String
+  name          String
   student       Student?     @relation(fields: [studentId], references: [id])
   studentId     Int?         @unique
   subjects      Subject[]
@@ -103,15 +102,16 @@ model Post {
   id            Int          @id @default(autoincrement())
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
-  title         String
+  title         String       @unique
   content       String
-  views         Int
-  likes         Int
-  unlikes       Int
-  favorite      Boolean
-  published     Boolean      @default(false)
-  admin         Admin        @relation(fields: [adminId], references: [id])
-  adminId       Int
+  picure        Picture?
+  views         Int?
+  likes         Int?
+  unlikes       Int?
+  favorite      Boolean?
+  file          File?
+  admin         Admin?       @relation(fields: [adminId], references: [id])
+  adminId       Int?
   coordinator   Coordinator? @relation(fields: [coordinatorId], references: [id])
   coordinatorId Int?
   departments   Department[]
@@ -166,5 +166,29 @@ model Photo {
   coordinator   Coordinator? @relation(fields: [coordinatorId], references: [id])
   coordinatorId Int?         @unique
   studentId     Int?         @unique
-  url           String
+  mimeType      String
+  size          Int
+  content       Bytes
+}
+
+model Picture {
+  id       Int    @id @default(autoincrement())
+  height   Int    @default(200)
+  width    Int    @default(300)
+  mimeType String
+  size     Int
+  content  Bytes
+  post     Post?  @relation(fields: [postId], references: [id])
+  postId   Int?   @unique
+}
+
+model File {
+  id        Int      @id @default(autoincrement())
+  name      String
+  mimeType  String
+  size      Int
+  content   Bytes
+  post      Post?    @relation(fields: [postId], references: [id])
+  postId    Int?     @unique
+  createdAt DateTime @default(now())
 }

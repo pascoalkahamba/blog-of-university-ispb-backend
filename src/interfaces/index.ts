@@ -1,3 +1,5 @@
+import { TwhoPosted } from "../@types";
+
 export interface PostDataI {
   title: string;
   college: string;
@@ -9,6 +11,14 @@ export interface PostDataI {
   // date: Date | string;
   // image: Buffer | string;
   views: number;
+}
+
+export interface ICreatePost {
+  title: string;
+  content: string;
+  createrPostId: number;
+  whoPosted: TwhoPosted;
+  nameOfDepartment: string;
 }
 
 export interface AdminInfoI {
