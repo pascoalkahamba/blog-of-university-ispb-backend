@@ -66,6 +66,9 @@ const loginCoordinatorSchema = zod.object({
 const deleteCoordinatorSchema = zod.object({
   email: zod.string().email(),
 });
+const deletePostSchema = zod.object({
+  title: zod.string().min(6),
+});
 
 const deleteStudentSchema = zod.object({
   registrationNumber: zod.string().min(2),
@@ -83,4 +86,5 @@ export {
   createPostSchema,
   fileModalSchema,
   pictureModalSchema,
+  deletePostSchema,
 };
