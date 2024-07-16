@@ -18,12 +18,24 @@ export type TPathError =
   | "username"
   | "emailNotFound"
   | "emailAlreadyExist"
-  | "registrationNumber";
+  | "registrationNumber"
+  | "content"
+  | "createrPostId"
+  | "kindOfFile"
+  | "title"
+  | "nameOfDepartment"
+  | "whoPosted"
+  | "mimeType"
+  | "name"
+  | "postId"
+  | "size"
+  | "width"
+  | "height";
 
 export type TAdminModal = Omit<Admin, TDataBaseExtraValues>;
 export type TPictureModal = Omit<Picture, TDataBaseExtraValues>;
 export type TFileModal = Omit<File, TDataBaseExtraValues>;
-export type TCreatePostAdmin = Pick<Post, "title" | "content" | "adminId">;
+export type TCreatePost = Pick<Post, "title" | "content" | "adminId">;
 export type TAdminLogin = Pick<Admin, "email" | "password">;
 export type TCoordinatorLogin = Pick<Coordinator, "email" | "password">;
 export type TStudentLogin = Pick<Student, "email" | "password">;

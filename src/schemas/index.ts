@@ -1,4 +1,5 @@
 import { z as zod } from "zod";
+import { TKindOfFile, TwhoPosted } from "../@types";
 
 const createAdminSchema = zod.object({
   username: zod.string().min(6),
@@ -21,6 +22,32 @@ const createStudentSchema = zod.object({
   registrationNumber: zod.string().min(3),
   email: zod.string().email(),
   contact: zod.string().min(9).max(9),
+});
+
+const createPostSchema = zod.object({
+  title: zod.string().min(6),
+  content: zod.string().min(6),
+  kindOfFile: zod.string().min(4) as zod.ZodType<TKindOfFile>,
+  createrPostId: zod.number(),
+  whoPosted: zod.string().min(6) as zod.ZodType<TwhoPosted>,
+  nameOfDepartment: zod.string().min(6),
+});
+
+const fileModalSchema = zod.object({
+  name: zod.string().min(6),
+  mimeType: zod.string().min(6),
+  size: zod.number(),
+  content: zod.string().min(6) as unknown as zod.ZodType<Buffer>,
+  postId: zod.number(),
+});
+
+const pictureModalSchema = zod.object({
+  content: zod.string().min(6) as unknown as zod.ZodType<Buffer>,
+  mimeType: zod.string().min(6),
+  size: zod.number(),
+  postId: zod.number(),
+  height: zod.number(),
+  width: zod.number(),
 });
 
 const loginAdminSchema = zod.object({
@@ -53,4 +80,7 @@ export {
   loginStudentSchema,
   deleteStudentSchema,
   createStudentSchema,
+  createPostSchema,
+  fileModalSchema,
+  pictureModalSchema,
 };

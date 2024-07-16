@@ -1,5 +1,6 @@
 import { TFileModal, TKindOfFile, TPictureModal } from "../@types";
 import { ICreatePost } from "../interfaces";
+import { mimeTypeFile, mimeTypePhoto } from "../utils";
 import { prismaService } from "./prismaService";
 import fs from "fs";
 
@@ -15,8 +16,6 @@ export default class PostService {
     let fileStats = fs.statSync("");
     let photoStats = fs.statSync("");
 
-    const mimeTypePhoto = "image/jpeg";
-    const mimeTypeFile = "application/pdf";
     const emptyBuffer = fs.readFileSync("");
 
     if (fileModal) {
@@ -86,8 +85,6 @@ export default class PostService {
     let fileStats = fs.statSync("");
     let photoStats = fs.statSync("");
 
-    const mimeTypePhoto = "image/jpeg";
-    const mimeTypeFile = "application/pdf";
     const emptyBuffer = fs.readFileSync("");
 
     if (fileModal) {
