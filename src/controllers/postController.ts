@@ -6,13 +6,12 @@ import { BaseError } from "../errors/baseError";
 import StudentValidator from "../validators/studentValidator";
 import {
   createPostSchema,
-  deletePostSchema,
   fileModalSchema,
   pictureModalSchema,
 } from "../schemas";
 import { handleError } from "../errors/handleError";
 import PostService from "../services/postService";
-import { IPostDataBoby } from "../interfaces";
+import { IPostDataBoby, ParamsId } from "../interfaces";
 import { PostError } from "../errors/postError";
 import { StatusCodes } from "http-status-codes";
 
@@ -87,6 +86,7 @@ export default class PostContorller {
 
   async update(req: Request, res: Response) {
     try {
+      const { id } = req.params as unknown as ParamsId;
       const { fileModal, pictureModal, postData } = req.body as IPostDataBoby;
       const {
         content,
@@ -112,12 +112,13 @@ export default class PostContorller {
         width,
       } = pictureModalSchema.parse(pictureModal);
 
-      const posteUpdated = await postService.createPost(
+      const posteUpdated = await postService.updatePost(
         {
           content,
           createrPostId,
           kindOfFile,
           title,
+          id,
           nameOfDepartment,
           whoPosted,
         },
@@ -152,8 +153,8 @@ export default class PostContorller {
 
   async delete(req: Request, res: Response) {
     try {
-      const { title } = deletePostSchema.parse(req.body);
-      const postedDeleted = await postService.deletePost(title);
+      const { id } = req.params as unknown as ParamsId;
+      const postedDeleted = await postService.deletePost(id);
 
       if (!postedDeleted) {
         throw PostError.postNotFound();

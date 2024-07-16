@@ -97,11 +97,11 @@ export default class PostService {
       photoStats = fs.statSync(pictureModal.mimeType);
     }
 
-    const { createrPostId, content, title, whoPosted, nameOfDepartment } =
+    const { createrPostId, content, title, whoPosted, nameOfDepartment, id } =
       createPost;
 
     const postTitle = await prismaService.prisma.post.findFirst({
-      where: { title },
+      where: { id },
     });
 
     if (!postTitle) {
@@ -144,9 +144,9 @@ export default class PostService {
     return postUpdated;
   }
 
-  async deletePost(title: string) {
+  async deletePost(id: number) {
     const post = await prismaService.prisma.post.findFirst({
-      where: { title },
+      where: { id },
     });
 
     if (!post) {
@@ -154,7 +154,7 @@ export default class PostService {
     }
 
     const postDeleted = await prismaService.prisma.post.delete({
-      where: { id: post.id },
+      where: { id },
     });
 
     return postDeleted;
