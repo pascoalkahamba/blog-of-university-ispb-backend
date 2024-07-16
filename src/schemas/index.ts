@@ -67,7 +67,7 @@ const deleteCoordinatorSchema = zod.object({
   email: zod.string().email(),
 });
 const deletePostSchema = zod.object({
-  title: zod.string().min(6),
+  id: zod.number(),
 });
 
 const deleteStudentSchema = zod.object({

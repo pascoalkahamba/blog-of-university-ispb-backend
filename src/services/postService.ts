@@ -159,4 +159,22 @@ export default class PostService {
 
     return postDeleted;
   }
+
+  async getAllPosts() {
+    const allPosts = await prismaService.prisma.post.findMany();
+
+    return allPosts;
+  }
+
+  async getOnePost(id: number) {
+    const onePost = await prismaService.prisma.post.findFirst({
+      where: { id },
+    });
+
+    if (!onePost) {
+      return;
+    }
+
+    return onePost;
+  }
 }

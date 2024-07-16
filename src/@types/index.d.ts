@@ -29,6 +29,7 @@ export type TPathError =
   | "name"
   | "postId"
   | "size"
+  | "id"
   | "width"
   | "height";
 

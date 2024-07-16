@@ -6,12 +6,13 @@ import { BaseError } from "../errors/baseError";
 import StudentValidator from "../validators/studentValidator";
 import {
   createPostSchema,
+  deletePostSchema,
   fileModalSchema,
   pictureModalSchema,
 } from "../schemas";
 import { handleError } from "../errors/handleError";
 import PostService from "../services/postService";
-import { IPostDataBoby, ParamsId } from "../interfaces";
+import { IPostDataBoby } from "../interfaces";
 import { PostError } from "../errors/postError";
 import { StatusCodes } from "http-status-codes";
 
@@ -86,7 +87,7 @@ export default class PostContorller {
 
   async update(req: Request, res: Response) {
     try {
-      const { id } = req.params as unknown as ParamsId;
+      const { id } = deletePostSchema.parse(+req.params);
       const { fileModal, pictureModal, postData } = req.body as IPostDataBoby;
       const {
         content,
@@ -153,12 +154,44 @@ export default class PostContorller {
 
   async delete(req: Request, res: Response) {
     try {
-      const { id } = req.params as unknown as ParamsId;
-      const postedDeleted = await postService.deletePost(id);
+      const { id } = deletePostSchema.parse(req.params);
+      const postedDeleted = await postService.deletePost(+id);
 
       if (!postedDeleted) {
         throw PostError.postNotFound();
       }
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromError(error);
+        const { details } = validationError;
+        const pathError = details[0].path[0] as TPathError;
+        postValidator.validator(pathError, res);
+      } else {
+        return handleError(error as BaseError, res);
+      }
+    }
+  }
+
+  async getAllPosts(req: Request, res: Response) {
+    try {
+      const allPosts = await postService.getAllPosts();
+
+      return res.status(StatusCodes.OK).json(allPosts);
+    } catch (error) {
+      return handleError(error as BaseError, res);
+    }
+  }
+
+  async getOnePost(req: Request, res: Response) {
+    try {
+      const { id } = deletePostSchema.parse(req.params);
+      const post = await postService.getOnePost(+id);
+
+      if (!post) {
+        throw PostError.postNotFound();
+      }
+
+      return res.status(StatusCodes.OK).json(post);
     } catch (error) {
       if (error instanceof ZodError) {
         const validationError = fromError(error);

@@ -70,5 +70,8 @@ export default class PostValidator {
         res
       );
     }
+    if (pathError === "id") {
+      return handleError(PostError.invalidInfo("Post não encontrado."), res);
+    }
   }
 }
