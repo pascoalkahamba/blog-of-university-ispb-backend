@@ -1,33 +1,12 @@
-import { TFileModal, TKindOfFile, TPictureModal } from "../@types";
+import { TPictureModal } from "../@types";
 import { ICreatePost } from "../interfaces";
-import { mimeTypeFile, mimeTypePhoto } from "../utils";
 import { prismaService } from "./prismaService";
-import fs from "fs";
 
 export default class PostService {
   async createPost(
     createPost: ICreatePost,
-    fileModal: TFileModal | undefined,
-    pictureModal: TPictureModal | undefined,
-    kindOfFile: TKindOfFile
+    pictureModal: TPictureModal | undefined
   ) {
-    let fileContent = fs.readFileSync("");
-    let photoContent = fs.readFileSync("");
-    let fileStats = fs.statSync("");
-    let photoStats = fs.statSync("");
-
-    const emptyBuffer = fs.readFileSync("");
-
-    if (fileModal) {
-      fileContent = fs.readFileSync(fileModal.content);
-      fileStats = fs.statSync(fileModal.mimeType);
-    }
-
-    if (pictureModal) {
-      photoContent = fs.readFileSync(pictureModal.content);
-      photoStats = fs.statSync(pictureModal.mimeType);
-    }
-
     const { createrPostId, content, title, whoPosted, nameOfDepartment } =
       createPost;
 
@@ -47,20 +26,10 @@ export default class PostService {
         coordinatorId: whoPosted === "coordinator" ? createrPostId : null,
         picure: {
           create: {
-            content: kindOfFile === "photo" ? photoContent : emptyBuffer,
-            mimeType: kindOfFile === "photo" ? mimeTypePhoto : "",
-            size: kindOfFile === "photo" ? photoStats.size : 0,
-            height:
-              kindOfFile === "photo" ? (pictureModal?.height as number) : 0,
-            width: kindOfFile === "photo" ? (pictureModal?.width as number) : 0,
-          },
-        },
-        file: {
-          create: {
-            content: kindOfFile === "file" ? fileContent : emptyBuffer,
-            mimeType: kindOfFile === "file" ? mimeTypeFile : "",
-            size: kindOfFile === "file" ? fileStats.size : 0,
-            name: fileModal?.name as string,
+            url: pictureModal ? pictureModal.url : "",
+            name: pictureModal ? pictureModal.name : "",
+            adminId: pictureModal ? pictureModal.adminId : null,
+            coordinatorId: pictureModal ? pictureModal.coordinatorId : null,
           },
         },
         departments: {
@@ -76,27 +45,8 @@ export default class PostService {
 
   async updatePost(
     createPost: ICreatePost,
-    fileModal: TFileModal | undefined,
-    pictureModal: TPictureModal | undefined,
-    kindOfFile: TKindOfFile
+    pictureModal: TPictureModal | undefined
   ) {
-    let fileContent = fs.readFileSync("");
-    let photoContent = fs.readFileSync("");
-    let fileStats = fs.statSync("");
-    let photoStats = fs.statSync("");
-
-    const emptyBuffer = fs.readFileSync("");
-
-    if (fileModal) {
-      fileContent = fs.readFileSync(fileModal.content);
-      fileStats = fs.statSync(fileModal.mimeType);
-    }
-
-    if (pictureModal) {
-      photoContent = fs.readFileSync(pictureModal.content);
-      photoStats = fs.statSync(pictureModal.mimeType);
-    }
-
     const { createrPostId, content, title, whoPosted, nameOfDepartment, id } =
       createPost;
 
@@ -117,20 +67,10 @@ export default class PostService {
         coordinatorId: whoPosted === "coordinator" ? createrPostId : null,
         picure: {
           create: {
-            content: kindOfFile === "photo" ? photoContent : emptyBuffer,
-            mimeType: kindOfFile === "photo" ? mimeTypePhoto : "",
-            size: kindOfFile === "photo" ? photoStats.size : 0,
-            height:
-              kindOfFile === "photo" ? (pictureModal?.height as number) : 0,
-            width: kindOfFile === "photo" ? (pictureModal?.width as number) : 0,
-          },
-        },
-        file: {
-          create: {
-            content: kindOfFile === "file" ? fileContent : emptyBuffer,
-            mimeType: kindOfFile === "file" ? mimeTypeFile : "",
-            size: kindOfFile === "file" ? fileStats.size : 0,
-            name: fileModal?.name as string,
+            url: pictureModal ? pictureModal.url : "",
+            name: pictureModal ? pictureModal.name : "",
+            adminId: pictureModal ? pictureModal.adminId : null,
+            coordinatorId: pictureModal ? pictureModal.coordinatorId : null,
           },
         },
         departments: {

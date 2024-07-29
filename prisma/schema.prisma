@@ -16,7 +16,7 @@ model Student {
   blockedQuantity    Int?
   registrationNumber String    @unique
   course             Course?
-  photo              Photo?
+  photo              Picture?
   active             Boolean
   role               Role      @default(USER)
   comments           Comment[]
@@ -31,7 +31,7 @@ model Admin {
   email    String    @unique
   username String
   password String
-  photo    Photo?
+  photo    Picture?
   role     Role      @default(ADMIN)
   comments Comment[]
   posts    Post[]
@@ -47,7 +47,7 @@ model Coordinator {
   password        String
   blocked         Boolean?
   blockedQuantity Int?
-  photo           Photo?
+  photo           Picture?
   role            Role       @default(COORDINATOR)
   course          Course?
   comments        Comment[]
@@ -109,7 +109,6 @@ model Post {
   likes         Int?
   unlikes       Int?
   favorite      Boolean?
-  file          File?
   admin         Admin?       @relation(fields: [adminId], references: [id])
   adminId       Int?
   coordinator   Coordinator? @relation(fields: [coordinatorId], references: [id])
@@ -137,6 +136,8 @@ model Department {
   id           Int           @id @default(autoincrement())
   name         String
   posts        Post[]
+  files        File[]
+  photos        Picture[]
   courses      Course[]
   coordinators Coordinator[]
 }
@@ -155,40 +156,27 @@ enum Role {
   COORDINATOR
 }
 
-model Photo {
-  id            Int          @id @default(autoincrement())
-  height        Int          @default(200)
-  width         Int          @default(100)
-  student       Student?     @relation(fields: [studentId], references: [id])
-  admin         Admin?       @relation(fields: [adminId], references: [id])
-  adminId       Int?         @unique
-  type          String
-  coordinator   Coordinator? @relation(fields: [coordinatorId], references: [id])
-  coordinatorId Int?         @unique
-  studentId     Int?         @unique
-  mimeType      String
-  size          Int
-  content       Bytes
-}
-
 model Picture {
-  id       Int    @id @default(autoincrement())
-  height   Int    @default(200)
-  width    Int    @default(300)
-  mimeType String
-  size     Int
-  content  Bytes
-  post     Post?  @relation(fields: [postId], references: [id])
-  postId   Int?   @unique
+  id          Int          @id @default(autoincrement())
+  url         String
+  name        String
+  post        Post?        @relation(fields: [postId], references: [id])
+  department        Department?        @relation(fields: [departmentId], references: [id])
+  student     Student?     @relation(fields: [studentId], references: [id])
+  admin       Admin?       @relation(fields: [adminId], references: [id])
+  coordinator Coordinator? @relation(fields: [coordinatorId], references: [id])
+  adminId     Int?         @unique
+  coordinatorId Int? @unique
+  studentId     Int? @unique
+  postId Int? @unique
+  departmentId Int? @unique
 }
 
 model File {
-  id        Int      @id @default(autoincrement())
-  name      String
-  mimeType  String
-  size      Int
-  content   Bytes
-  post      Post?    @relation(fields: [postId], references: [id])
-  postId    Int?     @unique
+  id           Int         @id @default(autoincrement())
+  name         String
+  department   Department? @relation(fields: [departmentId], references: [id])
+  departmentId Int?
+  url       String
   createdAt DateTime @default(now())
 }

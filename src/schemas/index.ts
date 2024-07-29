@@ -8,6 +8,20 @@ const createAdminSchema = zod.object({
   contact: zod.string().min(9).max(9),
 });
 
+const envSchema = zod.object({
+  MONGODBCONNECTION: zod.string(),
+  PORT: zod.number(),
+  DATABASE_URL: zod.string().url(),
+  apiKey: zod.string().min(5),
+  authDomain: zod.string().min(5).url(),
+  projectId: zod.string().min(5),
+  storageBucket: zod.string().min(5).url(),
+  messagingSenderId: zod.string().min(5),
+  appId: zod.string().min(5),
+  measurementId: zod.string().min(5),
+  JWT_SECRET_KEY: zod.string(),
+});
+
 const createCoordinatorSchema = zod.object({
   username: zod.string().min(6),
   password: zod.string().min(6),
@@ -81,6 +95,7 @@ export {
   createCoordinatorSchema,
   loginCoordinatorSchema,
   loginStudentSchema,
+  envSchema,
   deleteStudentSchema,
   createStudentSchema,
   createPostSchema,
