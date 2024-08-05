@@ -1,16 +1,26 @@
-import { TFileModal, TKindOfFile, TPictureModal, TwhoPosted } from "../@types";
+import { TwhoPosted } from "../@types";
 
 export interface IPostDataBoby {
-  postData: ICreatePost;
-  fileModal: TFileModal;
-  pictureModal: TPictureModal;
+  title: string;
+  content: string;
+  nameOfDepartment: string;
+  whoPosted: TwhoPosted;
+}
+// export interface IPostDataBoby {
+//   postData: ICreatePost;
+//   fileModal: TFileModal;
+//   pictureModal: IPictureModal;
+// }
+
+export interface IPictureModal {
+  name: string;
+  url: string;
 }
 
 export interface ICreatePost {
   id?: number;
   title: string;
   content: string;
-  kindOfFile: TKindOfFile;
   createrPostId: number;
   whoPosted: TwhoPosted;
   nameOfDepartment: string;

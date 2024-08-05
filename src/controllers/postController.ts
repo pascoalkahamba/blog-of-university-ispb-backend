@@ -3,81 +3,93 @@ import { ZodError } from "zod";
 import { fromError } from "zod-validation-error";
 import { TPathError } from "../@types";
 import { BaseError } from "../errors/baseError";
-import StudentValidator from "../validators/studentValidator";
-import {
-  createPostSchema,
-  deletePostSchema,
-  fileModalSchema,
-  pictureModalSchema,
-} from "../schemas";
+import { createPostSchema, deletePostSchema } from "../schemas";
 import { handleError } from "../errors/handleError";
 import PostService from "../services/postService";
 import { IPostDataBoby } from "../interfaces";
 import { PostError } from "../errors/postError";
 import { StatusCodes } from "http-status-codes";
+import { storage } from "../config/firebaseConfig";
+import multer from "multer";
+import { MulterErrors } from "../errors/multerError";
+import PostValidator from "../validators/postValidator";
+import { FirebaseErrors } from "../errors/firebaseError";
+import {
+  ref,
+  StorageError,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
 
-const postValidator = new StudentValidator();
+const postValidator = new PostValidator();
 const postService = new PostService();
 
 export default class PostContorller {
   async create(req: Request, res: Response) {
     try {
-      const { fileModal, pictureModal, postData } = req.body as IPostDataBoby;
-      const {
-        content,
-        createrPostId,
-        kindOfFile,
-        nameOfDepartment,
-        title,
-        whoPosted,
-      } = createPostSchema.parse(postData);
-      const {
-        content: fileContent,
-        mimeType,
-        name,
-        postId,
-        size,
-      } = fileModalSchema.parse(fileModal);
-      const {
-        content: pictureContent,
-        height,
-        mimeType: mimeTypePicture,
-        postId: postIdPiture,
-        size: sizePicture,
-        width,
-      } = pictureModalSchema.parse(pictureModal);
+      const postData = req.body as IPostDataBoby;
+      const file = req.file;
+      console.log("upload file", file);
+      console.log("postData", postData);
+      console.log("title", postData.title);
+      console.log("content", postData.content);
+      const createrId = req.id;
+      let fileUrl = "";
+      const { content, nameOfDepartment, title, whoPosted } =
+        createPostSchema.parse(postData);
+      console.log("pascoal zod");
+
+      if (file) {
+        const storageRef = ref(
+          storage,
+          `pictures/${Date.now()}-${file.originalname}`
+        );
+        const metadata = {
+          contentType: file.mimetype,
+        };
+        console.log("storageRef", storageRef);
+
+        const snapshot = await uploadBytesResumable(
+          storageRef,
+          file.buffer,
+          metadata
+        );
+        console.log("snapshot", snapshot);
+        fileUrl = await getDownloadURL(snapshot.ref);
+        console.log("fileUrl", fileUrl);
+      }
 
       const posted = await postService.createPost(
         {
           content,
-          createrPostId,
-          kindOfFile,
+          createrPostId: createrId,
           title,
           nameOfDepartment,
           whoPosted,
         },
-        { content: fileContent, mimeType, name, postId, size },
         {
-          content: pictureContent,
-          height,
-          mimeType: mimeTypePicture,
-          postId: postIdPiture,
-          size: sizePicture,
-          width,
-        },
-        postData.kindOfFile
+          name: file?.originalname ?? "Nome_default",
+          url: fileUrl,
+        }
       );
 
       if (!posted) {
         throw PostError.titleOfPostAlreadyExist();
       }
-
+      console.log("upload feito");
       return res.status(StatusCodes.CREATED).json(posted);
     } catch (error) {
-      if (error instanceof ZodError) {
+      if (error instanceof multer.MulterError) {
+        console.log("multer error", error);
+        return MulterErrors.multerErrorFile();
+      } else if (error instanceof StorageError) {
+        console.log("Storage Error", error);
+        return FirebaseErrors.firebaseErrorUpload();
+      } else if (error instanceof ZodError) {
         const validationError = fromError(error);
         const { details } = validationError;
         const pathError = details[0].path[0] as TPathError;
+        console.log("error zod", pathError);
         postValidator.validator(pathError, res);
       } else {
         return handleError(error as BaseError, res);
@@ -88,51 +100,43 @@ export default class PostContorller {
   async update(req: Request, res: Response) {
     try {
       const { id } = deletePostSchema.parse(+req.params);
-      const { fileModal, pictureModal, postData } = req.body as IPostDataBoby;
-      const {
-        content,
-        createrPostId,
-        kindOfFile,
-        nameOfDepartment,
-        title,
-        whoPosted,
-      } = createPostSchema.parse(postData);
-      const {
-        content: fileContent,
-        mimeType,
-        name,
-        postId,
-        size,
-      } = fileModalSchema.parse(fileModal);
-      const {
-        content: pictureContent,
-        height,
-        mimeType: mimeTypePicture,
-        postId: postIdPiture,
-        size: sizePicture,
-        width,
-      } = pictureModalSchema.parse(pictureModal);
+      const postData = req.body as IPostDataBoby;
+      const file = req.file;
+      const createrId = req.id;
+      let fileUrl = "";
+      const { content, nameOfDepartment, title, whoPosted } =
+        createPostSchema.parse(postData);
+      if (file) {
+        const storageRef = ref(
+          storage,
+          `pictures/${Date.now()}-${file.originalname}`
+        );
+        const metadata = {
+          contentType: file.mimetype,
+        };
+
+        const uploadFile = await uploadBytesResumable(
+          storageRef,
+          file.buffer,
+          metadata
+        );
+
+        fileUrl = await getDownloadURL(uploadFile.ref);
+      }
 
       const posteUpdated = await postService.updatePost(
         {
           content,
-          createrPostId,
-          kindOfFile,
+          createrPostId: createrId,
           title,
           id,
           nameOfDepartment,
           whoPosted,
         },
-        { content: fileContent, mimeType, name, postId, size },
         {
-          content: pictureContent,
-          height,
-          mimeType: mimeTypePicture,
-          postId: postIdPiture,
-          size: sizePicture,
-          width,
-        },
-        postData.kindOfFile
+          name: file?.originalname ?? "Default_name",
+          url: fileUrl,
+        }
       );
 
       if (!posteUpdated) {

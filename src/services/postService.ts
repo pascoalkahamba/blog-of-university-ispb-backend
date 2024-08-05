@@ -1,11 +1,10 @@
-import { TPictureModal } from "../@types";
-import { ICreatePost } from "../interfaces";
+import { ICreatePost, IPictureModal } from "../interfaces";
 import { prismaService } from "./prismaService";
 
 export default class PostService {
   async createPost(
     createPost: ICreatePost,
-    pictureModal: TPictureModal | undefined
+    pictureModal: IPictureModal | undefined
   ) {
     const { createrPostId, content, title, whoPosted, nameOfDepartment } =
       createPost;
@@ -28,8 +27,8 @@ export default class PostService {
           create: {
             url: pictureModal ? pictureModal.url : "",
             name: pictureModal ? pictureModal.name : "",
-            adminId: pictureModal ? pictureModal.adminId : null,
-            coordinatorId: pictureModal ? pictureModal.coordinatorId : null,
+            adminId: whoPosted === "admin" ? createrPostId : null,
+            coordinatorId: whoPosted === "coordinator" ? createrPostId : null,
           },
         },
         departments: {
@@ -38,6 +37,18 @@ export default class PostService {
           },
         },
       },
+      select: {
+        title: true,
+        content: true,
+        favorite: true,
+        views: true,
+        createdAt: true,
+        updatedAt: true,
+        adminId: true,
+        coordinatorId: true,
+        picure: true,
+        departments: true,
+      },
     });
 
     return post;
@@ -45,7 +56,7 @@ export default class PostService {
 
   async updatePost(
     createPost: ICreatePost,
-    pictureModal: TPictureModal | undefined
+    pictureModal: IPictureModal | undefined
   ) {
     const { createrPostId, content, title, whoPosted, nameOfDepartment, id } =
       createPost;
@@ -69,8 +80,8 @@ export default class PostService {
           create: {
             url: pictureModal ? pictureModal.url : "",
             name: pictureModal ? pictureModal.name : "",
-            adminId: pictureModal ? pictureModal.adminId : null,
-            coordinatorId: pictureModal ? pictureModal.coordinatorId : null,
+            adminId: whoPosted === "admin" ? createrPostId : null,
+            coordinatorId: whoPosted === "coordinator" ? createrPostId : null,
           },
         },
         departments: {
@@ -78,6 +89,18 @@ export default class PostService {
             name: nameOfDepartment,
           },
         },
+      },
+      select: {
+        title: true,
+        content: true,
+        favorite: true,
+        views: true,
+        createdAt: true,
+        updatedAt: true,
+        adminId: true,
+        coordinatorId: true,
+        picure: true,
+        departments: true,
       },
     });
 

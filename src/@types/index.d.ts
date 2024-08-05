@@ -1,11 +1,4 @@
-import {
-  Admin,
-  Student,
-  Coordinator,
-  Post,
-  File,
-  Picture,
-} from "@prisma/client";
+import { Admin, Student, Coordinator, Post, File } from "@prisma/client";
 
 export type TDataBaseExtraValues = "createdAt" | "updatedAt" | "id" | "role";
 export type TJsonWebTokenError = "jwt malformed" | "jwt must be provided";
@@ -34,7 +27,6 @@ export type TPathError =
   | "height";
 
 export type TAdminModal = Omit<Admin, TDataBaseExtraValues>;
-export type TPictureModal = Omit<Picture, TDataBaseExtraValues>;
 export type TFileModal = Omit<File, TDataBaseExtraValues>;
 export type TCreatePost = Pick<Post, "title" | "content" | "adminId">;
 export type TAdminLogin = Pick<Admin, "email" | "password">;

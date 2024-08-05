@@ -1,13 +1,13 @@
-import multer from "multer";
+import multer, { FileFilterCallback } from "multer";
 
 const storage = multer.memoryStorage(); // Armazena o arquivo na memória
 
 const upload = multer({
   storage,
   limits: {
-    fileSize: 10 * 1024 * 1024, // Limite de 10MB
+    fileSize: 5 * 1024 * 1024, // Limite de 10MB
   },
-  fileFilter: (req, file, cb) => {
+  fileFilter: (req, file, cb: FileFilterCallback) => {
     if (
       file.mimetype.startsWith("image/") ||
       file.mimetype === "application/pdf" ||
@@ -20,8 +20,7 @@ const upload = multer({
       cb(
         new Error(
           "Invalid file type! Please upload an image or a document (PDF, DOC, DOCX)."
-        ),
-        false
+        )
       );
     }
   },

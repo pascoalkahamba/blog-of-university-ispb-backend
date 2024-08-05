@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import { adminRoutes } from "./routes/adminRoutes";
 import { coordinatorRoutes } from "./routes/coordinatorRoutes";
 import { studentRoutes } from "./routes/studentRoutes";
+import { postRoutes } from "./routes/postRoutes";
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(cors());
 app.use("/admin", adminRoutes);
 app.use("/coordinator", coordinatorRoutes);
 app.use("/student", studentRoutes);
+app.use("/post", postRoutes);
 app.use(bodyParser.json());
 
 app.listen(port, () => {
