@@ -33,7 +33,6 @@ export default class PostContorller {
       const { content, nameOfDepartment, title, whoPosted } =
         createPostSchema.parse(postData);
 
-      console.log("criador id", createrId);
       if (file) {
         const storageRef = ref(
           storage,
