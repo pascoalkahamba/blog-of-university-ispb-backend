@@ -16,7 +16,6 @@ model Student {
   blockedQuantity    Int?
   registrationNumber String    @unique
   course             Course?
-  photo              Picture?
   active             Boolean
   role               Role      @default(USER)
   comments           Comment[]
@@ -31,7 +30,6 @@ model Admin {
   email    String    @unique
   username String
   password String
-  photo    Picture?
   role     Role      @default(ADMIN)
   comments Comment[]
   posts    Post[]
@@ -47,7 +45,6 @@ model Coordinator {
   password        String
   blocked         Boolean?
   blockedQuantity Int?
-  photo           Picture?
   role            Role       @default(COORDINATOR)
   course          Course?
   comments        Comment[]
@@ -62,6 +59,7 @@ model Coordinator {
 model Profile {
   id            Int          @id @default(autoincrement())
   bio           String
+  photo         Picture?
   student       Student?     @relation(fields: [studentId], references: [id])
   studentId     Int?         @unique
   admin         Admin?       @relation(fields: [adminId], references: [id])
@@ -104,7 +102,7 @@ model Post {
   updatedAt     DateTime     @updatedAt
   title         String       @unique
   content       String
-  picure        Picture?
+  picture       Picture?
   views         Int?
   likes         Int?
   unlikes       Int?
@@ -137,7 +135,7 @@ model Department {
   name         String
   posts        Post[]
   files        File[]
-  photos        Picture[]
+  photos       Picture[]
   courses      Course[]
   coordinators Coordinator[]
 }
@@ -157,19 +155,17 @@ enum Role {
 }
 
 model Picture {
-  id          Int          @id @default(autoincrement())
-  url         String
-  name        String
-  post        Post?        @relation(fields: [postId], references: [id])
-  department        Department?        @relation(fields: [departmentId], references: [id])
-  student     Student?     @relation(fields: [studentId], references: [id])
-  admin       Admin?       @relation(fields: [adminId], references: [id])
-  coordinator Coordinator? @relation(fields: [coordinatorId], references: [id])
-  adminId     Int?         @unique
-  coordinatorId Int? @unique
-  studentId     Int? @unique
-  postId Int? @unique
-  departmentId Int? @unique
+  id            Int         @id @default(autoincrement())
+  url           String      @db.LongText
+  name          String
+  post          Post?       @relation(fields: [postId], references: [id])
+  department    Department? @relation(fields: [departmentId], references: [id])
+  profile       Profile?    @relation(fields: [profileId], references: [id])
+  profileId     Int?        @unique
+  coordinatorId Int?        @unique
+  studentId     Int?        @unique
+  postId        Int?        @unique
+  departmentId  Int?        @unique
 }
 
 model File {
@@ -177,6 +173,6 @@ model File {
   name         String
   department   Department? @relation(fields: [departmentId], references: [id])
   departmentId Int?
-  url       String
-  createdAt DateTime @default(now())
+  url          String
+  createdAt    DateTime    @default(now())
 }

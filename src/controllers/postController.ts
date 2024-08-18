@@ -3,7 +3,7 @@ import { ZodError } from "zod";
 import { fromError } from "zod-validation-error";
 import { TPathError } from "../@types";
 import { BaseError } from "../errors/baseError";
-import { createPostSchema, deletePostSchema } from "../schemas";
+import { createPostSchema } from "../schemas";
 import { handleError } from "../errors/handleError";
 import PostService from "../services/postService";
 import { IPostDataBoby } from "../interfaces";
@@ -20,7 +20,6 @@ import {
   uploadBytesResumable,
   getDownloadURL,
 } from "firebase/storage";
-
 const postValidator = new PostValidator();
 const postService = new PostService();
 
@@ -29,16 +28,12 @@ export default class PostContorller {
     try {
       const postData = req.body as IPostDataBoby;
       const file = req.file;
-      console.log("upload file", file);
-      console.log("postData", postData);
-      console.log("title", postData.title);
-      console.log("content", postData.content);
       const createrId = req.id;
       let fileUrl = "";
       const { content, nameOfDepartment, title, whoPosted } =
         createPostSchema.parse(postData);
-      console.log("pascoal zod");
 
+      console.log("criador id", createrId);
       if (file) {
         const storageRef = ref(
           storage,
@@ -47,18 +42,16 @@ export default class PostContorller {
         const metadata = {
           contentType: file.mimetype,
         };
-        console.log("storageRef", storageRef);
 
         const snapshot = await uploadBytesResumable(
           storageRef,
           file.buffer,
           metadata
         );
-        console.log("snapshot", snapshot);
         fileUrl = await getDownloadURL(snapshot.ref);
-        console.log("fileUrl", fileUrl);
       }
 
+      console.log("createrId", createrId);
       const posted = await postService.createPost(
         {
           content,
@@ -72,26 +65,23 @@ export default class PostContorller {
           url: fileUrl,
         }
       );
-
       if (!posted) {
         throw PostError.titleOfPostAlreadyExist();
       }
-      console.log("upload feito");
+
       return res.status(StatusCodes.CREATED).json(posted);
     } catch (error) {
       if (error instanceof multer.MulterError) {
-        console.log("multer error", error);
         return MulterErrors.multerErrorFile();
       } else if (error instanceof StorageError) {
-        console.log("Storage Error", error);
         return FirebaseErrors.firebaseErrorUpload();
       } else if (error instanceof ZodError) {
         const validationError = fromError(error);
         const { details } = validationError;
         const pathError = details[0].path[0] as TPathError;
-        console.log("error zod", pathError);
         postValidator.validator(pathError, res);
       } else {
+        console.log("error", error);
         return handleError(error as BaseError, res);
       }
     }
@@ -99,7 +89,7 @@ export default class PostContorller {
 
   async update(req: Request, res: Response) {
     try {
-      const { id } = deletePostSchema.parse(+req.params);
+      const { id } = req.params as unknown as { id: number };
       const postData = req.body as IPostDataBoby;
       const file = req.file;
       const createrId = req.id;
@@ -158,12 +148,13 @@ export default class PostContorller {
 
   async delete(req: Request, res: Response) {
     try {
-      const { id } = deletePostSchema.parse(req.params);
+      const { id } = req.params as unknown as { id: number };
       const postedDeleted = await postService.deletePost(+id);
-
       if (!postedDeleted) {
         throw PostError.postNotFound();
       }
+
+      return res.status(StatusCodes.ACCEPTED).json(postedDeleted);
     } catch (error) {
       if (error instanceof ZodError) {
         const validationError = fromError(error);
@@ -179,7 +170,6 @@ export default class PostContorller {
   async getAllPosts(req: Request, res: Response) {
     try {
       const allPosts = await postService.getAllPosts();
-
       return res.status(StatusCodes.OK).json(allPosts);
     } catch (error) {
       return handleError(error as BaseError, res);
@@ -188,7 +178,7 @@ export default class PostContorller {
 
   async getOnePost(req: Request, res: Response) {
     try {
-      const { id } = deletePostSchema.parse(req.params);
+      const { id } = req.params as unknown as { id: number };
       const post = await postService.getOnePost(+id);
 
       if (!post) {

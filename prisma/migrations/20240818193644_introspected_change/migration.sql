@@ -2,12 +2,15 @@
 CREATE TABLE `Student` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `email` VARCHAR(191) NOT NULL,
-    `name` VARCHAR(191) NULL,
-    `registrationNumber` INTEGER NOT NULL,
+    `username` VARCHAR(191) NOT NULL,
+    `password` VARCHAR(191) NOT NULL,
+    `blocked` BOOLEAN NULL,
+    `blockedQuantity` INTEGER NULL,
+    `registrationNumber` VARCHAR(191) NOT NULL,
     `active` BOOLEAN NOT NULL,
     `role` ENUM('USER', 'ADMIN', 'COORDINATOR') NOT NULL DEFAULT 'USER',
-    `contact` INTEGER NOT NULL,
-    `year` INTEGER NOT NULL,
+    `contact` VARCHAR(191) NOT NULL,
+    `year` VARCHAR(191) NOT NULL,
 
     UNIQUE INDEX `Student_email_key`(`email`),
     UNIQUE INDEX `Student_registrationNumber_key`(`registrationNumber`),
@@ -16,15 +19,16 @@ CREATE TABLE `Student` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Adm` (
+CREATE TABLE `Admin` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `email` VARCHAR(191) NOT NULL,
-    `name` VARCHAR(191) NULL,
+    `username` VARCHAR(191) NOT NULL,
+    `password` VARCHAR(191) NOT NULL,
     `role` ENUM('USER', 'ADMIN', 'COORDINATOR') NOT NULL DEFAULT 'ADMIN',
-    `contact` INTEGER NOT NULL,
+    `contact` VARCHAR(191) NOT NULL,
 
-    UNIQUE INDEX `Adm_email_key`(`email`),
-    UNIQUE INDEX `Adm_contact_key`(`contact`),
+    UNIQUE INDEX `Admin_email_key`(`email`),
+    UNIQUE INDEX `Admin_contact_key`(`contact`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -32,9 +36,12 @@ CREATE TABLE `Adm` (
 CREATE TABLE `Coordinator` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `email` VARCHAR(191) NOT NULL,
-    `name` VARCHAR(191) NULL,
+    `username` VARCHAR(191) NOT NULL,
+    `password` VARCHAR(191) NOT NULL,
+    `blocked` BOOLEAN NULL,
+    `blockedQuantity` INTEGER NULL,
     `role` ENUM('USER', 'ADMIN', 'COORDINATOR') NOT NULL DEFAULT 'COORDINATOR',
-    `contact` INTEGER NOT NULL,
+    `contact` VARCHAR(191) NOT NULL,
     `departmentId` INTEGER NOT NULL,
 
     UNIQUE INDEX `Coordinator_email_key`(`email`),
@@ -47,11 +54,11 @@ CREATE TABLE `Profile` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `bio` VARCHAR(191) NOT NULL,
     `studentId` INTEGER NULL,
-    `admId` INTEGER NULL,
+    `adminId` INTEGER NULL,
     `coordinatorId` INTEGER NULL,
 
     UNIQUE INDEX `Profile_studentId_key`(`studentId`),
-    UNIQUE INDEX `Profile_admId_key`(`admId`),
+    UNIQUE INDEX `Profile_adminId_key`(`adminId`),
     UNIQUE INDEX `Profile_coordinatorId_key`(`coordinatorId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -74,10 +81,12 @@ CREATE TABLE `Comment` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
-    `title` VARCHAR(191) NOT NULL,
+    `content` VARCHAR(191) NOT NULL,
+    `likes` INTEGER NOT NULL,
+    `unlikes` INTEGER NOT NULL,
     `published` BOOLEAN NOT NULL DEFAULT false,
     `studentId` INTEGER NULL,
-    `admId` INTEGER NULL,
+    `adminId` INTEGER NULL,
     `coordinatorId` INTEGER NULL,
 
     PRIMARY KEY (`id`)
@@ -89,10 +98,15 @@ CREATE TABLE `Post` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `title` VARCHAR(191) NOT NULL,
-    `published` BOOLEAN NOT NULL DEFAULT false,
-    `admId` INTEGER NOT NULL,
+    `content` VARCHAR(191) NOT NULL,
+    `views` INTEGER NULL,
+    `likes` INTEGER NULL,
+    `unlikes` INTEGER NULL,
+    `favorite` BOOLEAN NULL,
+    `adminId` INTEGER NULL,
     `coordinatorId` INTEGER NULL,
 
+    UNIQUE INDEX `Post_title_key`(`title`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -101,10 +115,12 @@ CREATE TABLE `Reply` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
-    `title` VARCHAR(191) NOT NULL,
+    `content` VARCHAR(191) NOT NULL,
+    `likes` INTEGER NOT NULL,
+    `unlikes` INTEGER NOT NULL,
     `published` BOOLEAN NOT NULL DEFAULT false,
     `studentId` INTEGER NULL,
-    `admId` INTEGER NULL,
+    `adminId` INTEGER NULL,
     `coordinatorId` INTEGER NULL,
 
     PRIMARY KEY (`id`)
@@ -121,26 +137,40 @@ CREATE TABLE `Department` (
 -- CreateTable
 CREATE TABLE `Subject` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(191) NOT NULL,
+    `username` VARCHAR(191) NOT NULL,
+    `password` VARCHAR(191) NOT NULL,
     `years` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Photo` (
+CREATE TABLE `Picture` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `height` INTEGER NOT NULL DEFAULT 200,
-    `width` INTEGER NOT NULL DEFAULT 100,
-    `admId` INTEGER NULL,
-    `type` VARCHAR(191) NOT NULL,
+    `url` LONGTEXT NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `profileId` INTEGER NULL,
     `coordinatorId` INTEGER NULL,
     `studentId` INTEGER NULL,
-    `url` VARCHAR(191) NOT NULL,
+    `postId` INTEGER NULL,
+    `departmentId` INTEGER NULL,
 
-    UNIQUE INDEX `Photo_admId_key`(`admId`),
-    UNIQUE INDEX `Photo_coordinatorId_key`(`coordinatorId`),
-    UNIQUE INDEX `Photo_studentId_key`(`studentId`),
+    UNIQUE INDEX `Picture_profileId_key`(`profileId`),
+    UNIQUE INDEX `Picture_coordinatorId_key`(`coordinatorId`),
+    UNIQUE INDEX `Picture_studentId_key`(`studentId`),
+    UNIQUE INDEX `Picture_postId_key`(`postId`),
+    UNIQUE INDEX `Picture_departmentId_key`(`departmentId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `File` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(191) NOT NULL,
+    `departmentId` INTEGER NULL,
+    `url` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -169,7 +199,7 @@ ALTER TABLE `Coordinator` ADD CONSTRAINT `Coordinator_departmentId_fkey` FOREIGN
 ALTER TABLE `Profile` ADD CONSTRAINT `Profile_studentId_fkey` FOREIGN KEY (`studentId`) REFERENCES `Student`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Profile` ADD CONSTRAINT `Profile_admId_fkey` FOREIGN KEY (`admId`) REFERENCES `Adm`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `Profile` ADD CONSTRAINT `Profile_adminId_fkey` FOREIGN KEY (`adminId`) REFERENCES `Admin`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Profile` ADD CONSTRAINT `Profile_coordinatorId_fkey` FOREIGN KEY (`coordinatorId`) REFERENCES `Coordinator`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
@@ -187,13 +217,13 @@ ALTER TABLE `Course` ADD CONSTRAINT `Course_coordinatorId_fkey` FOREIGN KEY (`co
 ALTER TABLE `Comment` ADD CONSTRAINT `Comment_studentId_fkey` FOREIGN KEY (`studentId`) REFERENCES `Student`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Comment` ADD CONSTRAINT `Comment_admId_fkey` FOREIGN KEY (`admId`) REFERENCES `Adm`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `Comment` ADD CONSTRAINT `Comment_adminId_fkey` FOREIGN KEY (`adminId`) REFERENCES `Admin`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Comment` ADD CONSTRAINT `Comment_coordinatorId_fkey` FOREIGN KEY (`coordinatorId`) REFERENCES `Coordinator`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Post` ADD CONSTRAINT `Post_admId_fkey` FOREIGN KEY (`admId`) REFERENCES `Adm`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Post` ADD CONSTRAINT `Post_adminId_fkey` FOREIGN KEY (`adminId`) REFERENCES `Admin`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Post` ADD CONSTRAINT `Post_coordinatorId_fkey` FOREIGN KEY (`coordinatorId`) REFERENCES `Coordinator`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
@@ -202,19 +232,22 @@ ALTER TABLE `Post` ADD CONSTRAINT `Post_coordinatorId_fkey` FOREIGN KEY (`coordi
 ALTER TABLE `Reply` ADD CONSTRAINT `Reply_studentId_fkey` FOREIGN KEY (`studentId`) REFERENCES `Student`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Reply` ADD CONSTRAINT `Reply_admId_fkey` FOREIGN KEY (`admId`) REFERENCES `Adm`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `Reply` ADD CONSTRAINT `Reply_adminId_fkey` FOREIGN KEY (`adminId`) REFERENCES `Admin`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Reply` ADD CONSTRAINT `Reply_coordinatorId_fkey` FOREIGN KEY (`coordinatorId`) REFERENCES `Coordinator`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Photo` ADD CONSTRAINT `Photo_studentId_fkey` FOREIGN KEY (`studentId`) REFERENCES `Student`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `Picture` ADD CONSTRAINT `Picture_postId_fkey` FOREIGN KEY (`postId`) REFERENCES `Post`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Photo` ADD CONSTRAINT `Photo_admId_fkey` FOREIGN KEY (`admId`) REFERENCES `Adm`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `Picture` ADD CONSTRAINT `Picture_departmentId_fkey` FOREIGN KEY (`departmentId`) REFERENCES `Department`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Photo` ADD CONSTRAINT `Photo_coordinatorId_fkey` FOREIGN KEY (`coordinatorId`) REFERENCES `Coordinator`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `Picture` ADD CONSTRAINT `Picture_profileId_fkey` FOREIGN KEY (`profileId`) REFERENCES `Profile`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `File` ADD CONSTRAINT `File_departmentId_fkey` FOREIGN KEY (`departmentId`) REFERENCES `Department`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `_CourseToSubject` ADD CONSTRAINT `_CourseToSubject_A_fkey` FOREIGN KEY (`A`) REFERENCES `Course`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

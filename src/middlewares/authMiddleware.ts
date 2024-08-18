@@ -12,13 +12,13 @@ export async function authMiddleware(
     const authorization = req.headers.authorization;
 
     if (!authorization) {
-      return AuthError.noTokenProvided();
+      return handleError(AuthError.noTokenProvided(), res);
     }
 
     const [type, token] = authorization.split(" ");
 
     if (type !== "Bearer") {
-      return AuthError.typeOfAuthInvalid();
+      return handleError(AuthError.typeOfAuthInvalid(), res);
     }
 
     const { id } = jwt.verify(token, process.env.JWT_SECRET_KEY as string) as {
@@ -26,7 +26,7 @@ export async function authMiddleware(
     };
 
     if (!id) {
-      return AuthError.invalidToken();
+      return handleError(AuthError.invalidToken(), res);
     }
 
     req.id = id;
@@ -36,13 +36,11 @@ export async function authMiddleware(
       const errorMessage = error.message as TJsonWebTokenError;
 
       if (errorMessage === "jwt malformed") {
-        handleError(AuthError.invalidToken(), res);
-        return;
+        return handleError(AuthError.invalidToken(), res);
       }
 
       if (errorMessage === "jwt must be provided") {
-        handleError(AuthError.noTokenProvided(), res);
-        return;
+        return handleError(AuthError.noTokenProvided(), res);
       }
     }
   }

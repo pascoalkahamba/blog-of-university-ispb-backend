@@ -6,7 +6,7 @@ export default class PostService {
     createPost: ICreatePost,
     pictureModal: IPictureModal | undefined
   ) {
-    const { createrPostId, content, title, whoPosted, nameOfDepartment } =
+    const { content, title, nameOfDepartment, createrPostId, whoPosted } =
       createPost;
 
     const postTitle = await prismaService.prisma.post.findFirst({
@@ -17,18 +17,58 @@ export default class PostService {
       return;
     }
 
-    const post = await prismaService.prisma.post.create({
+    if (whoPosted === "admin") {
+      const postAdmin = await prismaService.prisma.post.create({
+        data: {
+          title,
+          content,
+          admin: {
+            connect: {
+              id: createrPostId,
+            },
+          },
+          picture: {
+            create: {
+              url: pictureModal ? pictureModal.url : "",
+              name: pictureModal ? pictureModal.name : "",
+            },
+          },
+          departments: {
+            create: {
+              name: nameOfDepartment,
+            },
+          },
+        },
+        select: {
+          title: true,
+          content: true,
+          favorite: true,
+          views: true,
+          createdAt: true,
+          updatedAt: true,
+          adminId: true,
+          coordinatorId: true,
+          picture: true,
+          departments: true,
+        },
+      });
+
+      return postAdmin;
+    }
+
+    const postCoordinator = await prismaService.prisma.post.create({
       data: {
         title,
         content,
-        adminId: whoPosted === "admin" ? createrPostId : null,
-        coordinatorId: whoPosted === "coordinator" ? createrPostId : null,
-        picure: {
+        coordinator: {
+          connect: {
+            id: createrPostId,
+          },
+        },
+        picture: {
           create: {
             url: pictureModal ? pictureModal.url : "",
             name: pictureModal ? pictureModal.name : "",
-            adminId: whoPosted === "admin" ? createrPostId : null,
-            coordinatorId: whoPosted === "coordinator" ? createrPostId : null,
           },
         },
         departments: {
@@ -46,20 +86,19 @@ export default class PostService {
         updatedAt: true,
         adminId: true,
         coordinatorId: true,
-        picure: true,
+        picture: true,
         departments: true,
       },
     });
 
-    return post;
+    return postCoordinator;
   }
 
   async updatePost(
     createPost: ICreatePost,
     pictureModal: IPictureModal | undefined
   ) {
-    const { createrPostId, content, title, whoPosted, nameOfDepartment, id } =
-      createPost;
+    const { content, title, nameOfDepartment, id } = createPost;
 
     const postTitle = await prismaService.prisma.post.findFirst({
       where: { id },
@@ -74,19 +113,18 @@ export default class PostService {
       data: {
         title,
         content,
-        adminId: whoPosted === "admin" ? createrPostId : null,
-        coordinatorId: whoPosted === "coordinator" ? createrPostId : null,
-        picure: {
-          create: {
+        picture: {
+          update: {
             url: pictureModal ? pictureModal.url : "",
             name: pictureModal ? pictureModal.name : "",
-            adminId: whoPosted === "admin" ? createrPostId : null,
-            coordinatorId: whoPosted === "coordinator" ? createrPostId : null,
           },
         },
         departments: {
-          create: {
-            name: nameOfDepartment,
+          update: {
+            where: { id: postTitle.id },
+            data: {
+              name: nameOfDepartment,
+            },
           },
         },
       },
@@ -99,7 +137,7 @@ export default class PostService {
         updatedAt: true,
         adminId: true,
         coordinatorId: true,
-        picure: true,
+        picture: true,
         departments: true,
       },
     });
@@ -124,7 +162,37 @@ export default class PostService {
   }
 
   async getAllPosts() {
-    const allPosts = await prismaService.prisma.post.findMany();
+    const allPosts = await prismaService.prisma.post.findMany({
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        favorite: true,
+        views: true,
+        createdAt: true,
+        updatedAt: true,
+        adminId: true,
+        likes: true,
+        unlikes: true,
+        admin: {
+          select: {
+            username: true,
+            role: true,
+            profile: true,
+          },
+        },
+        coordinator: {
+          select: {
+            username: true,
+            role: true,
+            profile: true,
+          },
+        },
+        coordinatorId: true,
+        picture: true,
+        departments: true,
+      },
+    });
 
     return allPosts;
   }
@@ -132,6 +200,35 @@ export default class PostService {
   async getOnePost(id: number) {
     const onePost = await prismaService.prisma.post.findFirst({
       where: { id },
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        favorite: true,
+        views: true,
+        createdAt: true,
+        updatedAt: true,
+        adminId: true,
+        likes: true,
+        unlikes: true,
+        admin: {
+          select: {
+            username: true,
+            role: true,
+            profile: true,
+          },
+        },
+        coordinator: {
+          select: {
+            username: true,
+            role: true,
+            profile: true,
+          },
+        },
+        coordinatorId: true,
+        picture: true,
+        departments: true,
+      },
     });
 
     if (!onePost) {

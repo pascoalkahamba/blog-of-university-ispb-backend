@@ -8,10 +8,18 @@ import { postRoutes } from "./routes/postRoutes";
 
 const app = express();
 
+const corsOptions = {
+  origin: "http://localhost:3000",
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
+
+app.options("*", cors(corsOptions));
+
 const port = process.env.PORT || 3001;
 
 app.use(express.json());
-app.use(cors());
 app.use("/admin", adminRoutes);
 app.use("/coordinator", coordinatorRoutes);
 app.use("/student", studentRoutes);

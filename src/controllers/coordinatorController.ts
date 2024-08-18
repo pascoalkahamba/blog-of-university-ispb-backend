@@ -64,7 +64,7 @@ export default class CoordinatorContoller {
       );
 
       return res.status(StatusCodes.OK).json({
-        admin: logged,
+        coordinator: logged,
         token,
       });
     } catch (error) {
