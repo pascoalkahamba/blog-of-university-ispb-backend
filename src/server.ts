@@ -6,6 +6,7 @@ import { coordinatorRoutes } from "./routes/coordinatorRoutes";
 import { studentRoutes } from "./routes/studentRoutes";
 import { postRoutes } from "./routes/postRoutes";
 import { commentRoutes } from "./routes/commentRoutes";
+import { replyRoutes } from "./routes/replyRoutes";
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use("/coordinator", coordinatorRoutes);
 app.use("/student", studentRoutes);
 app.use("/post", postRoutes);
 app.use("/comment", commentRoutes);
+app.use("/reply", replyRoutes);
 app.use(bodyParser.json());
 
 app.listen(port, () => {

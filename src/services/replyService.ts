@@ -1,17 +1,17 @@
-import { ICommentDataBoby } from "../interfaces";
+import { IReplyData } from "../interfaces";
 import { prismaService } from "./prismaService";
 
-export default class CommentService {
-  async create({ content, creatorId, postId, whoCreator }: ICommentDataBoby) {
+export default class ReplyService {
+  async create({ commentId, content, creatorId, whoCreator }: IReplyData) {
     if (whoCreator === "admin") {
-      const adminComment = await prismaService.prisma.comment.create({
+      const adminReply = await prismaService.prisma.reply.create({
         data: {
           content,
           likes: 0,
           unlikes: 0,
-          post: {
+          comment: {
             connect: {
-              id: postId,
+              id: commentId,
             },
           },
           admin: {
@@ -22,13 +22,11 @@ export default class CommentService {
         },
         select: {
           id: true,
+          content: true,
+          likes: true,
+          unlikes: true,
           createdAt: true,
           updatedAt: true,
-          replies: true,
-          likes: true,
-          content: true,
-          unlikes: true,
-          adminId: true,
           admin: {
             select: {
               id: true,
@@ -38,6 +36,7 @@ export default class CommentService {
               contact: true,
             },
           },
+          adminId: true,
           coordinator: {
             select: {
               id: true,
@@ -54,25 +53,25 @@ export default class CommentService {
               username: true,
               email: true,
               role: true,
-              contact: true,
               registrationNumber: true,
+              contact: true,
             },
           },
           studentId: true,
         },
       });
 
-      return adminComment;
+      return adminReply;
     }
     if (whoCreator === "coordinator") {
-      const coordinatorComment = await prismaService.prisma.comment.create({
+      const coordinatorReply = await prismaService.prisma.reply.create({
         data: {
           content,
           likes: 0,
           unlikes: 0,
-          post: {
+          comment: {
             connect: {
-              id: postId,
+              id: commentId,
             },
           },
           coordinator: {
@@ -83,13 +82,11 @@ export default class CommentService {
         },
         select: {
           id: true,
+          content: true,
+          likes: true,
+          unlikes: true,
           createdAt: true,
           updatedAt: true,
-          likes: true,
-          content: true,
-          unlikes: true,
-          adminId: true,
-          replies: true,
           admin: {
             select: {
               id: true,
@@ -99,6 +96,7 @@ export default class CommentService {
               contact: true,
             },
           },
+          adminId: true,
           coordinator: {
             select: {
               id: true,
@@ -115,25 +113,25 @@ export default class CommentService {
               username: true,
               email: true,
               role: true,
-              contact: true,
               registrationNumber: true,
+              contact: true,
             },
           },
           studentId: true,
         },
       });
 
-      return coordinatorComment;
+      return coordinatorReply;
     }
     if (whoCreator === "studant") {
-      const studantComment = await prismaService.prisma.comment.create({
+      const studantReply = await prismaService.prisma.reply.create({
         data: {
           content,
           likes: 0,
           unlikes: 0,
-          post: {
+          comment: {
             connect: {
-              id: postId,
+              id: commentId,
             },
           },
           student: {
@@ -144,13 +142,11 @@ export default class CommentService {
         },
         select: {
           id: true,
+          content: true,
+          likes: true,
+          unlikes: true,
           createdAt: true,
           updatedAt: true,
-          replies: true,
-          likes: true,
-          content: true,
-          unlikes: true,
-          adminId: true,
           admin: {
             select: {
               id: true,
@@ -160,6 +156,7 @@ export default class CommentService {
               contact: true,
             },
           },
+          adminId: true,
           coordinator: {
             select: {
               id: true,
@@ -184,22 +181,22 @@ export default class CommentService {
         },
       });
 
-      return studantComment;
+      return studantReply;
     }
   }
 
-  async update(id: number, content: string) {
-    const comment = await prismaService.prisma.comment.findFirst({
+  async udpate(id: number, content: string) {
+    const reply = await prismaService.prisma.reply.findFirst({
       where: {
         id,
       },
     });
 
-    if (!comment) {
+    if (!reply) {
       return;
     }
 
-    const commentUpdated = await prismaService.prisma.comment.update({
+    const replyUpdated = await prismaService.prisma.reply.update({
       where: {
         id,
       },
@@ -208,13 +205,11 @@ export default class CommentService {
       },
       select: {
         id: true,
+        content: true,
+        likes: true,
+        unlikes: true,
         createdAt: true,
         updatedAt: true,
-        likes: true,
-        replies: true,
-        content: true,
-        unlikes: true,
-        adminId: true,
         admin: {
           select: {
             id: true,
@@ -224,6 +219,7 @@ export default class CommentService {
             contact: true,
           },
         },
+        adminId: true,
         coordinator: {
           select: {
             id: true,
@@ -248,26 +244,26 @@ export default class CommentService {
       },
     });
 
-    return commentUpdated;
+    return replyUpdated;
   }
 
   async delete(id: number) {
-    const comment = await prismaService.prisma.comment.findFirst({
+    const reply = await prismaService.prisma.reply.findFirst({
       where: {
         id,
       },
     });
 
-    if (!comment) {
+    if (!reply) {
       return;
     }
 
-    const commentDeleted = await prismaService.prisma.comment.delete({
+    const replyDeleted = await prismaService.prisma.reply.delete({
       where: {
         id,
       },
     });
 
-    return commentDeleted;
+    return replyDeleted;
   }
 }

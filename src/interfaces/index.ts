@@ -13,6 +13,16 @@ export interface ICommentDataBoby {
   creatorId: number;
   whoCreator: TwhoPosted;
 }
+export interface IReplyData {
+  content: string;
+  commentId: number;
+  creatorId: number;
+  whoCreator: TwhoPosted;
+}
+export interface IReplyDataBoby {
+  content: string;
+  whoCreator: TwhoPosted;
+}
 export interface IUpdateCommentDataBoby {
   content: string;
 }
