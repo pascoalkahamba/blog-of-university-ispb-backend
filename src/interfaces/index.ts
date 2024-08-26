@@ -6,6 +6,16 @@ export interface IPostDataBoby {
   nameOfDepartment: string;
   whoPosted: TwhoPosted;
 }
+
+export interface ICommentDataBoby {
+  content: string;
+  postId: number;
+  creatorId: number;
+  whoCreator: TwhoPosted;
+}
+export interface IUpdateCommentDataBoby {
+  content: string;
+}
 // export interface IPostDataBoby {
 //   postData: ICreatePost;
 //   fileModal: TFileModal;

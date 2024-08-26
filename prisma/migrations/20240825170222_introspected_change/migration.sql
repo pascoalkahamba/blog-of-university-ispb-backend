@@ -81,12 +81,13 @@ CREATE TABLE `Comment` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
-    `content` VARCHAR(191) NOT NULL,
+    `content` LONGTEXT NOT NULL,
     `likes` INTEGER NOT NULL,
     `unlikes` INTEGER NOT NULL,
     `published` BOOLEAN NOT NULL DEFAULT false,
     `studentId` INTEGER NULL,
     `adminId` INTEGER NULL,
+    `postId` INTEGER NOT NULL,
     `coordinatorId` INTEGER NULL,
 
     PRIMARY KEY (`id`)
@@ -98,13 +99,14 @@ CREATE TABLE `Post` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `title` VARCHAR(191) NOT NULL,
-    `content` VARCHAR(191) NOT NULL,
+    `content` LONGTEXT NOT NULL,
     `views` INTEGER NULL,
     `likes` INTEGER NULL,
     `unlikes` INTEGER NULL,
     `favorite` BOOLEAN NULL,
     `adminId` INTEGER NULL,
     `coordinatorId` INTEGER NULL,
+    `departmentId` INTEGER NOT NULL,
 
     UNIQUE INDEX `Post_title_key`(`title`),
     PRIMARY KEY (`id`)
@@ -115,11 +117,12 @@ CREATE TABLE `Reply` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
-    `content` VARCHAR(191) NOT NULL,
+    `content` LONGTEXT NOT NULL,
     `likes` INTEGER NOT NULL,
     `unlikes` INTEGER NOT NULL,
     `published` BOOLEAN NOT NULL DEFAULT false,
     `studentId` INTEGER NULL,
+    `commentId` INTEGER NOT NULL,
     `adminId` INTEGER NULL,
     `coordinatorId` INTEGER NULL,
 
@@ -183,15 +186,6 @@ CREATE TABLE `_CourseToSubject` (
     INDEX `_CourseToSubject_B_index`(`B`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- CreateTable
-CREATE TABLE `_DepartmentToPost` (
-    `A` INTEGER NOT NULL,
-    `B` INTEGER NOT NULL,
-
-    UNIQUE INDEX `_DepartmentToPost_AB_unique`(`A`, `B`),
-    INDEX `_DepartmentToPost_B_index`(`B`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
 -- AddForeignKey
 ALTER TABLE `Coordinator` ADD CONSTRAINT `Coordinator_departmentId_fkey` FOREIGN KEY (`departmentId`) REFERENCES `Department`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -214,6 +208,9 @@ ALTER TABLE `Course` ADD CONSTRAINT `Course_departmentId_fkey` FOREIGN KEY (`dep
 ALTER TABLE `Course` ADD CONSTRAINT `Course_coordinatorId_fkey` FOREIGN KEY (`coordinatorId`) REFERENCES `Coordinator`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `Comment` ADD CONSTRAINT `Comment_postId_fkey` FOREIGN KEY (`postId`) REFERENCES `Post`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `Comment` ADD CONSTRAINT `Comment_studentId_fkey` FOREIGN KEY (`studentId`) REFERENCES `Student`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -229,7 +226,13 @@ ALTER TABLE `Post` ADD CONSTRAINT `Post_adminId_fkey` FOREIGN KEY (`adminId`) RE
 ALTER TABLE `Post` ADD CONSTRAINT `Post_coordinatorId_fkey` FOREIGN KEY (`coordinatorId`) REFERENCES `Coordinator`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `Post` ADD CONSTRAINT `Post_departmentId_fkey` FOREIGN KEY (`departmentId`) REFERENCES `Department`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `Reply` ADD CONSTRAINT `Reply_studentId_fkey` FOREIGN KEY (`studentId`) REFERENCES `Student`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Reply` ADD CONSTRAINT `Reply_commentId_fkey` FOREIGN KEY (`commentId`) REFERENCES `Comment`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Reply` ADD CONSTRAINT `Reply_adminId_fkey` FOREIGN KEY (`adminId`) REFERENCES `Admin`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
@@ -254,9 +257,3 @@ ALTER TABLE `_CourseToSubject` ADD CONSTRAINT `_CourseToSubject_A_fkey` FOREIGN 
 
 -- AddForeignKey
 ALTER TABLE `_CourseToSubject` ADD CONSTRAINT `_CourseToSubject_B_fkey` FOREIGN KEY (`B`) REFERENCES `Subject`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `_DepartmentToPost` ADD CONSTRAINT `_DepartmentToPost_A_fkey` FOREIGN KEY (`A`) REFERENCES `Department`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `_DepartmentToPost` ADD CONSTRAINT `_DepartmentToPost_B_fkey` FOREIGN KEY (`B`) REFERENCES `Post`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

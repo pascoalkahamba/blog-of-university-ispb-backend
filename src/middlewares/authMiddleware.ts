@@ -26,7 +26,7 @@ export async function authMiddleware(
     };
 
     if (!id) {
-      return handleError(AuthError.invalidToken(), res);
+      throw handleError(AuthError.invalidToken(), res);
     }
 
     req.id = id;

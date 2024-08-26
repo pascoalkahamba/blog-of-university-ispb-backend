@@ -72,7 +72,7 @@ export default class AdminController {
       );
 
       return res.status(StatusCodes.OK).json({
-        admin: logged,
+        user: logged,
         token,
       });
     } catch (error) {

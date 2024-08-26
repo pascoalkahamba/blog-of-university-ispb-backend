@@ -68,6 +68,7 @@ export default class PostContorller {
         throw PostError.titleOfPostAlreadyExist();
       }
 
+      console.log("post criado");
       return res.status(StatusCodes.CREATED).json(posted);
     } catch (error) {
       if (error instanceof multer.MulterError) {
@@ -76,6 +77,7 @@ export default class PostContorller {
         return FirebaseErrors.firebaseErrorUpload();
       } else if (error instanceof ZodError) {
         const validationError = fromError(error);
+        console.log("error", error);
         const { details } = validationError;
         const pathError = details[0].path[0] as TPathError;
         postValidator.validator(pathError, res);
@@ -95,6 +97,7 @@ export default class PostContorller {
       let fileUrl = "";
       const { content, nameOfDepartment, title, whoPosted } =
         createPostSchema.parse(postData);
+
       if (file) {
         const storageRef = ref(
           storage,
@@ -118,7 +121,7 @@ export default class PostContorller {
           content,
           createrPostId: createrId,
           title,
-          id,
+          id: +id,
           nameOfDepartment,
           whoPosted,
         },
@@ -140,6 +143,7 @@ export default class PostContorller {
         const pathError = details[0].path[0] as TPathError;
         postValidator.validator(pathError, res);
       } else {
+        console.log("error", error);
         return handleError(error as BaseError, res);
       }
     }

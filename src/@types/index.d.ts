@@ -2,7 +2,7 @@ import { Admin, Student, Coordinator, Post, File } from "@prisma/client";
 
 export type TDataBaseExtraValues = "createdAt" | "updatedAt" | "id" | "role";
 export type TJsonWebTokenError = "jwt malformed" | "jwt must be provided";
-export type TwhoPosted = "admin" | "coordinator";
+export type TwhoPosted = "admin" | "coordinator" | "studant";
 export type TKindOfFile = "file" | "photo" | "nothing";
 export type TPathError =
   | "email"
@@ -18,6 +18,7 @@ export type TPathError =
   | "title"
   | "nameOfDepartment"
   | "whoPosted"
+  | "whoCreator"
   | "mimeType"
   | "name"
   | "postId"

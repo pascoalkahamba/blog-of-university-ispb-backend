@@ -45,6 +45,13 @@ const createPostSchema = zod.object({
   whoPosted: zod.string().min(5) as zod.ZodType<TwhoPosted>,
   nameOfDepartment: zod.string().min(6),
 });
+const createCommentSchema = zod.object({
+  content: zod.string(),
+  whoCreator: zod.string().min(5) as zod.ZodType<TwhoPosted>,
+});
+const updateCommentSchema = zod.object({
+  content: zod.string(),
+});
 
 const fileModalSchema = zod.object({
   name: zod.string().min(6),
@@ -95,5 +102,7 @@ export {
   createPostSchema,
   fileModalSchema,
   pictureModalSchema,
+  createCommentSchema,
+  updateCommentSchema,
   deletePostSchema,
 };

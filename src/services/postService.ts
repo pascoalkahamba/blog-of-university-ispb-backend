@@ -33,7 +33,7 @@ export default class PostService {
               name: pictureModal ? pictureModal.name : "",
             },
           },
-          departments: {
+          department: {
             create: {
               name: nameOfDepartment,
             },
@@ -49,7 +49,7 @@ export default class PostService {
           adminId: true,
           coordinatorId: true,
           picture: true,
-          departments: true,
+          department: true,
         },
       });
 
@@ -71,7 +71,7 @@ export default class PostService {
             name: pictureModal ? pictureModal.name : "",
           },
         },
-        departments: {
+        department: {
           create: {
             name: nameOfDepartment,
           },
@@ -87,7 +87,7 @@ export default class PostService {
         adminId: true,
         coordinatorId: true,
         picture: true,
-        departments: true,
+        department: true,
       },
     });
 
@@ -119,12 +119,9 @@ export default class PostService {
             name: pictureModal ? pictureModal.name : "",
           },
         },
-        departments: {
+        department: {
           update: {
-            where: { id: postTitle.id },
-            data: {
-              name: nameOfDepartment,
-            },
+            name: nameOfDepartment,
           },
         },
       },
@@ -138,7 +135,7 @@ export default class PostService {
         adminId: true,
         coordinatorId: true,
         picture: true,
-        departments: true,
+        department: true,
       },
     });
 
@@ -190,7 +187,7 @@ export default class PostService {
         },
         coordinatorId: true,
         picture: true,
-        departments: true,
+        department: true,
       },
     });
 
@@ -227,7 +224,7 @@ export default class PostService {
         },
         coordinatorId: true,
         picture: true,
-        departments: true,
+        department: true,
       },
     });
 

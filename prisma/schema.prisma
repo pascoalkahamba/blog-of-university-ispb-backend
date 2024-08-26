@@ -84,14 +84,17 @@ model Comment {
   id            Int          @id @default(autoincrement())
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
-  content       String
+  content       String       @db.LongText
   likes         Int
   unlikes       Int
+  post          Post?        @relation(fields: [postId], references: [id])
   published     Boolean      @default(false)
+  replies       Reply[]
   student       Student?     @relation(fields: [studentId], references: [id])
   studentId     Int?
   admin         Admin?       @relation(fields: [adminId], references: [id])
   adminId       Int?
+  postId        Int
   coordinator   Coordinator? @relation(fields: [coordinatorId], references: [id])
   coordinatorId Int?
 }
@@ -101,7 +104,7 @@ model Post {
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
   title         String       @unique
-  content       String
+  content       String       @db.LongText
   picture       Picture?
   views         Int?
   likes         Int?
@@ -110,20 +113,24 @@ model Post {
   admin         Admin?       @relation(fields: [adminId], references: [id])
   adminId       Int?
   coordinator   Coordinator? @relation(fields: [coordinatorId], references: [id])
+  department    Department   @relation(fields: [departmentId], references: [id])
   coordinatorId Int?
-  departments   Department[]
+  departmentId  Int
+  comments      Comment[]
 }
 
 model Reply {
   id            Int          @id @default(autoincrement())
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
-  content       String
+  content       String       @db.LongText
   likes         Int
   unlikes       Int
   published     Boolean      @default(false)
   student       Student?     @relation(fields: [studentId], references: [id])
+  comment       Comment      @relation(fields: [commentId], references: [id])
   studentId     Int?
+  commentId     Int
   admin         Admin?       @relation(fields: [adminId], references: [id])
   adminId       Int?
   coordinator   Coordinator? @relation(fields: [coordinatorId], references: [id])
