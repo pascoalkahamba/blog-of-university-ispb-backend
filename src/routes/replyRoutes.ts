@@ -8,6 +8,8 @@ const replyRoutes = express.Router();
 replyRoutes.use(authMiddleware);
 
 replyRoutes.post("/create/:commentId", replyController.create);
+replyRoutes.post("/addLike/:id", replyController.addLike);
+replyRoutes.post("/addUnlike/:id", replyController.addUnlike);
 replyRoutes.post("/update/:id", replyController.update);
 replyRoutes.delete("/delete/:id", replyController.delete);
 

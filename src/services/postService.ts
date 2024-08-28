@@ -22,6 +22,8 @@ export default class PostService {
         data: {
           title,
           content,
+          likes: 0,
+          unlikes: 0,
           admin: {
             connect: {
               id: createrPostId,
@@ -61,6 +63,8 @@ export default class PostService {
       data: {
         title,
         content,
+        likes: 0,
+        unlikes: 0,
         coordinator: {
           connect: {
             id: createrPostId,
@@ -145,6 +149,42 @@ export default class PostService {
     return postUpdated;
   }
 
+  async addLike(id: number, like: number) {
+    const post = await prismaService.prisma.post.findFirst({
+      where: { id },
+    });
+
+    if (!post) {
+      return;
+    }
+    const postLiked = await prismaService.prisma.post.update({
+      where: { id },
+      data: {
+        likes: like,
+      },
+    });
+
+    return postLiked;
+  }
+
+  async addUnlike(id: number, Unlike: number) {
+    const post = await prismaService.prisma.post.findFirst({
+      where: { id },
+    });
+
+    if (!post) {
+      return;
+    }
+    const postUnLiked = await prismaService.prisma.post.update({
+      where: { id },
+      data: {
+        unlikes: Unlike,
+      },
+    });
+
+    return postUnLiked;
+  }
+
   async deletePost(id: number) {
     const post = await prismaService.prisma.post.findFirst({
       where: { id },
@@ -207,7 +247,76 @@ export default class PostService {
         content: true,
         favorite: true,
         views: true,
-        comments: true,
+        comments: {
+          select: {
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+            content: true,
+            replies: {
+              select: {
+                id: true,
+                commentId: true,
+                content: true,
+                likes: true,
+                unlikes: true,
+                createdAt: true,
+                updatedAt: true,
+                admin: {
+                  select: {
+                    id: true,
+                    username: true,
+                    profile: true,
+                  },
+                },
+                student: {
+                  select: {
+                    id: true,
+                    username: true,
+                    profile: true,
+                    registrationNumber: true,
+                  },
+                },
+                coordinatorId: true,
+                adminId: true,
+                studentId: true,
+                coordinator: {
+                  select: {
+                    id: true,
+                    username: true,
+                    profile: true,
+                  },
+                },
+              },
+            },
+            likes: true,
+            unlikes: true,
+            adminId: true,
+            admin: {
+              select: {
+                id: true,
+                username: true,
+                profile: true,
+              },
+            },
+            coordinatorId: true,
+            coordinator: {
+              select: {
+                id: true,
+                username: true,
+                profile: true,
+              },
+            },
+            studentId: true,
+            student: {
+              select: {
+                id: true,
+                username: true,
+                profile: true,
+              },
+            },
+          },
+        },
         createdAt: true,
         updatedAt: true,
         adminId: true,

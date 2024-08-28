@@ -89,6 +89,13 @@ const deleteStudentSchema = zod.object({
   registrationNumber: zod.string().min(2),
 });
 
+const addLikeSchema = zod.object({
+  like: zod.number(),
+});
+const addUnlikeSchema = zod.object({
+  unlike: zod.number(),
+});
+
 export {
   createAdminSchema,
   loginAdminSchema,
@@ -97,6 +104,8 @@ export {
   loginCoordinatorSchema,
   loginStudentSchema,
   envSchema,
+  addLikeSchema,
+  addUnlikeSchema,
   deleteStudentSchema,
   createStudentSchema,
   createPostSchema,

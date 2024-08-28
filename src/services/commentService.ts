@@ -27,12 +27,14 @@ export default class CommentService {
           replies: true,
           likes: true,
           content: true,
+          postId: true,
           unlikes: true,
           adminId: true,
           admin: {
             select: {
               id: true,
               username: true,
+              profile: true,
               email: true,
               role: true,
               contact: true,
@@ -42,6 +44,7 @@ export default class CommentService {
             select: {
               id: true,
               username: true,
+              profile: true,
               email: true,
               role: true,
               contact: true,
@@ -52,6 +55,7 @@ export default class CommentService {
             select: {
               id: true,
               username: true,
+              profile: true,
               email: true,
               role: true,
               contact: true,
@@ -86,6 +90,7 @@ export default class CommentService {
           createdAt: true,
           updatedAt: true,
           likes: true,
+          postId: true,
           content: true,
           unlikes: true,
           adminId: true,
@@ -94,6 +99,7 @@ export default class CommentService {
             select: {
               id: true,
               username: true,
+              profile: true,
               email: true,
               role: true,
               contact: true,
@@ -103,6 +109,7 @@ export default class CommentService {
             select: {
               id: true,
               username: true,
+              profile: true,
               email: true,
               role: true,
               contact: true,
@@ -113,6 +120,7 @@ export default class CommentService {
             select: {
               id: true,
               username: true,
+              profile: true,
               email: true,
               role: true,
               contact: true,
@@ -150,11 +158,13 @@ export default class CommentService {
           likes: true,
           content: true,
           unlikes: true,
+          postId: true,
           adminId: true,
           admin: {
             select: {
               id: true,
               username: true,
+              profile: true,
               email: true,
               role: true,
               contact: true,
@@ -164,6 +174,7 @@ export default class CommentService {
             select: {
               id: true,
               username: true,
+              profile: true,
               email: true,
               role: true,
               contact: true,
@@ -174,6 +185,7 @@ export default class CommentService {
             select: {
               id: true,
               username: true,
+              profile: true,
               email: true,
               role: true,
               registrationNumber: true,
@@ -186,6 +198,42 @@ export default class CommentService {
 
       return studantComment;
     }
+  }
+
+  async addLike(id: number, like: number) {
+    const comment = await prismaService.prisma.comment.findFirst({
+      where: { id },
+    });
+
+    if (!comment) {
+      return;
+    }
+    const commentUnLiked = await prismaService.prisma.comment.update({
+      where: { id },
+      data: {
+        likes: like,
+      },
+    });
+
+    return commentUnLiked;
+  }
+
+  async addUnlike(id: number, Unlike: number) {
+    const comment = await prismaService.prisma.comment.findFirst({
+      where: { id },
+    });
+
+    if (!comment) {
+      return;
+    }
+    const commentUnLiked = await prismaService.prisma.comment.update({
+      where: { id },
+      data: {
+        unlikes: Unlike,
+      },
+    });
+
+    return commentUnLiked;
   }
 
   async update(id: number, content: string) {
@@ -212,6 +260,7 @@ export default class CommentService {
         updatedAt: true,
         likes: true,
         replies: true,
+        postId: true,
         content: true,
         unlikes: true,
         adminId: true,

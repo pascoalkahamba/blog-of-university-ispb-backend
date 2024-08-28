@@ -1,8 +1,18 @@
 import { Request, Response } from "express";
-import { ICommentDataBoby, IUpdateCommentDataBoby } from "../interfaces";
+import {
+  ICommentDataBoby,
+  ILike,
+  IUnlike,
+  IUpdateCommentDataBoby,
+} from "../interfaces";
 import { handleError } from "../errors/handleError";
 import { BaseError } from "../errors/baseError";
-import { createCommentSchema, updateCommentSchema } from "../schemas";
+import {
+  addLikeSchema,
+  addUnlikeSchema,
+  createCommentSchema,
+  updateCommentSchema,
+} from "../schemas";
 import CommentService from "../services/commentService";
 import { StatusCodes } from "http-status-codes";
 import { fromError } from "zod-validation-error";
@@ -74,6 +84,53 @@ export default class CommentController {
         throw CommentError.commentNotFound();
       }
       return res.status(StatusCodes.ACCEPTED).json(commentDeleted);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromError(error);
+        const { details } = validationError;
+        const pathError = details[0].path[0] as TPathError;
+        commentValidator.validator(pathError, res);
+      } else {
+        return handleError(error as BaseError, res);
+      }
+    }
+  }
+
+  async addLike(req: Request, res: Response) {
+    try {
+      const { id } = req.params as unknown as { id: number };
+      const parseBody = req.body as ILike;
+      const { like } = addLikeSchema.parse(parseBody);
+      const commentLiked = await commentService.addLike(+id, +like);
+
+      if (!commentLiked) {
+        throw CommentError.commentNotFound();
+      }
+
+      return res.status(StatusCodes.CREATED).json(commentLiked);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromError(error);
+        const { details } = validationError;
+        const pathError = details[0].path[0] as TPathError;
+        commentValidator.validator(pathError, res);
+      } else {
+        return handleError(error as BaseError, res);
+      }
+    }
+  }
+  async addUnlike(req: Request, res: Response) {
+    try {
+      const { id } = req.params as unknown as { id: number };
+      const parseBody = req.body as IUnlike;
+      const { unlike } = addUnlikeSchema.parse(parseBody);
+      const commentUnliked = await commentService.addUnlike(+id, +unlike);
+
+      if (!commentUnliked) {
+        throw CommentError.commentNotFound();
+      }
+
+      return res.status(StatusCodes.CREATED).json(commentUnliked);
     } catch (error) {
       if (error instanceof ZodError) {
         const validationError = fromError(error);

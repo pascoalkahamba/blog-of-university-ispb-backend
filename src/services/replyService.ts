@@ -24,6 +24,7 @@ export default class ReplyService {
           id: true,
           content: true,
           likes: true,
+          commentId: true,
           unlikes: true,
           createdAt: true,
           updatedAt: true,
@@ -84,6 +85,7 @@ export default class ReplyService {
           id: true,
           content: true,
           likes: true,
+          commentId: true,
           unlikes: true,
           createdAt: true,
           updatedAt: true,
@@ -142,6 +144,7 @@ export default class ReplyService {
         },
         select: {
           id: true,
+          commentId: true,
           content: true,
           likes: true,
           unlikes: true,
@@ -210,6 +213,7 @@ export default class ReplyService {
         unlikes: true,
         createdAt: true,
         updatedAt: true,
+        commentId: true,
         admin: {
           select: {
             id: true,
@@ -265,5 +269,41 @@ export default class ReplyService {
     });
 
     return replyDeleted;
+  }
+
+  async addLike(id: number, like: number) {
+    const reply = await prismaService.prisma.reply.findFirst({
+      where: { id },
+    });
+
+    if (!reply) {
+      return;
+    }
+    const replyUnLiked = await prismaService.prisma.reply.update({
+      where: { id },
+      data: {
+        likes: like,
+      },
+    });
+
+    return replyUnLiked;
+  }
+
+  async addUnlike(id: number, Unlike: number) {
+    const reply = await prismaService.prisma.reply.findFirst({
+      where: { id },
+    });
+
+    if (!reply) {
+      return;
+    }
+    const replyUnliked = await prismaService.prisma.reply.update({
+      where: { id },
+      data: {
+        unlikes: Unlike,
+      },
+    });
+
+    return replyUnliked;
   }
 }

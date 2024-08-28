@@ -4,8 +4,18 @@ import { fromError } from "zod-validation-error";
 import { TPathError } from "../@types";
 import { BaseError } from "../errors/baseError";
 import { handleError } from "../errors/handleError";
-import { IReplyDataBoby, IUpdateCommentDataBoby } from "../interfaces";
-import { createCommentSchema, updateCommentSchema } from "../schemas";
+import {
+  ILike,
+  IReplyDataBoby,
+  IUnlike,
+  IUpdateCommentDataBoby,
+} from "../interfaces";
+import {
+  addLikeSchema,
+  addUnlikeSchema,
+  createCommentSchema,
+  updateCommentSchema,
+} from "../schemas";
 import CommentValidator from "../validators/commentValidator";
 import ReplyService from "../services/replyService";
 import { StatusCodes } from "http-status-codes";
@@ -75,6 +85,53 @@ export default class ReplyController {
       }
 
       return res.status(StatusCodes.ACCEPTED).json(replyDeleted);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromError(error);
+        const { details } = validationError;
+        const pathError = details[0].path[0] as TPathError;
+        commentValidator.validator(pathError, res);
+      } else {
+        return handleError(error as BaseError, res);
+      }
+    }
+  }
+
+  async addLike(req: Request, res: Response) {
+    try {
+      const { id } = req.params as unknown as { id: number };
+      const parseBody = req.body as ILike;
+      const { like } = addLikeSchema.parse(parseBody);
+      const repyLiked = await replyService.addLike(+id, +like);
+
+      if (!repyLiked) {
+        throw ReplyError.replyNotFound();
+      }
+
+      return res.status(StatusCodes.CREATED).json(repyLiked);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromError(error);
+        const { details } = validationError;
+        const pathError = details[0].path[0] as TPathError;
+        commentValidator.validator(pathError, res);
+      } else {
+        return handleError(error as BaseError, res);
+      }
+    }
+  }
+  async addUnlike(req: Request, res: Response) {
+    try {
+      const { id } = req.params as unknown as { id: number };
+      const parseBody = req.body as IUnlike;
+      const { unlike } = addUnlikeSchema.parse(parseBody);
+      const replyUnliked = await replyService.addUnlike(+id, +unlike);
+
+      if (!replyUnliked) {
+        throw ReplyError.replyNotFound();
+      }
+
+      return res.status(StatusCodes.CREATED).json(replyUnliked);
     } catch (error) {
       if (error instanceof ZodError) {
         const validationError = fromError(error);

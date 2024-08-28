@@ -87,7 +87,7 @@ model Comment {
   content       String       @db.LongText
   likes         Int
   unlikes       Int
-  post          Post?        @relation(fields: [postId], references: [id])
+  post          Post?        @relation(fields: [postId], references: [id], onDelete: Cascade)
   published     Boolean      @default(false)
   replies       Reply[]
   student       Student?     @relation(fields: [studentId], references: [id])
@@ -107,8 +107,8 @@ model Post {
   content       String       @db.LongText
   picture       Picture?
   views         Int?
-  likes         Int?
-  unlikes       Int?
+  likes         Int
+  unlikes       Int
   favorite      Boolean?
   admin         Admin?       @relation(fields: [adminId], references: [id])
   adminId       Int?
@@ -128,7 +128,7 @@ model Reply {
   unlikes       Int
   published     Boolean      @default(false)
   student       Student?     @relation(fields: [studentId], references: [id])
-  comment       Comment      @relation(fields: [commentId], references: [id])
+  comment       Comment      @relation(fields: [commentId], references: [id], onDelete: Cascade)
   studentId     Int?
   commentId     Int
   admin         Admin?       @relation(fields: [adminId], references: [id])

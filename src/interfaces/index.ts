@@ -23,6 +23,13 @@ export interface IReplyDataBoby {
   content: string;
   whoCreator: TwhoPosted;
 }
+
+export interface ILike {
+  like: number;
+}
+export interface IUnlike {
+  unlike: number;
+}
 export interface IUpdateCommentDataBoby {
   content: string;
 }

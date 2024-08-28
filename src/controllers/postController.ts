@@ -3,10 +3,10 @@ import { ZodError } from "zod";
 import { fromError } from "zod-validation-error";
 import { TPathError } from "../@types";
 import { BaseError } from "../errors/baseError";
-import { createPostSchema } from "../schemas";
+import { addLikeSchema, addUnlikeSchema, createPostSchema } from "../schemas";
 import { handleError } from "../errors/handleError";
 import PostService from "../services/postService";
-import { IPostDataBoby } from "../interfaces";
+import { ILike, IPostDataBoby, IUnlike } from "../interfaces";
 import { PostError } from "../errors/postError";
 import { StatusCodes } from "http-status-codes";
 import { storage } from "../config/firebaseConfig";
@@ -189,6 +189,53 @@ export default class PostContorller {
       }
 
       return res.status(StatusCodes.OK).json(post);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromError(error);
+        const { details } = validationError;
+        const pathError = details[0].path[0] as TPathError;
+        postValidator.validator(pathError, res);
+      } else {
+        return handleError(error as BaseError, res);
+      }
+    }
+  }
+
+  async addLike(req: Request, res: Response) {
+    try {
+      const { id } = req.params as unknown as { id: number };
+      const parseBody = req.body as ILike;
+      const { like } = addLikeSchema.parse(parseBody);
+      const postLiked = await postService.addLike(+id, +like);
+
+      if (!postLiked) {
+        throw PostError.postNotFound();
+      }
+
+      return res.status(StatusCodes.CREATED).json(postLiked);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromError(error);
+        const { details } = validationError;
+        const pathError = details[0].path[0] as TPathError;
+        postValidator.validator(pathError, res);
+      } else {
+        return handleError(error as BaseError, res);
+      }
+    }
+  }
+  async addUnlike(req: Request, res: Response) {
+    try {
+      const { id } = req.params as unknown as { id: number };
+      const parseBody = req.body as IUnlike;
+      const { unlike } = addUnlikeSchema.parse(parseBody);
+      const posteUnliked = await postService.addUnlike(+id, +unlike);
+
+      if (!posteUnliked) {
+        throw PostError.postNotFound();
+      }
+
+      return res.status(StatusCodes.CREATED).json(posteUnliked);
     } catch (error) {
       if (error instanceof ZodError) {
         const validationError = fromError(error);
