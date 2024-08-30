@@ -101,8 +101,12 @@ export default class ReplyController {
     try {
       const { id } = req.params as unknown as { id: number };
       const parseBody = req.body as ILike;
-      const { like } = addLikeSchema.parse(parseBody);
-      const repyLiked = await replyService.addLike(+id, +like);
+      const { like, statusLike } = addLikeSchema.parse(parseBody);
+      const repyLiked = await replyService.addLike({
+        id: +id,
+        like: +like,
+        statusLike,
+      });
 
       if (!repyLiked) {
         throw ReplyError.replyNotFound();
@@ -124,8 +128,12 @@ export default class ReplyController {
     try {
       const { id } = req.params as unknown as { id: number };
       const parseBody = req.body as IUnlike;
-      const { unlike } = addUnlikeSchema.parse(parseBody);
-      const replyUnliked = await replyService.addUnlike(+id, +unlike);
+      const { unlike, statusUnlike } = addUnlikeSchema.parse(parseBody);
+      const replyUnliked = await replyService.addUnlike({
+        id: +id,
+        unlike: +unlike,
+        statusUnlike,
+      });
 
       if (!replyUnliked) {
         throw ReplyError.replyNotFound();

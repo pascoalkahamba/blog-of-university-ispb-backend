@@ -1,4 +1,4 @@
-import { IReplyData } from "../interfaces";
+import { IAddLike, IAddUnlike, IReplyData } from "../interfaces";
 import { prismaService } from "./prismaService";
 
 export default class ReplyService {
@@ -9,6 +9,8 @@ export default class ReplyService {
           content,
           likes: 0,
           unlikes: 0,
+          statusLike: false,
+          statusUnlike: false,
           comment: {
             connect: {
               id: commentId,
@@ -26,6 +28,8 @@ export default class ReplyService {
           likes: true,
           commentId: true,
           unlikes: true,
+          statusLike: true,
+          statusUnlike: true,
           createdAt: true,
           updatedAt: true,
           admin: {
@@ -70,6 +74,8 @@ export default class ReplyService {
           content,
           likes: 0,
           unlikes: 0,
+          statusLike: false,
+          statusUnlike: false,
           comment: {
             connect: {
               id: commentId,
@@ -88,6 +94,8 @@ export default class ReplyService {
           commentId: true,
           unlikes: true,
           createdAt: true,
+          statusLike: true,
+          statusUnlike: true,
           updatedAt: true,
           admin: {
             select: {
@@ -131,6 +139,8 @@ export default class ReplyService {
           content,
           likes: 0,
           unlikes: 0,
+          statusLike: false,
+          statusUnlike: false,
           comment: {
             connect: {
               id: commentId,
@@ -149,6 +159,8 @@ export default class ReplyService {
           likes: true,
           unlikes: true,
           createdAt: true,
+          statusLike: true,
+          statusUnlike: true,
           updatedAt: true,
           admin: {
             select: {
@@ -211,6 +223,8 @@ export default class ReplyService {
         content: true,
         likes: true,
         unlikes: true,
+        statusLike: true,
+        statusUnlike: true,
         createdAt: true,
         updatedAt: true,
         commentId: true,
@@ -271,7 +285,7 @@ export default class ReplyService {
     return replyDeleted;
   }
 
-  async addLike(id: number, like: number) {
+  async addLike({ id, like, statusLike }: IAddLike) {
     const reply = await prismaService.prisma.reply.findFirst({
       where: { id },
     });
@@ -283,13 +297,14 @@ export default class ReplyService {
       where: { id },
       data: {
         likes: like,
+        statusLike,
       },
     });
 
     return replyUnLiked;
   }
 
-  async addUnlike(id: number, Unlike: number) {
+  async addUnlike({ id, statusUnlike, unlike }: IAddUnlike) {
     const reply = await prismaService.prisma.reply.findFirst({
       where: { id },
     });
@@ -300,7 +315,8 @@ export default class ReplyService {
     const replyUnliked = await prismaService.prisma.reply.update({
       where: { id },
       data: {
-        unlikes: Unlike,
+        unlikes: unlike,
+        statusUnlike,
       },
     });
 

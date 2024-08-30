@@ -1,4 +1,4 @@
-import { ICommentDataBoby } from "../interfaces";
+import { IAddLike, IAddUnlike, ICommentDataBoby } from "../interfaces";
 import { prismaService } from "./prismaService";
 
 export default class CommentService {
@@ -9,6 +9,8 @@ export default class CommentService {
           content,
           likes: 0,
           unlikes: 0,
+          statusLike: false,
+          statusUnlike: false,
           post: {
             connect: {
               id: postId,
@@ -29,6 +31,8 @@ export default class CommentService {
           content: true,
           postId: true,
           unlikes: true,
+          statusLike: true,
+          statusUnlike: true,
           adminId: true,
           admin: {
             select: {
@@ -74,6 +78,9 @@ export default class CommentService {
           content,
           likes: 0,
           unlikes: 0,
+          statusLike: false,
+          statusUnlike: false,
+
           post: {
             connect: {
               id: postId,
@@ -93,6 +100,8 @@ export default class CommentService {
           postId: true,
           content: true,
           unlikes: true,
+          statusLike: true,
+          statusUnlike: true,
           adminId: true,
           replies: true,
           admin: {
@@ -139,6 +148,9 @@ export default class CommentService {
           content,
           likes: 0,
           unlikes: 0,
+          statusLike: false,
+          statusUnlike: false,
+
           post: {
             connect: {
               id: postId,
@@ -157,6 +169,8 @@ export default class CommentService {
           replies: true,
           likes: true,
           content: true,
+          statusLike: true,
+          statusUnlike: true,
           unlikes: true,
           postId: true,
           adminId: true,
@@ -200,7 +214,7 @@ export default class CommentService {
     }
   }
 
-  async addLike(id: number, like: number) {
+  async addLike({ id, like, statusLike }: IAddLike) {
     const comment = await prismaService.prisma.comment.findFirst({
       where: { id },
     });
@@ -212,13 +226,14 @@ export default class CommentService {
       where: { id },
       data: {
         likes: like,
+        statusLike,
       },
     });
 
     return commentUnLiked;
   }
 
-  async addUnlike(id: number, Unlike: number) {
+  async addUnlike({ id, statusUnlike, unlike }: IAddUnlike) {
     const comment = await prismaService.prisma.comment.findFirst({
       where: { id },
     });
@@ -229,7 +244,8 @@ export default class CommentService {
     const commentUnLiked = await prismaService.prisma.comment.update({
       where: { id },
       data: {
-        unlikes: Unlike,
+        unlikes: unlike,
+        statusUnlike,
       },
     });
 

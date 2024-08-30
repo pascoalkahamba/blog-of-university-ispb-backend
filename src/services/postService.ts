@@ -1,4 +1,9 @@
-import { ICreatePost, IPictureModal } from "../interfaces";
+import {
+  IAddLike,
+  IAddUnlike,
+  ICreatePost,
+  IPictureModal,
+} from "../interfaces";
 import { prismaService } from "./prismaService";
 
 export default class PostService {
@@ -24,6 +29,8 @@ export default class PostService {
           content,
           likes: 0,
           unlikes: 0,
+          statusLike: false,
+          statusUnlike: false,
           admin: {
             connect: {
               id: createrPostId,
@@ -65,6 +72,8 @@ export default class PostService {
         content,
         likes: 0,
         unlikes: 0,
+        statusLike: false,
+        statusUnlike: false,
         coordinator: {
           connect: {
             id: createrPostId,
@@ -149,7 +158,7 @@ export default class PostService {
     return postUpdated;
   }
 
-  async addLike(id: number, like: number) {
+  async addLike({ id, like, statusLike }: IAddLike) {
     const post = await prismaService.prisma.post.findFirst({
       where: { id },
     });
@@ -161,13 +170,14 @@ export default class PostService {
       where: { id },
       data: {
         likes: like,
+        statusLike,
       },
     });
 
     return postLiked;
   }
 
-  async addUnlike(id: number, Unlike: number) {
+  async addUnlike({ id, unlike, statusUnlike }: IAddUnlike) {
     const post = await prismaService.prisma.post.findFirst({
       where: { id },
     });
@@ -178,7 +188,8 @@ export default class PostService {
     const postUnLiked = await prismaService.prisma.post.update({
       where: { id },
       data: {
-        unlikes: Unlike,
+        unlikes: unlike,
+        statusUnlike,
       },
     });
 
@@ -215,6 +226,9 @@ export default class PostService {
         adminId: true,
         likes: true,
         unlikes: true,
+        statusLike: true,
+        statusUnlike: true,
+
         admin: {
           select: {
             username: true,
@@ -246,6 +260,8 @@ export default class PostService {
         title: true,
         content: true,
         favorite: true,
+        statusLike: true,
+        statusUnlike: true,
         views: true,
         comments: {
           select: {

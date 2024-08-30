@@ -24,11 +24,24 @@ export interface IReplyDataBoby {
   whoCreator: TwhoPosted;
 }
 
+export interface IAddLike {
+  id: number;
+  like: number;
+  statusLike: boolean;
+}
+export interface IAddUnlike {
+  id: number;
+  unlike: number;
+  statusUnlike: boolean;
+}
+
 export interface ILike {
   like: number;
+  statusLike: boolean;
 }
 export interface IUnlike {
   unlike: number;
+  statusUnlike: boolean;
 }
 export interface IUpdateCommentDataBoby {
   content: string;

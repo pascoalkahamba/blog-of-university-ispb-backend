@@ -100,8 +100,12 @@ export default class CommentController {
     try {
       const { id } = req.params as unknown as { id: number };
       const parseBody = req.body as ILike;
-      const { like } = addLikeSchema.parse(parseBody);
-      const commentLiked = await commentService.addLike(+id, +like);
+      const { like, statusLike } = addLikeSchema.parse(parseBody);
+      const commentLiked = await commentService.addLike({
+        id: +id,
+        like: +like,
+        statusLike,
+      });
 
       if (!commentLiked) {
         throw CommentError.commentNotFound();
@@ -123,8 +127,12 @@ export default class CommentController {
     try {
       const { id } = req.params as unknown as { id: number };
       const parseBody = req.body as IUnlike;
-      const { unlike } = addUnlikeSchema.parse(parseBody);
-      const commentUnliked = await commentService.addUnlike(+id, +unlike);
+      const { unlike, statusUnlike } = addUnlikeSchema.parse(parseBody);
+      const commentUnliked = await commentService.addUnlike({
+        id: +id,
+        unlike: +unlike,
+        statusUnlike,
+      });
 
       if (!commentUnliked) {
         throw CommentError.commentNotFound();

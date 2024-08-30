@@ -91,9 +91,11 @@ const deleteStudentSchema = zod.object({
 
 const addLikeSchema = zod.object({
   like: zod.number(),
+  statusLike: zod.boolean(),
 });
 const addUnlikeSchema = zod.object({
   unlike: zod.number(),
+  statusUnlike: zod.boolean(),
 });
 
 export {

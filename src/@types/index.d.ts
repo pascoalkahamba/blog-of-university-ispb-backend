@@ -16,6 +16,8 @@ export type TPathError =
   | "createrPostId"
   | "kindOfFile"
   | "like"
+  | "statusLike"
+  | "statusUnlike"
   | "unlike"
   | "title"
   | "nameOfDepartment"

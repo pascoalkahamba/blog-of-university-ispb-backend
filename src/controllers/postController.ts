@@ -205,8 +205,12 @@ export default class PostContorller {
     try {
       const { id } = req.params as unknown as { id: number };
       const parseBody = req.body as ILike;
-      const { like } = addLikeSchema.parse(parseBody);
-      const postLiked = await postService.addLike(+id, +like);
+      const { like, statusLike } = addLikeSchema.parse(parseBody);
+      const postLiked = await postService.addLike({
+        id: +id,
+        like: +like,
+        statusLike,
+      });
 
       if (!postLiked) {
         throw PostError.postNotFound();
@@ -228,8 +232,12 @@ export default class PostContorller {
     try {
       const { id } = req.params as unknown as { id: number };
       const parseBody = req.body as IUnlike;
-      const { unlike } = addUnlikeSchema.parse(parseBody);
-      const posteUnliked = await postService.addUnlike(+id, +unlike);
+      const { unlike, statusUnlike } = addUnlikeSchema.parse(parseBody);
+      const posteUnliked = await postService.addUnlike({
+        id: +id,
+        unlike: +unlike,
+        statusUnlike,
+      });
 
       if (!posteUnliked) {
         throw PostError.postNotFound();
