@@ -231,6 +231,7 @@ export default class PostService {
 
         admin: {
           select: {
+            id: true,
             username: true,
             role: true,
             profile: true,
@@ -238,6 +239,7 @@ export default class PostService {
         },
         coordinator: {
           select: {
+            id: true,
             username: true,
             role: true,
             profile: true,
@@ -268,6 +270,8 @@ export default class PostService {
             id: true,
             createdAt: true,
             updatedAt: true,
+            statusLike: true,
+            statusUnlike: true,
             content: true,
             replies: {
               select: {
@@ -276,6 +280,8 @@ export default class PostService {
                 content: true,
                 likes: true,
                 unlikes: true,
+                statusLike: true,
+                statusUnlike: true,
                 createdAt: true,
                 updatedAt: true,
                 admin: {
@@ -283,6 +289,7 @@ export default class PostService {
                     id: true,
                     username: true,
                     profile: true,
+                    role: true,
                   },
                 },
                 student: {
@@ -290,6 +297,7 @@ export default class PostService {
                     id: true,
                     username: true,
                     profile: true,
+                    role: true,
                     registrationNumber: true,
                   },
                 },
@@ -301,6 +309,7 @@ export default class PostService {
                     id: true,
                     username: true,
                     profile: true,
+                    role: true,
                   },
                 },
               },
@@ -313,6 +322,7 @@ export default class PostService {
                 id: true,
                 username: true,
                 profile: true,
+                role: true,
               },
             },
             coordinatorId: true,
@@ -321,6 +331,7 @@ export default class PostService {
                 id: true,
                 username: true,
                 profile: true,
+                role: true,
               },
             },
             studentId: true,
@@ -329,6 +340,7 @@ export default class PostService {
                 id: true,
                 username: true,
                 profile: true,
+                role: true,
               },
             },
           },
@@ -340,6 +352,7 @@ export default class PostService {
         unlikes: true,
         admin: {
           select: {
+            id: true,
             username: true,
             role: true,
             profile: true,
@@ -347,6 +360,7 @@ export default class PostService {
         },
         coordinator: {
           select: {
+            id: true,
             username: true,
             role: true,
             profile: true,

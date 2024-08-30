@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 export const DEFAULT_SELECT = {
   username: true,
   email: true,
+  role: true,
   contact: true,
 };
 export default class AdminService {
@@ -41,13 +42,7 @@ export default class AdminService {
 
     const logged = await prismaService.prisma.admin.findFirst({
       where: { email },
-      select: {
-        id: true,
-        username: true,
-        password: true,
-        email: true,
-        contact: true,
-      },
+      select: { ...DEFAULT_SELECT, password: true, id: true },
     });
 
     if (!logged) {
