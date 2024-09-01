@@ -7,11 +7,20 @@ const departmentRoutes = express.Router();
 
 departmentRoutes.use(authMiddleware);
 departmentRoutes.post("/create", departmentController.create);
+departmentRoutes.get(
+  "/getAllDepartments",
+  departmentController.getAllDepartments
+);
+departmentRoutes.get(
+  "/getOneDepartment/:id",
+  departmentController.getOneDepartment
+);
 departmentRoutes.post("/update/:id", departmentController.update);
 departmentRoutes.delete(
   "/deleteCourseFromDepartment/:departmentId/:courseId",
   departmentController.deleteCourseFromDepartment
 );
+departmentRoutes.delete("/delete/:id", departmentController.delete);
 departmentRoutes.delete(
   "/deleteSubjectFromCourse/:departmentId/:courseId/:subjectId",
   departmentController.deleteSubjectFromCourse

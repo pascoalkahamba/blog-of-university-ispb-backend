@@ -43,8 +43,8 @@ export default class PostService {
             },
           },
           department: {
-            create: {
-              name: nameOfDepartment,
+            connect: {
+              id: 3,
             },
           },
         },
@@ -86,8 +86,8 @@ export default class PostService {
           },
         },
         department: {
-          create: {
-            name: nameOfDepartment,
+          connect: {
+            id: 3,
           },
         },
       },
@@ -136,7 +136,7 @@ export default class PostService {
         },
         department: {
           update: {
-            name: nameOfDepartment,
+            id: 4,
           },
         },
       },

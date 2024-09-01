@@ -14,6 +14,7 @@ import { handleError } from "../errors/handleError";
 import { StatusCodes } from "http-status-codes";
 import DepartmentValidator from "../validators/departmentValidator";
 import { DepartmentError } from "../errors/departmentError";
+import { prismaService } from "../services/prismaService";
 
 const departmentService = new DepartmentService();
 const departmentValidator = new DepartmentValidator();
@@ -72,7 +73,7 @@ export class DepartmentController {
 
   async delete(req: Request, res: Response) {
     try {
-      const { id } = req.body as unknown as { id: number };
+      const { id } = req.params as unknown as { id: number };
       const deletedDepartment = await departmentService.delete(+id);
       if (!deletedDepartment) throw DepartmentError.departmentNotFound();
 
@@ -127,6 +128,42 @@ export class DepartmentController {
       if (!deletedCourse) throw DepartmentError.departmentItemsNotFound();
 
       return res.status(StatusCodes.ACCEPTED).json(deletedCourse);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromError(error);
+        const { details } = validationError;
+        const pathError = details[0].path[0] as TPathError;
+        departmentValidator.validator(pathError, res);
+      } else {
+        return handleError(error as BaseError, res);
+      }
+    }
+  }
+
+  async getAllDepartments(req: Request, res: Response) {
+    try {
+      const departments = await departmentService.getAllDepartments();
+
+      return res.status(StatusCodes.OK).json(departments);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromError(error);
+        const { details } = validationError;
+        const pathError = details[0].path[0] as TPathError;
+        departmentValidator.validator(pathError, res);
+      } else {
+        return handleError(error as BaseError, res);
+      }
+    }
+  }
+  async getOneDepartment(req: Request, res: Response) {
+    try {
+      const { id } = req.params as unknown as { id: number };
+      const department = await departmentService.getOneDepartment(+id);
+
+      if (!department) throw DepartmentError.departmentNotFound();
+
+      return res.status(StatusCodes.OK).json(department);
     } catch (error) {
       if (error instanceof ZodError) {
         const validationError = fromError(error);

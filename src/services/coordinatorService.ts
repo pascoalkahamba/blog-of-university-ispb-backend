@@ -28,6 +28,12 @@ export default class CoordinatorService {
         email,
         username,
         password: hashPassword,
+
+        course: {
+          connect: {
+            id: 3,
+          },
+        },
         contact,
         profile: {
           create: {

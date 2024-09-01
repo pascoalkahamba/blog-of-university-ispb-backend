@@ -18,11 +18,11 @@ export class DepartmentService {
     }
 
     for (const course of courses) {
-      const courseAlreadyExist = await prismaService.prisma.course.findFirst({
+      const existingCourse = await prismaService.prisma.course.findFirst({
         where: { name: course.name },
       });
 
-      if (courseAlreadyExist) {
+      if (existingCourse) {
         return;
       }
 
@@ -139,6 +139,12 @@ export class DepartmentService {
     courseId,
     departmentId,
   }: IRemoveCourseFromDepartment) {
+    const existingCourse = await prismaService.prisma.course.findFirst({
+      where: { id: courseId, departmentId },
+    });
+
+    if (!existingCourse) return;
+
     const department = await prismaService.prisma.department.findFirst({
       where: { id: departmentId },
     });
@@ -183,6 +189,24 @@ export class DepartmentService {
     departmentId,
     subjectId,
   }: IRemoveSubjectFromCourse) {
+    const existingCourse = await prismaService.prisma.course.findFirst({
+      where: { id: courseId, departmentId },
+      select: {
+        id: true,
+        subjects: true,
+        departmentId: true,
+        studentId: true,
+      },
+    });
+
+    if (!existingCourse) return;
+
+    const isSubjectConnected = existingCourse.subjects.some(
+      (subject) => subject.id === subjectId
+    );
+
+    if (!isSubjectConnected) return;
+
     const department = await prismaService.prisma.department.findFirst({
       where: { id: departmentId },
     });
@@ -236,5 +260,66 @@ export class DepartmentService {
     });
 
     return updatedDepartment;
+  }
+
+  async getOneDepartment(id: number) {
+    const department = await prismaService.prisma.department.findFirst({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        coordinators: {
+          select: {
+            id: true,
+            username: true,
+            role: true,
+            course: true,
+            contact: true,
+            email: true,
+          },
+        },
+        posts: true,
+        courses: {
+          select: {
+            id: true,
+            name: true,
+            subjects: true,
+          },
+        },
+      },
+    });
+
+    if (!department) return;
+
+    return department;
+  }
+
+  async getAllDepartments() {
+    const departments = await prismaService.prisma.department.findMany({
+      select: {
+        id: true,
+        name: true,
+        coordinators: {
+          select: {
+            id: true,
+            username: true,
+            role: true,
+            course: true,
+            contact: true,
+            email: true,
+          },
+        },
+        posts: true,
+        courses: {
+          select: {
+            id: true,
+            name: true,
+            subjects: true,
+          },
+        },
+      },
+    });
+
+    return departments;
   }
 }
