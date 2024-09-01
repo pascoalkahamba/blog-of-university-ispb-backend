@@ -24,6 +24,38 @@ export interface IReplyDataBoby {
   whoCreator: TwhoPosted;
 }
 
+export interface IDepartmentData {
+  id: number;
+  name: string;
+  courses: ICourse[];
+}
+export interface ICreateDepartmentData {
+   name: string;
+  courses: ICourse[];
+}
+
+export interface ISubjects {
+  id?: number;
+  name: string;
+}
+
+export interface IRemoveCourseFromDepartment {
+  departmentId: number;
+  courseId: number;
+}
+
+export interface IRemoveSubjectFromCourse {
+  departmentId: number;
+  courseId: number;
+  subjectId: number;
+}
+
+export interface ICourse {
+  id?: number;
+  name: string;
+  subjects: ISubjects[];
+}
+
 export interface IAddLike {
   id: number;
   like: number;
@@ -33,6 +65,18 @@ export interface IAddUnlike {
   id: number;
   unlike: number;
   statusUnlike: boolean;
+}
+
+export interface IUpdateProfile {
+  username: string;
+  password: string;
+  bio: string;
+  photo: IPictureModal;
+  department: IDepartmentData;
+  course: ICourse;
+  registrationNumber: string;
+  email: string;
+  contact: string;
 }
 
 export interface ILike {

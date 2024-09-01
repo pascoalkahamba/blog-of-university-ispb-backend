@@ -49,6 +49,26 @@ export default class StudentContoller {
     }
   }
 
+  async getOneStudent(req: Request, res: Response) {
+    try {
+      const { id } = req.params as unknown as { id: number };
+      const student = await studentService.getOneStudent(+id);
+
+      if (!student) throw StudentError.studentNotFound();
+
+      return res.status(StatusCodes.OK).json(student);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromError(error);
+        const { details } = validationError;
+        const pathError = details[0].path[0] as TPathError;
+        studentValidator.validator(pathError, res);
+      } else {
+        return handleError(error as BaseError, res);
+      }
+    }
+  }
+
   async login(req: Request, res: Response) {
     try {
       const { email, password } = loginStudentSchema.parse(req.body);

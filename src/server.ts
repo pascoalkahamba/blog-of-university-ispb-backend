@@ -7,6 +7,7 @@ import { studentRoutes } from "./routes/studentRoutes";
 import { postRoutes } from "./routes/postRoutes";
 import { commentRoutes } from "./routes/commentRoutes";
 import { replyRoutes } from "./routes/replyRoutes";
+import { departmentRoutes } from "./routes/departmentRoutes";
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use("/student", studentRoutes);
 app.use("/post", postRoutes);
 app.use("/comment", commentRoutes);
 app.use("/reply", replyRoutes);
+app.use("/department", departmentRoutes);
 app.use(bodyParser.json());
 
 app.listen(port, () => {

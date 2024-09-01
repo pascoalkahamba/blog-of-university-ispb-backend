@@ -57,6 +57,19 @@ const fileModalSchema = zod.object({
   name: zod.string().min(6),
   deppartmentId: zod.number(),
 });
+const subjectSchema = zod.object({
+  name: zod.string().min(3),
+});
+
+const courseSchema = zod.object({
+  name: zod.string().min(3),
+  subjects: zod.array(subjectSchema).nonempty(),
+});
+
+const createDepartmentSchema = zod.object({
+  name: zod.string().min(6),
+  courses: zod.array(courseSchema).nonempty(),
+});
 
 const pictureModalSchema = zod.object({
   adminId: zod.number() || zod.undefined(),
@@ -105,6 +118,7 @@ export {
   createCoordinatorSchema,
   loginCoordinatorSchema,
   loginStudentSchema,
+  createDepartmentSchema,
   envSchema,
   addLikeSchema,
   addUnlikeSchema,

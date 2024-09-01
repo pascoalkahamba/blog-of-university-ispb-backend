@@ -9,4 +9,10 @@ coordinatorRoutes.post("/create", coordinatorController.create);
 coordinatorRoutes.post("/login", coordinatorController.login);
 coordinatorRoutes.post("/forgotPassword", coordinatorController.forgotPassword);
 
+coordinatorRoutes.use(authMiddleware);
+coordinatorRoutes.get(
+  "/getOneUser/:id",
+  coordinatorController.getOneCoordinator
+);
+
 export { coordinatorRoutes };

@@ -1,4 +1,6 @@
+import { url } from "inspector";
 import { TAdminLogin, TAdminModal } from "../@types";
+import { IUpdateProfile } from "../interfaces";
 import { prismaService } from "./prismaService";
 import bcrypt from "bcrypt";
 
@@ -30,11 +32,42 @@ export default class AdminService {
         username,
         contact,
         password: hashPassword,
+        profile: {
+          create: {
+            bio: "Aqui você pode falar um pouco de ti Administrador.",
+            photo: {
+              create: {
+                url: "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png",
+                name: "Default_Name_Of_Photo",
+              },
+            },
+          },
+        },
       },
       select: DEFAULT_SELECT,
     });
 
     return adminCreated;
+  }
+
+  async getOneAdmin(id: number) {
+    const admin = await prismaService.prisma.admin.findFirst({
+      where: { id },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        contact: true,
+        role: true,
+        profile: true,
+      },
+    });
+
+    if (!admin) {
+      return;
+    }
+
+    return admin;
   }
 
   async login(adminInfo: TAdminLogin) {
@@ -60,12 +93,13 @@ export default class AdminService {
     return admin;
   }
 
-  async updateInfo(adminModal: TAdminModal, id: number) {
-    const { username, password, contact, email } = adminModal;
+  async updateInfo(adminModal: IUpdateProfile, id: number) {
+    const { username, password, contact, email, bio, photo } = adminModal;
 
     const admin = await prismaService.prisma.admin.findFirst({
       where: { id },
     });
+    if (!admin) return;
 
     const sameEmail = await prismaService.prisma.admin.findFirst({
       where: { email },
@@ -74,13 +108,8 @@ export default class AdminService {
       where: { contact },
     });
 
-    if (sameContact || sameEmail) {
-      return "sameInfo";
-    }
-
-    if (!admin) {
-      return;
-    }
+    if (email !== admin.email && sameEmail) return;
+    if (contact !== admin.contact && sameContact) return;
 
     const adminUpdated = await prismaService.prisma.admin.update({
       where: { id },
@@ -89,8 +118,35 @@ export default class AdminService {
         password,
         email,
         contact,
+        profile: {
+          update: {
+            bio,
+            photo: {
+              update: {
+                url: photo.url,
+                name: photo.name,
+              },
+            },
+          },
+        },
       },
-      select: DEFAULT_SELECT,
+      select: {
+        ...DEFAULT_SELECT,
+        profile: {
+          select: {
+            id: true,
+            adminId: true,
+            photo: {
+              select: {
+                id: true,
+                url: true,
+                name: true,
+                profileId: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     return adminUpdated;

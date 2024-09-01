@@ -47,6 +47,26 @@ export default class CoordinatorContoller {
     }
   }
 
+  async getOneCoordinator(req: Request, res: Response) {
+    try {
+      const { id } = req.params as unknown as { id: number };
+      const coordinator = await coordinatorService.getOneCoordinator(+id);
+
+      if (!coordinator) throw CoordinatorError.coordinatorNotFound();
+
+      return res.status(StatusCodes.OK).json(coordinator);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromError(error);
+        const { details } = validationError;
+        const pathError = details[0].path[0] as TPathError;
+        coordinatorValidator.validator(pathError, res);
+      } else {
+        return handleError(error as BaseError, res);
+      }
+    }
+  }
+
   async login(req: Request, res: Response) {
     try {
       const { email, password } = loginCoordinatorSchema.parse(req.body);

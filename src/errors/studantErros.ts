@@ -30,6 +30,9 @@ export class StudentError {
       StatusCodes.NOT_FOUND
     );
   }
+  static studentNotFound() {
+    return new BaseError("Estudante não encontrado.", StatusCodes.NOT_FOUND);
+  }
   static registrationNumberNotFound() {
     return new BaseError(
       "Número de matriculo do estudante não fornecido.",

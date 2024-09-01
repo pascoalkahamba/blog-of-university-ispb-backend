@@ -23,4 +23,7 @@ export class CoordinatorError {
       StatusCodes.NOT_FOUND
     );
   }
+  static coordinatorNotFound() {
+    return new BaseError("Cordenador não encontrado.", StatusCodes.NOT_FOUND);
+  }
 }

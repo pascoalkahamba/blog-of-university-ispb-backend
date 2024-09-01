@@ -154,11 +154,9 @@ model Department {
 }
 
 model Subject {
-  id       Int      @id @default(autoincrement())
-  username String
-  password String
-  courses  Course[]
-  years    Int
+  id      Int      @id @default(autoincrement())
+  name    String
+  courses Course[]
 }
 
 enum Role {

@@ -9,4 +9,8 @@ studentRoutes.post("/create", studentController.create);
 studentRoutes.post("/login", studentController.login);
 studentRoutes.post("/forgotPassword", studentController.forgotPassword);
 
+studentRoutes.use(authMiddleware);
+
+studentRoutes.get("/getOneUser/:id", studentController.getOneStudent);
+
 export { studentRoutes };

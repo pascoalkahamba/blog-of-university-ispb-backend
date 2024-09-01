@@ -112,9 +112,29 @@ export default class AdminController {
     }
   }
 
+  async getOneAdmin(req: Request, res: Response) {
+    try {
+      const { id } = req.params as unknown as { id: number };
+      const admin = await adminService.getOneAdmin(+id);
+
+      if (!admin) throw AdminError.adminNotFound();
+
+      return res.status(StatusCodes.OK).json(admin);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromError(error);
+        const { details } = validationError;
+        const pathError = details[0].path[0] as TPathError;
+        adminValidator.validator(pathError, res);
+      } else {
+        return handleError(error as BaseError, res);
+      }
+    }
+  }
+
   async updateInfo(req: Request, res: Response) {
     try {
-      const { id } = req.params as { id: string };
+      const { id } = req.params as unknown as { id: number };
       const { email, password, username, contact } = createAdminSchema.parse(
         req.body
       );
