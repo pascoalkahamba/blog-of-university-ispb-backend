@@ -1,6 +1,7 @@
 import {
   ICreateDepartmentData,
   IDepartmentData,
+  IGetAllSubjectsFromCourse,
   IRemoveCourseFromDepartment,
   IRemoveSubjectFromCourse,
 } from "../interfaces";
@@ -292,6 +293,37 @@ export class DepartmentService {
     if (!department) return;
 
     return department;
+  }
+
+  async getAllCoursesFromDepartments(departmentId: number) {
+    const courses = await prismaService.prisma.course.findMany({
+      where: { departmentId },
+    });
+
+    return courses;
+  }
+
+  async getAllSubjectsFromCourse({
+    courseId,
+    subjectId,
+  }: IGetAllSubjectsFromCourse) {
+    const courses = await prismaService.prisma.course.findMany({
+      where: { id: courseId },
+      select: {
+        id: true,
+        name: true,
+        subjects: true,
+        studentId: true,
+      },
+    });
+
+    const isThereSubject = courses.some(
+      (course) => course.studentId === subjectId
+    );
+
+    if (!isThereSubject) return;
+
+    return courses;
   }
 
   async getAllDepartments() {

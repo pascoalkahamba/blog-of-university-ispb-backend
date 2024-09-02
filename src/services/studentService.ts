@@ -1,12 +1,13 @@
-import { TStudentLogin, TStudentModal } from "../@types";
-import { IUpdateProfile } from "../interfaces";
+import { TStudentLogin } from "../@types";
+import { IStudentData, IUpdateProfile } from "../interfaces";
+import { replyRoutes } from "../routes/replyRoutes";
 import { DEFAULT_SELECT } from "./adminService";
 import { prismaService } from "./prismaService";
 import bcrypt from "bcrypt";
 
 export default class StudentService {
-  async create(StudentModal: TStudentModal) {
-    const { contact, email, password, username, registrationNumber } =
+  async create(StudentModal: IStudentData) {
+    const { contact, email, password, username, registrationNumber, courseId } =
       StudentModal;
     const hashPassword = await bcrypt.hash(password, 10);
     const student = await prismaService.prisma.student.findFirst({
@@ -30,9 +31,15 @@ export default class StudentService {
       return "registrationAlreadyExist";
     }
 
+    const course = await prismaService.prisma.course.findFirst({
+      where: { id: courseId },
+    });
+
     if (student || StudentN) {
       return;
     }
+
+    if (!course) return "noCourse";
 
     const studentCreated = await prismaService.prisma.student.create({
       data: {
@@ -55,13 +62,8 @@ export default class StudentService {
           },
         },
         course: {
-          create: {
-            name: "Escreva o seu curso.",
-            department: {
-              create: {
-                name: "Escreva o nome do seu departamento.",
-              },
-            },
+          connect: {
+            id: courseId,
           },
         },
       },
@@ -100,6 +102,8 @@ export default class StudentService {
       contact,
       email,
       password,
+      department,
+      course,
       photo,
       registrationNumber,
       username,
@@ -129,12 +133,20 @@ export default class StudentService {
     )
       return;
 
-    const studentUpdated = await prismaService.prisma.student.update({
+    const updatedStudent = await prismaService.prisma.student.update({
       where: { id },
       data: {
         username,
         contact,
         password,
+        registrationNumber,
+        email,
+        course: {
+          update: {
+            id: course.id,
+            departmentId: department.id,
+          },
+        },
         profile: {
           update: {
             bio,
@@ -147,7 +159,43 @@ export default class StudentService {
           },
         },
       },
+
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        contact: true,
+        registrationNumber: true,
+        profile: {
+          select: {
+            id: true,
+            photo: {
+              select: {
+                id: true,
+                name: true,
+                url: true,
+              },
+            },
+            student: {
+              select: {
+                id: true,
+                role: true,
+              },
+            },
+            studentId: true,
+          },
+        },
+        course: {
+          select: {
+            id: true,
+            name: true,
+            department: true,
+          },
+        },
+      },
     });
+
+    return updatedStudent;
   }
 
   async forgotPassword(email: string, newPassword: string) {
@@ -191,5 +239,19 @@ export default class StudentService {
     }
 
     return student;
+  }
+
+  async deleteStudent(id: number) {
+    const student = await prismaService.prisma.student.findFirst({
+      where: { id },
+    });
+
+    if (!student) return;
+
+    const deletedStudent = await prismaService.prisma.student.delete({
+      where: { id },
+    });
+
+    return deletedStudent;
   }
 }

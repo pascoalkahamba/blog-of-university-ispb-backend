@@ -18,7 +18,10 @@ export class DepartmentError {
   }
 
   static subjectNotFound() {
-    return new BaseError("Disciplina não encontrado.", StatusCodes.NOT_FOUND);
+    return new BaseError(
+      "Disciplina(s) não encontrado.",
+      StatusCodes.NOT_FOUND
+    );
   }
   static courseNotFound() {
     return new BaseError("Courso não encontrado.", StatusCodes.NOT_FOUND);

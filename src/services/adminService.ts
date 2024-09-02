@@ -1,6 +1,4 @@
-import { url } from "inspector";
-import { TAdminLogin, TAdminModal } from "../@types";
-import { IUpdateProfile } from "../interfaces";
+import { TAdminInfoUpdate, TAdminLogin, TAdminModal } from "../@types";
 import { prismaService } from "./prismaService";
 import bcrypt from "bcrypt";
 
@@ -93,7 +91,7 @@ export default class AdminService {
     return admin;
   }
 
-  async updateInfo(adminModal: IUpdateProfile, id: number) {
+  async updateInfo(adminModal: TAdminInfoUpdate, id: number) {
     const { username, password, contact, email, bio, photo } = adminModal;
 
     const admin = await prismaService.prisma.admin.findFirst({

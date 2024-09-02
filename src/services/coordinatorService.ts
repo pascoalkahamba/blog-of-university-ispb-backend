@@ -1,12 +1,13 @@
-import { TCoordinatorLogin, TCoordinatorModal } from "../@types";
-import { IUpdateProfile } from "../interfaces";
+import { TCoordinatorInfoUpdate, TCoordinatorLogin } from "../@types";
+import { ICoordinatorData } from "../interfaces";
 import { DEFAULT_SELECT } from "./adminService";
 import { prismaService } from "./prismaService";
 import bcrypt from "bcrypt";
 
 export default class CoordinatorService {
-  async create(coordinatorModal: TCoordinatorModal, nameOfDepartment: string) {
-    const { contact, email, password, username } = coordinatorModal;
+  async create(coordinatorData: ICoordinatorData) {
+    const { contact, email, password, username, departmentId, courseId } =
+      coordinatorData;
     const hashPassword = await bcrypt.hash(password, 10);
     const coordinator = await prismaService.prisma.coordinator.findFirst({
       where: {
@@ -23,6 +24,14 @@ export default class CoordinatorService {
       return;
     }
 
+    const courses = await prismaService.prisma.course.findMany({
+      where: { departmentId },
+    });
+
+    const existingCourse = courses.some((course) => course.id === courseId);
+
+    if (!existingCourse) return "noCourse";
+
     const coordinatorCreated = await prismaService.prisma.coordinator.create({
       data: {
         email,
@@ -31,7 +40,7 @@ export default class CoordinatorService {
 
         course: {
           connect: {
-            id: 3,
+            id: courseId,
           },
         },
         contact,
@@ -47,8 +56,8 @@ export default class CoordinatorService {
           },
         },
         department: {
-          create: {
-            name: nameOfDepartment,
+          connect: {
+            id: departmentId,
           },
         },
       },
@@ -58,8 +67,20 @@ export default class CoordinatorService {
     return coordinatorCreated;
   }
 
-  async udapteInfoCoordinator(id: number, newData: IUpdateProfile) {
-    const { bio, contact, email, password, photo, username } = newData;
+  async updateInfoProfileCoordinator(
+    id: number,
+    newData: TCoordinatorInfoUpdate
+  ) {
+    const {
+      bio,
+      contact,
+      email,
+      password,
+      photo,
+      username,
+      department,
+      course,
+    } = newData;
     const coordinator = await prismaService.prisma.coordinator.findFirst({
       where: { id },
     });
@@ -85,6 +106,12 @@ export default class CoordinatorService {
         password,
         contact,
         email,
+        departmentId: department.id,
+        course: {
+          update: {
+            id: course.id,
+          },
+        },
         profile: {
           update: {
             bio,
@@ -99,6 +126,8 @@ export default class CoordinatorService {
       },
       select: {
         ...DEFAULT_SELECT,
+        department: true,
+        course: true,
         profile: {
           select: {
             id: true,
@@ -184,5 +213,19 @@ export default class CoordinatorService {
     }
 
     return coordinator;
+  }
+
+  async deleteCoordinator(id: number) {
+    const coordinator = await prismaService.prisma.coordinator.findFirst({
+      where: { id },
+    });
+
+    if (!coordinator) return;
+
+    const deletedCoordinator = await prismaService.prisma.coordinator.delete({
+      where: { id },
+    });
+
+    return deletedCoordinator;
   }
 }

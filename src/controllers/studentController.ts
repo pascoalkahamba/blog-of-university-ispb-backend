@@ -5,11 +5,16 @@ import { TPathError } from "../@types";
 import { BaseError } from "../errors/baseError";
 import StudentValidator from "../validators/studentValidator";
 import { handleError } from "../errors/handleError";
-import { createStudentSchema, loginStudentSchema } from "../schemas";
+import {
+  createStudentSchema,
+  loginStudentSchema,
+  studentUpdateProfileSchema,
+} from "../schemas";
 import StudentService from "../services/studentService";
 import { StudentError } from "../errors/studantErros";
 import { StatusCodes } from "http-status-codes";
 import jwt from "jsonwebtoken";
+import { IStudentData } from "../interfaces";
 
 const studentValidator = new StudentValidator();
 const studentService = new StudentService();
@@ -17,11 +22,19 @@ const studentService = new StudentService();
 export default class StudentContoller {
   async create(req: Request, res: Response) {
     try {
-      const { contact, email, password, username, registrationNumber } =
-        createStudentSchema.parse(req.body);
+      const parseBody = req.body as IStudentData;
+      const {
+        contact,
+        email,
+        password,
+        username,
+        registrationNumber,
+        courseId,
+      } = createStudentSchema.parse(parseBody);
 
       const student = await studentService.create({
         contact,
+        courseId,
         email,
         password,
         username,
@@ -34,6 +47,9 @@ export default class StudentContoller {
 
       if (!student) {
         throw StudentError.emailAlreadyExist();
+      }
+      if (student === "noCourse") {
+        throw StudentError.courseNotFound();
       }
 
       return res.status(StatusCodes.CREATED).json(student);
@@ -116,6 +132,51 @@ export default class StudentContoller {
       }
 
       return res.status(StatusCodes.CREATED).json(newStudentInfo);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromError(error);
+        const { details } = validationError;
+        const pathError = details[0].path[0] as TPathError;
+        studentValidator.validator(pathError, res);
+      } else {
+        return handleError(error as BaseError, res);
+      }
+    }
+  }
+
+  async updateInfoProfile(req: Request, res: Response) {
+    try {
+      const { id } = req.params as unknown as { id: number };
+      const bodyData = studentUpdateProfileSchema.parse(req.body);
+
+      const updatedStudent = await studentService.updateInfoStudent(
+        +id,
+        bodyData
+      );
+
+      if (!updatedStudent) throw StudentError.studentNotFound();
+
+      return res.status(StatusCodes.ACCEPTED).json(updatedStudent);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromError(error);
+        const { details } = validationError;
+        const pathError = details[0].path[0] as TPathError;
+        studentValidator.validator(pathError, res);
+      } else {
+        return handleError(error as BaseError, res);
+      }
+    }
+  }
+
+  async deleteStudent(req: Request, res: Response) {
+    try {
+      const { id } = req.params as unknown as { id: number };
+      const deletedStudent = await studentService.deleteStudent(+id);
+
+      if (!deletedStudent) throw StudentError.studentNotFound();
+
+      return res.status(StatusCodes.ACCEPTED).json(deletedStudent);
     } catch (error) {
       if (error instanceof ZodError) {
         const validationError = fromError(error);

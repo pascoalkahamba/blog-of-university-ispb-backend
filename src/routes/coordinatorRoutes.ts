@@ -15,4 +15,13 @@ coordinatorRoutes.get(
   coordinatorController.getOneCoordinator
 );
 
+coordinatorRoutes.post(
+  "/updateInfoProfile/:id",
+  coordinatorController.updateInfoProfile
+);
+coordinatorRoutes.delete(
+  "/deleteCoordinator/:id",
+  coordinatorController.deleteCoordinator
+);
+
 export { coordinatorRoutes };

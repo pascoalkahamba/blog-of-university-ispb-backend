@@ -26,7 +26,8 @@ const envSchema = zod.object({
 const createCoordinatorSchema = zod.object({
   username: zod.string().min(6),
   password: zod.string().min(6),
-  department: zod.string().min(6),
+  departmentId: zod.number(),
+  courseId: zod.number(),
   email: zod.string().email(),
   contact: zod.string().min(9).max(9),
 });
@@ -34,6 +35,7 @@ const createCoordinatorSchema = zod.object({
 const createStudentSchema = zod.object({
   username: zod.string().min(6),
   password: zod.string().min(6),
+  courseId: zod.number(),
   registrationNumber: zod.string().min(3),
   email: zod.string().email(),
   contact: zod.string().min(9).max(9),
@@ -61,19 +63,24 @@ const subjectSchema = zod.object({
   name: zod.string().min(3),
 });
 
-const courseSchema = zod.object({
+const courseDataSchema = zod.object({
+  id: zod.number().optional(),
   name: zod.string().min(3),
   subjects: zod.array(subjectSchema).nonempty(),
 });
 
-const createDepartmentSchema = zod.object({
+const createCourseSchema = courseDataSchema.omit({ id: true });
+
+const departmentDataSchema = zod.object({
+  id: zod.number(),
   name: zod.string().min(6),
-  courses: zod.array(courseSchema).nonempty(),
+  courses: zod.array(courseDataSchema).nonempty(),
 });
+const createDepartmentSchema = departmentDataSchema.omit({ id: true });
 
 const pictureModalSchema = zod.object({
-  adminId: zod.number() || zod.undefined(),
-  coordinatorId: zod.number() || zod.undefined(),
+  adminId: zod.number().optional(),
+  coordinatorId: zod.number().optional(),
   name: zod.string(),
   url: zod.string().url(),
 });
@@ -81,6 +88,30 @@ const pictureModalSchema = zod.object({
 const loginAdminSchema = zod.object({
   password: zod.string().min(6),
   email: zod.string().email(),
+});
+
+const photoSchema = zod.object({
+  name: zod.string(),
+  url: zod.string().url(),
+});
+const studentUpdateProfileSchema = zod.object({
+  password: zod.string().min(6),
+  username: zod.string().min(6),
+  photo: photoSchema,
+  registrationNumber: zod.string().min(2),
+  bio: zod.string().min(10),
+  email: zod.string().email(),
+  course: courseDataSchema,
+  contact: zod.string().min(9).max(9),
+  department: departmentDataSchema,
+});
+const coordinatorUpdateProfileSchema = studentUpdateProfileSchema.omit({
+  registrationNumber: true,
+});
+const adminUpdateProfileSchema = studentUpdateProfileSchema.omit({
+  department: true,
+  course: true,
+  registrationNumber: true,
 });
 const loginStudentSchema = zod.object({
   password: zod.string().min(6),
@@ -118,14 +149,19 @@ export {
   createCoordinatorSchema,
   loginCoordinatorSchema,
   loginStudentSchema,
+  departmentDataSchema,
   createDepartmentSchema,
   envSchema,
   addLikeSchema,
   addUnlikeSchema,
+  createCourseSchema,
   deleteStudentSchema,
+  adminUpdateProfileSchema,
+  coordinatorUpdateProfileSchema,
   createStudentSchema,
   createPostSchema,
   fileModalSchema,
+  studentUpdateProfileSchema,
   pictureModalSchema,
   createCommentSchema,
   updateCommentSchema,

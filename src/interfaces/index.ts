@@ -1,4 +1,4 @@
-import { TwhoPosted } from "../@types";
+import { TCoordinatorModal, TStudentModal, TwhoPosted } from "../@types";
 
 export interface IPostDataBoby {
   title: string;
@@ -30,8 +30,13 @@ export interface IDepartmentData {
   courses: ICourse[];
 }
 export interface ICreateDepartmentData {
-   name: string;
+  name: string;
   courses: ICourse[];
+}
+
+export interface ICoordinatorData extends TCoordinatorModal {
+  departmentId: number;
+  courseId: number;
 }
 
 export interface ISubjects {
@@ -101,13 +106,18 @@ export interface IPictureModal {
   url: string;
 }
 
+export interface IGetAllSubjectsFromCourse {
+  subjectId: number;
+  courseId: number;
+}
+
 export interface ICreatePost {
   id?: number;
   title: string;
   content: string;
   createrPostId: number;
   whoPosted: TwhoPosted;
-  nameOfDepartment: string;
+  department: IDepartmentData;
 }
 
 export interface AdminInfoI {
@@ -118,6 +128,10 @@ export interface AdminInfoI {
 
 export interface ParamsId {
   id: number;
+}
+
+export interface IStudentData extends TStudentModal {
+  courseId: number;
 }
 
 export interface AdminInfoResultI {

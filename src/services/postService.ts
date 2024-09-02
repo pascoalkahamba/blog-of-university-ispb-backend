@@ -11,8 +11,7 @@ export default class PostService {
     createPost: ICreatePost,
     pictureModal: IPictureModal | undefined
   ) {
-    const { content, title, nameOfDepartment, createrPostId, whoPosted } =
-      createPost;
+    const { content, title, department, createrPostId, whoPosted } = createPost;
 
     const postTitle = await prismaService.prisma.post.findFirst({
       where: { title },
@@ -44,7 +43,7 @@ export default class PostService {
           },
           department: {
             connect: {
-              id: 3,
+              id: department.id,
             },
           },
         },
@@ -87,7 +86,7 @@ export default class PostService {
         },
         department: {
           connect: {
-            id: 3,
+            id: department.id,
           },
         },
       },
@@ -113,7 +112,7 @@ export default class PostService {
     createPost: ICreatePost,
     pictureModal: IPictureModal | undefined
   ) {
-    const { content, title, nameOfDepartment, id } = createPost;
+    const { content, title, department, id } = createPost;
 
     const postTitle = await prismaService.prisma.post.findFirst({
       where: { id },
@@ -136,7 +135,7 @@ export default class PostService {
         },
         department: {
           update: {
-            id: 4,
+            name: department.name,
           },
         },
       },
@@ -228,6 +227,7 @@ export default class PostService {
         unlikes: true,
         statusLike: true,
         statusUnlike: true,
+        department: true,
 
         admin: {
           select: {
@@ -247,7 +247,6 @@ export default class PostService {
         },
         coordinatorId: true,
         picture: true,
-        department: true,
       },
     });
 

@@ -1,7 +1,9 @@
 import { Response, Request } from "express";
 import { DepartmentService } from "../services/departmentService";
 import {
+  ICreateDepartmentData,
   IDepartmentData,
+  IGetAllSubjectsFromCourse,
   IRemoveCourseFromDepartment,
   IRemoveSubjectFromCourse,
 } from "../interfaces";
@@ -14,7 +16,6 @@ import { handleError } from "../errors/handleError";
 import { StatusCodes } from "http-status-codes";
 import DepartmentValidator from "../validators/departmentValidator";
 import { DepartmentError } from "../errors/departmentError";
-import { prismaService } from "../services/prismaService";
 
 const departmentService = new DepartmentService();
 const departmentValidator = new DepartmentValidator();
@@ -22,7 +23,7 @@ const departmentValidator = new DepartmentValidator();
 export class DepartmentController {
   async create(req: Request, res: Response) {
     try {
-      const parseBody = req.body as IDepartmentData;
+      const parseBody = req.body as ICreateDepartmentData;
       const { courses, name } = createDepartmentSchema.parse(parseBody);
 
       const createdDepartment = await departmentService.create({
@@ -164,6 +165,52 @@ export class DepartmentController {
       if (!department) throw DepartmentError.departmentNotFound();
 
       return res.status(StatusCodes.OK).json(department);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromError(error);
+        const { details } = validationError;
+        const pathError = details[0].path[0] as TPathError;
+        departmentValidator.validator(pathError, res);
+      } else {
+        return handleError(error as BaseError, res);
+      }
+    }
+  }
+
+  async getAllCoursesFromDepartment(req: Request, res: Response) {
+    try {
+      const { departmentId } = req.params as unknown as {
+        departmentId: number;
+      };
+      const courses = await departmentService.getAllCoursesFromDepartments(
+        +departmentId
+      );
+
+      return res.status(StatusCodes.OK).json(courses);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromError(error);
+        const { details } = validationError;
+        const pathError = details[0].path[0] as TPathError;
+        departmentValidator.validator(pathError, res);
+      } else {
+        return handleError(error as BaseError, res);
+      }
+    }
+  }
+
+  async getAllSubjectsFromCourse(req: Request, res: Response) {
+    try {
+      const { courseId, subjectId } =
+        req.params as unknown as IGetAllSubjectsFromCourse;
+      const courses = await departmentService.getAllSubjectsFromCourse({
+        courseId: +courseId,
+        subjectId: +subjectId,
+      });
+
+      if (!courses) throw DepartmentError.subjectNotFound();
+
+      return res.status(StatusCodes.OK).json(courses);
     } catch (error) {
       if (error instanceof ZodError) {
         const validationError = fromError(error);

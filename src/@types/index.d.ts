@@ -9,6 +9,7 @@ export type TPathError =
   | "password"
   | "contact"
   | "username"
+  | "bio"
   | "emailNotFound"
   | "emailAlreadyExist"
   | "registrationNumber"
@@ -34,6 +35,8 @@ export type TPathError =
   | "height";
 
 export type TAdminModal = Omit<Admin, TDataBaseExtraValues>;
+export type TAdminInfoUpdate = Omit<IUpdateProfile, "course" | "department">;
+export type TCoordinatorInfoUpdate = Omit<IUpdateProfile, "registrationNumber">;
 export type TFileModal = Omit<File, TDataBaseExtraValues>;
 export type TCreatePost = Pick<Post, "title" | "content" | "adminId">;
 export type TAdminLogin = Pick<Admin, "email" | "password">;

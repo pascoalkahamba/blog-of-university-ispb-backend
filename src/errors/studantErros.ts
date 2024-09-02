@@ -30,6 +30,13 @@ export class StudentError {
       StatusCodes.NOT_FOUND
     );
   }
+
+  static courseNotFound() {
+    return new BaseError(
+      "Curso do estudante não encontrado.",
+      StatusCodes.NOT_FOUND
+    );
+  }
   static studentNotFound() {
     return new BaseError("Estudante não encontrado.", StatusCodes.NOT_FOUND);
   }

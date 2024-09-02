@@ -16,6 +16,12 @@ export class CoordinatorError {
   static emailOrPasswordWrong() {
     return new BaseError("Email ou senha errada.", StatusCodes.BAD_REQUEST);
   }
+  static thisCourseNotFoundFromDepartment() {
+    return new BaseError(
+      "Este curso não existe neste departamento.",
+      StatusCodes.BAD_REQUEST
+    );
+  }
 
   static emailNotFound() {
     return new BaseError(

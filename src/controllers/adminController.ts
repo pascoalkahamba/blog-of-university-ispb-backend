@@ -4,8 +4,9 @@ import AdminValidator from "../validators/adminValidator";
 import { StatusCodes } from "http-status-codes";
 import { ZodError } from "zod";
 import { fromError } from "zod-validation-error";
-import { TPathError } from "../@types";
+import { TAdminInfoUpdate, TPathError } from "../@types";
 import {
+  adminUpdateProfileSchema,
   createAdminSchema,
   deleteCoordinatorSchema,
   deleteStudentSchema,
@@ -135,12 +136,12 @@ export default class AdminController {
   async updateInfo(req: Request, res: Response) {
     try {
       const { id } = req.params as unknown as { id: number };
-      const { email, password, username, contact } = createAdminSchema.parse(
-        req.body
-      );
+      const parseBody = req.body as TAdminInfoUpdate;
+      const { email, password, username, contact, bio, photo } =
+        adminUpdateProfileSchema.parse(parseBody);
 
       const adminUpdated = await adminService.updateInfo(
-        { email, password, username, contact },
+        { email, password, username, contact, bio, photo },
         +id
       );
 
@@ -148,7 +149,7 @@ export default class AdminController {
         throw AdminError.adminNotFound();
       }
 
-      if (adminUpdated === "sameInfo") {
+      if (!adminUpdated) {
         throw AdminError.sameInformation();
       }
 

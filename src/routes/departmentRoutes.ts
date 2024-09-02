@@ -15,6 +15,14 @@ departmentRoutes.get(
   "/getOneDepartment/:id",
   departmentController.getOneDepartment
 );
+departmentRoutes.get(
+  "/getAllCoursesFromDepartment/:departmentId",
+  departmentController.getAllCoursesFromDepartment
+);
+departmentRoutes.get(
+  "/getAllSubjectsFromCourse/:courseId/:subjectId",
+  departmentController.getAllSubjectsFromCourse
+);
 departmentRoutes.post("/update/:id", departmentController.update);
 departmentRoutes.delete(
   "/deleteCourseFromDepartment/:departmentId/:courseId",
