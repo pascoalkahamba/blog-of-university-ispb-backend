@@ -3,7 +3,7 @@ import { TCoordinatorModal, TStudentModal, TwhoPosted } from "../@types";
 export interface IPostDataBoby {
   title: string;
   content: string;
-  nameOfDepartment: string;
+  departmentId: number;
   whoPosted: TwhoPosted;
 }
 
@@ -117,7 +117,7 @@ export interface ICreatePost {
   content: string;
   createrPostId: number;
   whoPosted: TwhoPosted;
-  department: IDepartmentData;
+  departmentId: number;
 }
 
 export interface AdminInfoI {

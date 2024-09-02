@@ -57,7 +57,16 @@ export default class AdminService {
         email: true,
         contact: true,
         role: true,
-        profile: true,
+        profile: {
+          select: {
+            id: true,
+            bio:true,
+            photo: true,
+            adminId: true,
+            coordinatorId: true,
+            studentId: true,
+          },
+        },
       },
     });
 

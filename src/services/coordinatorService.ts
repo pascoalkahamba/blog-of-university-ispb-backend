@@ -204,7 +204,16 @@ export default class CoordinatorService {
         department: true,
         course: true,
         departmentId: true,
-        profile: true,
+        profile: {
+          select: {
+            id: true,
+            bio: true,
+            photo: true,
+            adminId: true,
+            coordinatorId: true,
+            studentId: true,
+          },
+        },
       },
     });
 

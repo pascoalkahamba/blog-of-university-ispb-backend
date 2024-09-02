@@ -1,6 +1,5 @@
 import { TStudentLogin } from "../@types";
 import { IStudentData, IUpdateProfile } from "../interfaces";
-import { replyRoutes } from "../routes/replyRoutes";
 import { DEFAULT_SELECT } from "./adminService";
 import { prismaService } from "./prismaService";
 import bcrypt from "bcrypt";
@@ -52,7 +51,7 @@ export default class StudentService {
         year: "não definido",
         profile: {
           create: {
-            bio: "Aqui você pode falar um pouco de ti Cordenador.",
+            bio: "Aqui você pode falar um pouco de ti estudante.",
             photo: {
               create: {
                 url: "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png",
@@ -229,7 +228,16 @@ export default class StudentService {
         email: true,
         contact: true,
         role: true,
-        profile: true,
+        profile: {
+          select: {
+            id: true,
+            bio: true,
+            photo: true,
+            adminId: true,
+            coordinatorId: true,
+            studentId: true,
+          },
+        },
         course: true,
       },
     });

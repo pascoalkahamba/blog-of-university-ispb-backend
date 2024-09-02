@@ -166,17 +166,15 @@ enum Role {
 }
 
 model Picture {
-  id            Int         @id @default(autoincrement())
-  url           String      @db.LongText
-  name          String
-  post          Post?       @relation(fields: [postId], references: [id])
-  department    Department? @relation(fields: [departmentId], references: [id], onDelete: Cascade)
-  profile       Profile?    @relation(fields: [profileId], references: [id])
-  profileId     Int?        @unique
-  coordinatorId Int?        @unique
-  studentId     Int?        @unique
-  postId        Int?        @unique
-  departmentId  Int?        @unique
+  id           Int         @id @default(autoincrement())
+  url          String      @db.LongText
+  name         String
+  post         Post?       @relation(fields: [postId], references: [id])
+  department   Department? @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  profile      Profile?    @relation(fields: [profileId], references: [id])
+  profileId    Int?        @unique
+  postId       Int?        @unique
+  departmentId Int?        @unique
 }
 
 model File {

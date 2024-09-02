@@ -11,7 +11,8 @@ export default class PostService {
     createPost: ICreatePost,
     pictureModal: IPictureModal | undefined
   ) {
-    const { content, title, department, createrPostId, whoPosted } = createPost;
+    const { content, title, departmentId, createrPostId, whoPosted } =
+      createPost;
 
     const postTitle = await prismaService.prisma.post.findFirst({
       where: { title },
@@ -43,7 +44,7 @@ export default class PostService {
           },
           department: {
             connect: {
-              id: department.id,
+              id: departmentId,
             },
           },
         },
@@ -86,7 +87,7 @@ export default class PostService {
         },
         department: {
           connect: {
-            id: department.id,
+            id: departmentId,
           },
         },
       },
@@ -112,7 +113,7 @@ export default class PostService {
     createPost: ICreatePost,
     pictureModal: IPictureModal | undefined
   ) {
-    const { content, title, department, id } = createPost;
+    const { content, title, departmentId, id } = createPost;
 
     const postTitle = await prismaService.prisma.post.findFirst({
       where: { id },
@@ -133,11 +134,7 @@ export default class PostService {
             name: pictureModal ? pictureModal.name : "",
           },
         },
-        department: {
-          update: {
-            name: department.name,
-          },
-        },
+        departmentId: departmentId,
       },
       select: {
         title: true,
@@ -234,7 +231,15 @@ export default class PostService {
             id: true,
             username: true,
             role: true,
-            profile: true,
+            profile: {
+              select: {
+                id: true,
+                photo: true,
+                adminId: true,
+                coordinatorId: true,
+                studentId: true,
+              },
+            },
           },
         },
         coordinator: {
@@ -242,7 +247,15 @@ export default class PostService {
             id: true,
             username: true,
             role: true,
-            profile: true,
+            profile: {
+              select: {
+                id: true,
+                photo: true,
+                adminId: true,
+                coordinatorId: true,
+                studentId: true,
+              },
+            },
           },
         },
         coordinatorId: true,
@@ -287,7 +300,15 @@ export default class PostService {
                   select: {
                     id: true,
                     username: true,
-                    profile: true,
+                    profile: {
+                      select: {
+                        id: true,
+                        photo: true,
+                        adminId: true,
+                        coordinatorId: true,
+                        studentId: true,
+                      },
+                    },
                     role: true,
                   },
                 },
@@ -295,7 +316,15 @@ export default class PostService {
                   select: {
                     id: true,
                     username: true,
-                    profile: true,
+                    profile: {
+                      select: {
+                        id: true,
+                        photo: true,
+                        adminId: true,
+                        coordinatorId: true,
+                        studentId: true,
+                      },
+                    },
                     role: true,
                     registrationNumber: true,
                   },
@@ -307,7 +336,15 @@ export default class PostService {
                   select: {
                     id: true,
                     username: true,
-                    profile: true,
+                    profile: {
+                      select: {
+                        id: true,
+                        photo: true,
+                        adminId: true,
+                        coordinatorId: true,
+                        studentId: true,
+                      },
+                    },
                     role: true,
                   },
                 },
@@ -320,7 +357,15 @@ export default class PostService {
               select: {
                 id: true,
                 username: true,
-                profile: true,
+                profile: {
+                  select: {
+                    id: true,
+                    photo: true,
+                    adminId: true,
+                    coordinatorId: true,
+                    studentId: true,
+                  },
+                },
                 role: true,
               },
             },
@@ -329,7 +374,15 @@ export default class PostService {
               select: {
                 id: true,
                 username: true,
-                profile: true,
+                profile: {
+                  select: {
+                    id: true,
+                    photo: true,
+                    adminId: true,
+                    coordinatorId: true,
+                    studentId: true,
+                  },
+                },
                 role: true,
               },
             },
@@ -338,7 +391,15 @@ export default class PostService {
               select: {
                 id: true,
                 username: true,
-                profile: true,
+                profile: {
+                  select: {
+                    id: true,
+                    photo: true,
+                    adminId: true,
+                    coordinatorId: true,
+                    studentId: true,
+                  },
+                },
                 role: true,
               },
             },
@@ -354,7 +415,15 @@ export default class PostService {
             id: true,
             username: true,
             role: true,
-            profile: true,
+            profile: {
+              select: {
+                id: true,
+                photo: true,
+                adminId: true,
+                coordinatorId: true,
+                studentId: true,
+              },
+            },
           },
         },
         coordinator: {
@@ -362,7 +431,15 @@ export default class PostService {
             id: true,
             username: true,
             role: true,
-            profile: true,
+            profile: {
+              select: {
+                id: true,
+                photo: true,
+                adminId: true,
+                coordinatorId: true,
+                studentId: true,
+              },
+            },
           },
         },
         coordinatorId: true,

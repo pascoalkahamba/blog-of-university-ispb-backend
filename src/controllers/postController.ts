@@ -26,12 +26,17 @@ const postService = new PostService();
 export default class PostContorller {
   async create(req: Request, res: Response) {
     try {
-      const postData = req.body as IPostDataBoby;
+      const { content, departmentId, title, whoPosted } =
+        req.body as IPostDataBoby;
       const file = req.file;
       const createrId = req.id;
       let fileUrl = "";
-      const { content, nameOfDepartment, title, whoPosted } =
-        createPostSchema.parse(postData);
+      const formadata = createPostSchema.parse({
+        content,
+        departmentId: +departmentId,
+        title,
+        whoPosted,
+      });
 
       if (file) {
         const storageRef = ref(
@@ -52,13 +57,7 @@ export default class PostContorller {
 
       console.log("createrId", createrId);
       const posted = await postService.createPost(
-        {
-          content,
-          createrPostId: createrId,
-          title,
-          nameOfDepartment,
-          whoPosted,
-        },
+        { ...formadata, createrPostId: createrId },
         {
           name: file?.originalname ?? "Nome_default",
           url: fileUrl,
@@ -91,12 +90,17 @@ export default class PostContorller {
   async update(req: Request, res: Response) {
     try {
       const { id } = req.params as unknown as { id: number };
-      const postData = req.body as IPostDataBoby;
+      const { content, departmentId, title, whoPosted } =
+        req.body as IPostDataBoby;
       const file = req.file;
       const createrId = req.id;
       let fileUrl = "";
-      const { content, nameOfDepartment, title, whoPosted } =
-        createPostSchema.parse(postData);
+      const formadata = createPostSchema.parse({
+        content,
+        departmentId: +departmentId,
+        title,
+        whoPosted,
+      });
 
       if (file) {
         const storageRef = ref(
@@ -118,12 +122,9 @@ export default class PostContorller {
 
       const posteUpdated = await postService.updatePost(
         {
-          content,
+          ...formadata,
           createrPostId: createrId,
-          title,
           id: +id,
-          nameOfDepartment,
-          whoPosted,
         },
         {
           name: file?.originalname ?? "Default_name",

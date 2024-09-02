@@ -45,7 +45,7 @@ const createPostSchema = zod.object({
   title: zod.string().min(6),
   content: zod.string().min(20),
   whoPosted: zod.string().min(5) as zod.ZodType<TwhoPosted>,
-  nameOfDepartment: zod.string().min(6),
+  departmentId: zod.number(),
 });
 const createCommentSchema = zod.object({
   content: zod.string(),
