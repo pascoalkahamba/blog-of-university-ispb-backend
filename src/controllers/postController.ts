@@ -9,17 +9,7 @@ import PostService from "../services/postService";
 import { ILike, IPostDataBoby, IUnlike } from "../interfaces";
 import { PostError } from "../errors/postError";
 import { StatusCodes } from "http-status-codes";
-import { storage } from "../config/firebaseConfig";
-import multer from "multer";
-import { MulterErrors } from "../errors/multerError";
 import PostValidator from "../validators/postValidator";
-import { FirebaseErrors } from "../errors/firebaseError";
-import {
-  ref,
-  StorageError,
-  uploadBytesResumable,
-  getDownloadURL,
-} from "firebase/storage";
 const postValidator = new PostValidator();
 const postService = new PostService();
 
@@ -28,9 +18,7 @@ export default class PostContorller {
     try {
       const { content, departmentId, title, whoPosted } =
         req.body as IPostDataBoby;
-      const file = req.file;
       const createrId = req.id;
-      let fileUrl = "";
       const formadata = createPostSchema.parse({
         content,
         departmentId: +departmentId,
@@ -38,29 +26,12 @@ export default class PostContorller {
         whoPosted,
       });
 
-      if (file) {
-        const storageRef = ref(
-          storage,
-          `pictures/${Date.now()}-${file.originalname}`
-        );
-        const metadata = {
-          contentType: file.mimetype,
-        };
-
-        const snapshot = await uploadBytesResumable(
-          storageRef,
-          file.buffer,
-          metadata
-        );
-        fileUrl = await getDownloadURL(snapshot.ref);
-      }
-
       console.log("createrId", createrId);
       const posted = await postService.createPost(
         { ...formadata, createrPostId: createrId },
         {
-          name: file?.originalname ?? "Nome_default",
-          url: fileUrl,
+          name: req.fileName ?? "Nome_default_photo",
+          url: req.fileUrl ?? "",
         }
       );
       if (!posted) {
@@ -70,11 +41,7 @@ export default class PostContorller {
       console.log("post criado");
       return res.status(StatusCodes.CREATED).json(posted);
     } catch (error) {
-      if (error instanceof multer.MulterError) {
-        return MulterErrors.multerErrorFile();
-      } else if (error instanceof StorageError) {
-        return FirebaseErrors.firebaseErrorUpload();
-      } else if (error instanceof ZodError) {
+      if (error instanceof ZodError) {
         const validationError = fromError(error);
         console.log("error", error);
         const { details } = validationError;
@@ -92,33 +59,13 @@ export default class PostContorller {
       const { id } = req.params as unknown as { id: number };
       const { content, departmentId, title, whoPosted } =
         req.body as IPostDataBoby;
-      const file = req.file;
       const createrId = req.id;
-      let fileUrl = "";
       const formadata = createPostSchema.parse({
         content,
         departmentId: +departmentId,
         title,
         whoPosted,
       });
-
-      if (file) {
-        const storageRef = ref(
-          storage,
-          `pictures/${Date.now()}-${file.originalname}`
-        );
-        const metadata = {
-          contentType: file.mimetype,
-        };
-
-        const uploadFile = await uploadBytesResumable(
-          storageRef,
-          file.buffer,
-          metadata
-        );
-
-        fileUrl = await getDownloadURL(uploadFile.ref);
-      }
 
       const posteUpdated = await postService.updatePost(
         {
@@ -127,8 +74,8 @@ export default class PostContorller {
           id: +id,
         },
         {
-          name: file?.originalname ?? "Default_name",
-          url: fileUrl,
+          name: req.fileName ?? "",
+          url: req.fileUrl ?? "",
         }
       );
 

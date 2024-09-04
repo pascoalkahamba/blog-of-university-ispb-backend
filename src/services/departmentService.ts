@@ -298,6 +298,14 @@ export class DepartmentService {
   async getAllCoursesFromDepartments(departmentId: number) {
     const courses = await prismaService.prisma.course.findMany({
       where: { departmentId },
+      select: {
+        id: true,
+        name: true,
+        studentId: true,
+        coordinatorId: true,
+        departmentId: true,
+        subjects: true,
+      },
     });
 
     return courses;

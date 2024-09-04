@@ -97,20 +97,19 @@ const photoSchema = zod.object({
 const studentUpdateProfileSchema = zod.object({
   password: zod.string().min(6),
   username: zod.string().min(6),
-  photo: photoSchema,
   registrationNumber: zod.string().min(2),
   bio: zod.string().min(10),
   email: zod.string().email(),
-  course: courseDataSchema,
+  courseId: zod.number(),
   contact: zod.string().min(9).max(9),
-  department: departmentDataSchema,
+  departmentId: zod.number(),
 });
 const coordinatorUpdateProfileSchema = studentUpdateProfileSchema.omit({
   registrationNumber: true,
 });
 const adminUpdateProfileSchema = studentUpdateProfileSchema.omit({
-  department: true,
-  course: true,
+  departmentId: true,
+  courseId: true,
   registrationNumber: true,
 });
 const loginStudentSchema = zod.object({
@@ -158,6 +157,7 @@ export {
   deleteStudentSchema,
   adminUpdateProfileSchema,
   coordinatorUpdateProfileSchema,
+  photoSchema,
   createStudentSchema,
   createPostSchema,
   fileModalSchema,

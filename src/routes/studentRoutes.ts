@@ -13,7 +13,7 @@ studentRoutes.use(authMiddleware);
 
 studentRoutes.get("/getOneUser/:id", studentController.getOneStudent);
 studentRoutes.delete("/deleteStudent/:id", studentController.deleteStudent);
-studentRoutes.get(
+studentRoutes.post(
   "/updateInfoProfile/:id",
   studentController.updateInfoProfile
 );

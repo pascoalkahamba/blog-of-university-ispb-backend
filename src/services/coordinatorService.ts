@@ -78,12 +78,32 @@ export default class CoordinatorService {
       password,
       photo,
       username,
-      department,
-      course,
+      departmentId,
+      courseId,
     } = newData;
     const coordinator = await prismaService.prisma.coordinator.findFirst({
       where: { id },
+      select: {
+        id: true,
+        ...DEFAULT_SELECT,
+        profile: {
+          select: {
+            id: true,
+            adminId: true,
+            photo: {
+              select: {
+                id: true,
+                url: true,
+                name: true,
+                profileId: true,
+              },
+            },
+          },
+        },
+      },
     });
+
+    const hashPassword = await bcrypt.hash(password, 10);
 
     if (!coordinator) return;
 
@@ -99,26 +119,64 @@ export default class CoordinatorService {
     if (email !== coordinator.email && coordinatorEmail) return;
     if (contact !== coordinator.contact && coordinatorContact) return;
 
+    const departments = await prismaService.prisma.department.findFirst({
+      where: { id: departmentId },
+      select: {
+        id: true,
+        name: true,
+        courses: true,
+      },
+    });
+
+    if (!departments) return;
+
+    const courses = await prismaService.prisma.course.findFirst({
+      where: { id: courseId },
+    });
+
+    if (!courses) return;
+
+    const existingCourse = departments.courses.some(
+      (course) => course.id === courseId
+    );
+
+    if (!existingCourse) return;
+
+    const course = await prismaService.prisma.course.update({
+      where: {
+        coordinatorId: coordinator.id,
+      },
+      data: {
+        coordinatorId: null,
+      },
+    });
+
+    if (!course) return;
+
+    await prismaService.prisma.course.update({
+      where: { id: courseId },
+      data: {
+        coordinatorId: coordinator.id,
+      },
+    });
+
     const coordinatorUpdated = await prismaService.prisma.coordinator.update({
       where: { id },
       data: {
         username,
-        password,
+        password: hashPassword,
         contact,
         email,
-        departmentId: department.id,
-        course: {
-          update: {
-            id: course.id,
-          },
-        },
+        departmentId: departmentId,
         profile: {
           update: {
             bio,
             photo: {
               update: {
-                name: photo.name,
-                url: photo.url,
+                url: photo.url ? photo.url : coordinator?.profile?.photo?.url,
+                name: photo.name
+                  ? photo.name
+                  : coordinator?.profile?.photo?.name,
               },
             },
           },

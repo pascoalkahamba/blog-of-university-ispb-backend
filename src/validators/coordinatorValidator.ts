@@ -27,6 +27,15 @@ export default class CoordinatorValidator {
         res
       );
     }
+    if (pathError === "courseId") {
+      return handleError(AdminError.invalidInfo("Id do curso invalido."), res);
+    }
+    if (pathError === "departmentId") {
+      return handleError(
+        AdminError.invalidInfo("Id do departamento invalido."),
+        res
+      );
+    }
 
     if (pathError === "emailAlreadyExist") {
       return handleError(AdminError.invalidInfo("Email já cadastrado."), res);

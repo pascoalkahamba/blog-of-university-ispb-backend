@@ -1,4 +1,5 @@
 import { Admin, Student, Coordinator, Post, File } from "@prisma/client";
+import { IUpdateProfile } from "../interfaces";
 
 export type TDataBaseExtraValues = "createdAt" | "updatedAt" | "id" | "role";
 export type TJsonWebTokenError = "jwt malformed" | "jwt must be provided";
@@ -17,6 +18,8 @@ export type TPathError =
   | "createrPostId"
   | "kindOfFile"
   | "like"
+  | "departmentId"
+  | "courseId"
   | "subjects"
   | "courses"
   | "statusLike"
@@ -35,7 +38,10 @@ export type TPathError =
   | "height";
 
 export type TAdminModal = Omit<Admin, TDataBaseExtraValues>;
-export type TAdminInfoUpdate = Omit<IUpdateProfile, "course" | "department">;
+export type TAdminInfoUpdate = Omit<
+  IUpdateProfile,
+  "courseId" | "departmentId"
+>;
 export type TCoordinatorInfoUpdate = Omit<IUpdateProfile, "registrationNumber">;
 export type TFileModal = Omit<File, TDataBaseExtraValues>;
 export type TCreatePost = Pick<Post, "title" | "content" | "adminId">;

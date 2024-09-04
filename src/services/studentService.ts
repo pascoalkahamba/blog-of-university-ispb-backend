@@ -111,6 +111,8 @@ export default class StudentService {
       where: { id },
     });
 
+    const hashPassword = await bcrypt.hash(password, 10);
+
     if (!student) return;
 
     const studentEmail = await prismaService.prisma.student.findFirst({
@@ -137,13 +139,13 @@ export default class StudentService {
       data: {
         username,
         contact,
-        password,
+        password: hashPassword,
         registrationNumber,
         email,
         course: {
           update: {
-            id: course.id,
-            departmentId: department.id,
+            id: course?.id,
+            departmentId: department?.id,
           },
         },
         profile: {

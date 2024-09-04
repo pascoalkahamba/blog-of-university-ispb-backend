@@ -20,6 +20,7 @@ import { CoordinatorError } from "../errors/coordinatorError";
 import CoordinatorValidator from "../validators/coordinatorValidator";
 import StudentValidator from "../validators/studentValidator";
 import { StudentError } from "../errors/studantErros";
+
 const adminService = new AdminService();
 const adminValidator = new AdminValidator();
 const coordinatorValidator = new CoordinatorValidator();
@@ -137,11 +138,21 @@ export default class AdminController {
     try {
       const { id } = req.params as unknown as { id: number };
       const parseBody = req.body as TAdminInfoUpdate;
-      const { email, password, username, contact, bio, photo } =
+      const { email, password, username, contact, bio } =
         adminUpdateProfileSchema.parse(parseBody);
 
       const adminUpdated = await adminService.updateInfo(
-        { email, password, username, contact, bio, photo },
+        {
+          email,
+          password,
+          username,
+          contact,
+          bio,
+          photo: {
+            name: req.fileName ?? "",
+            url: req.fileUrl ?? "",
+          },
+        },
         +id
       );
 

@@ -7,10 +7,7 @@ import {
 import { prismaService } from "./prismaService";
 
 export default class PostService {
-  async createPost(
-    createPost: ICreatePost,
-    pictureModal: IPictureModal | undefined
-  ) {
+  async createPost(createPost: ICreatePost, pictureModal: IPictureModal) {
     const { content, title, departmentId, createrPostId, whoPosted } =
       createPost;
 
@@ -38,8 +35,8 @@ export default class PostService {
           },
           picture: {
             create: {
-              url: pictureModal ? pictureModal.url : "",
-              name: pictureModal ? pictureModal.name : "",
+              url: pictureModal.url ? pictureModal.url : "",
+              name: pictureModal.name ? pictureModal.name : "",
             },
           },
           department: {
@@ -81,8 +78,8 @@ export default class PostService {
         },
         picture: {
           create: {
-            url: pictureModal ? pictureModal.url : "",
-            name: pictureModal ? pictureModal.name : "",
+            url: pictureModal.url ? pictureModal.url : "",
+            name: pictureModal.name ? pictureModal.name : "",
           },
         },
         department: {
@@ -109,14 +106,25 @@ export default class PostService {
     return postCoordinator;
   }
 
-  async updatePost(
-    createPost: ICreatePost,
-    pictureModal: IPictureModal | undefined
-  ) {
+  async updatePost(createPost: ICreatePost, pictureModal: IPictureModal) {
     const { content, title, departmentId, id } = createPost;
 
     const postTitle = await prismaService.prisma.post.findFirst({
       where: { id },
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        favorite: true,
+        views: true,
+        createdAt: true,
+        updatedAt: true,
+        comments: true,
+        adminId: true,
+        coordinatorId: true,
+        picture: true,
+        department: true,
+      },
     });
 
     if (!postTitle) {
@@ -130,8 +138,10 @@ export default class PostService {
         content,
         picture: {
           update: {
-            url: pictureModal ? pictureModal.url : "",
-            name: pictureModal ? pictureModal.name : "",
+            url: pictureModal?.url ? pictureModal.url : postTitle.picture?.url,
+            name: pictureModal?.name
+              ? pictureModal.name
+              : postTitle.picture?.name,
           },
         },
         departmentId: departmentId,

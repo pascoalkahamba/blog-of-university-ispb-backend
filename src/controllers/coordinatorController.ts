@@ -138,16 +138,25 @@ export default class CoordinatorContoller {
     try {
       const { id } = req.params as unknown as { id: number };
       const parseBody = req.body as TCoordinatorInfoUpdate;
+      console.log("formdata", parseBody);
+      const updateBody = {
+        departmentId: +parseBody.departmentId,
+        courseId: +parseBody.courseId,
+        bio: parseBody.bio,
+        username: parseBody.username,
+        password: parseBody.password,
+        contact: parseBody.contact,
+        email: parseBody.email,
+      };
       const coordinatorDataProfile =
-        coordinatorUpdateProfileSchema.parse(parseBody);
+        coordinatorUpdateProfileSchema.parse(updateBody);
       const updatedCoordinator =
-        coordinatorService.updateInfoProfileCoordinator(
-          +id,
-          coordinatorDataProfile
-        );
+        await coordinatorService.updateInfoProfileCoordinator(+id, {
+          ...coordinatorDataProfile,
+          photo: { name: req.fileName ?? "", url: req.fileUrl ?? "" },
+        });
 
       if (!updatedCoordinator) throw CoordinatorError.coordinatorNotFound();
-
       return res.status(StatusCodes.ACCEPTED).json(updatedCoordinator);
     } catch (error) {
       if (error instanceof ZodError) {

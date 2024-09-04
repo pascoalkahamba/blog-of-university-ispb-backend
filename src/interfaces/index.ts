@@ -77,9 +77,9 @@ export interface IUpdateProfile {
   password: string;
   bio: string;
   photo: IPictureModal;
-  department: IDepartmentData;
-  course: ICourse;
-  registrationNumber: string;
+  departmentId: number;
+  courseId: number;
+  registrationNumber?: string;
   email: string;
   contact: string;
 }

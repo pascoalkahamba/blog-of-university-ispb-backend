@@ -60,7 +60,7 @@ export default class AdminService {
         profile: {
           select: {
             id: true,
-            bio:true,
+            bio: true,
             photo: true,
             adminId: true,
             coordinatorId: true,
@@ -102,6 +102,7 @@ export default class AdminService {
 
   async updateInfo(adminModal: TAdminInfoUpdate, id: number) {
     const { username, password, contact, email, bio, photo } = adminModal;
+    const hashPassword = await bcrypt.hash(password, 10);
 
     const admin = await prismaService.prisma.admin.findFirst({
       where: { id },
@@ -110,6 +111,23 @@ export default class AdminService {
 
     const sameEmail = await prismaService.prisma.admin.findFirst({
       where: { email },
+      select: {
+        ...DEFAULT_SELECT,
+        profile: {
+          select: {
+            id: true,
+            adminId: true,
+            photo: {
+              select: {
+                id: true,
+                url: true,
+                name: true,
+                profileId: true,
+              },
+            },
+          },
+        },
+      },
     });
     const sameContact = await prismaService.prisma.admin.findFirst({
       where: { contact },
@@ -122,7 +140,7 @@ export default class AdminService {
       where: { id },
       data: {
         username,
-        password,
+        password: hashPassword,
         email,
         contact,
         profile: {
@@ -130,8 +148,8 @@ export default class AdminService {
             bio,
             photo: {
               update: {
-                url: photo.url,
-                name: photo.name,
+                url: photo.url ? photo.url : sameEmail?.profile?.photo?.url,
+                name: photo.name ? photo.name : sameEmail?.profile?.photo?.name,
               },
             },
           },

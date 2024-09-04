@@ -1,6 +1,8 @@
 import express from "express";
 import CoordinatorController from "../controllers/coordinatorController";
 import { authMiddleware } from "../middlewares/authMiddleware";
+import upload from "../config/multerConfig";
+import { uploadFileMiddleware } from "../middlewares/uploadFileMiddleware";
 
 const coordinatorController = new CoordinatorController();
 const coordinatorRoutes = express.Router();
@@ -17,6 +19,8 @@ coordinatorRoutes.get(
 
 coordinatorRoutes.post(
   "/updateInfoProfile/:id",
+  upload.single("file"),
+  uploadFileMiddleware,
   coordinatorController.updateInfoProfile
 );
 coordinatorRoutes.delete(
