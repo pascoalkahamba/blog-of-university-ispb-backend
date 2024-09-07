@@ -54,6 +54,31 @@ export default class PostContorller {
     }
   }
 
+  async getAllPostsFromDepartmenst(req: Request, res: Response) {
+    try {
+      const { departmentId } = req.params as unknown as {
+        departmentId: number;
+      };
+
+      const allDepartments = await postService.getAllPostsFromDepartment(
+        +departmentId
+      );
+
+      return res.status(StatusCodes.OK).json(allDepartments);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromError(error);
+        console.log("error", error);
+        const { details } = validationError;
+        const pathError = details[0].path[0] as TPathError;
+        postValidator.validator(pathError, res);
+      } else {
+        console.log("error", error);
+        return handleError(error as BaseError, res);
+      }
+    }
+  }
+
   async update(req: Request, res: Response) {
     try {
       const { id } = req.params as unknown as { id: number };
@@ -120,7 +145,10 @@ export default class PostContorller {
 
   async getAllPosts(req: Request, res: Response) {
     try {
-      const allPosts = await postService.getAllPosts();
+      const { departmentId } = req.params as unknown as {
+        departmentId: number;
+      };
+      const allPosts = await postService.getAllPosts(+departmentId);
       return res.status(StatusCodes.OK).json(allPosts);
     } catch (error) {
       return handleError(error as BaseError, res);

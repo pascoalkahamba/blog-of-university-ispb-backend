@@ -24,7 +24,7 @@ coordinatorRoutes.post(
   coordinatorController.updateInfoProfile
 );
 coordinatorRoutes.delete(
-  "/deleteCoordinator/:id",
+  "/deleteUser/:id",
   coordinatorController.deleteCoordinator
 );
 

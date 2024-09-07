@@ -82,7 +82,20 @@ export default class AdminService {
 
     const logged = await prismaService.prisma.admin.findFirst({
       where: { email },
-      select: { ...DEFAULT_SELECT, password: true, id: true },
+      select: {
+        ...DEFAULT_SELECT,
+        password: true,
+        id: true,
+        profile: {
+          select: {
+            id: true,
+            adminId: true,
+            studentId: true,
+            coordinatorId: true,
+            photo: true,
+          },
+        },
+      },
     });
 
     if (!logged) {
@@ -197,6 +210,20 @@ export default class AdminService {
     });
 
     return passwordUpdated;
+  }
+
+  async deleteAdmin(id: number) {
+    const admin = await prismaService.prisma.admin.findFirst({
+      where: { id },
+    });
+
+    if (!admin) return;
+
+    const deletedAdmin = await prismaService.prisma.admin.delete({
+      where: { id },
+    });
+
+    return deletedAdmin;
   }
 
   async deleteCoordinator(email: string) {

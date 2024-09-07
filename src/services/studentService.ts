@@ -77,7 +77,20 @@ export default class StudentService {
 
     const student = await prismaService.prisma.student.findFirst({
       where: { email },
-      select: { ...DEFAULT_SELECT, password: true, id: true },
+      select: {
+        ...DEFAULT_SELECT,
+        password: true,
+        id: true,
+        profile: {
+          select: {
+            id: true,
+            adminId: true,
+            studentId: true,
+            coordinatorId: true,
+            photo: true,
+          },
+        },
+      },
     });
 
     if (!student) {
@@ -101,8 +114,7 @@ export default class StudentService {
       contact,
       email,
       password,
-      department,
-      course,
+      courseId,
       photo,
       registrationNumber,
       username,
@@ -126,6 +138,30 @@ export default class StudentService {
         where: { registrationNumber },
       });
 
+    const courses = await prismaService.prisma.course.findFirst({
+      where: { id: courseId },
+    });
+
+    if (!courses) return;
+
+    const course = await prismaService.prisma.course.update({
+      where: {
+        studentId: student.id,
+      },
+      data: {
+        studentId: null,
+      },
+    });
+
+    if (!course) return;
+
+    await prismaService.prisma.course.update({
+      where: { id: courseId },
+      data: {
+        studentId: student.id,
+      },
+    });
+
     if (email !== student.email && studentEmail) return;
     if (contact !== student.contact && studentContact) return;
     if (
@@ -141,13 +177,8 @@ export default class StudentService {
         contact,
         password: hashPassword,
         registrationNumber,
+
         email,
-        course: {
-          update: {
-            id: course?.id,
-            departmentId: department?.id,
-          },
-        },
         profile: {
           update: {
             bio,

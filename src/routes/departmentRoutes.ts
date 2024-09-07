@@ -11,6 +11,7 @@ departmentRoutes.get(
   "/getAllDepartments",
   departmentController.getAllDepartments
 );
+departmentRoutes.get("/getAllCourses", departmentController.getAllCourses);
 departmentRoutes.get(
   "/getOneDepartment/:id",
   departmentController.getOneDepartment

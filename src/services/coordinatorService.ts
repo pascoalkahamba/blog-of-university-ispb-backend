@@ -210,7 +210,20 @@ export default class CoordinatorService {
 
     const coordinator = await prismaService.prisma.coordinator.findFirst({
       where: { email },
-      select: { ...DEFAULT_SELECT, password: true, id: true },
+      select: {
+        ...DEFAULT_SELECT,
+        password: true,
+        id: true,
+        profile: {
+          select: {
+            id: true,
+            adminId: true,
+            studentId: true,
+            coordinatorId: true,
+            photo: true,
+          },
+        },
+      },
     });
 
     if (!coordinator) {

@@ -218,7 +218,65 @@ export default class PostService {
     return postDeleted;
   }
 
-  async getAllPosts() {
+  async getAllPosts(departmentId: number | null) {
+    if (departmentId) {
+      const allPostsDepartments = await prismaService.prisma.post.findMany({
+        where: { departmentId },
+        select: {
+          id: true,
+          title: true,
+          content: true,
+          favorite: true,
+          views: true,
+          createdAt: true,
+          comments: true,
+          updatedAt: true,
+          adminId: true,
+          likes: true,
+          unlikes: true,
+          statusLike: true,
+          statusUnlike: true,
+          department: true,
+
+          admin: {
+            select: {
+              id: true,
+              username: true,
+              role: true,
+              profile: {
+                select: {
+                  id: true,
+                  photo: true,
+                  adminId: true,
+                  coordinatorId: true,
+                  studentId: true,
+                },
+              },
+            },
+          },
+          coordinator: {
+            select: {
+              id: true,
+              username: true,
+              role: true,
+              profile: {
+                select: {
+                  id: true,
+                  photo: true,
+                  adminId: true,
+                  coordinatorId: true,
+                  studentId: true,
+                },
+              },
+            },
+          },
+          coordinatorId: true,
+          picture: true,
+        },
+      });
+
+      return allPostsDepartments;
+    }
     const allPosts = await prismaService.prisma.post.findMany({
       select: {
         id: true,
@@ -463,5 +521,14 @@ export default class PostService {
     }
 
     return onePost;
+  }
+
+  async getAllPostsFromDepartment(departmentId: number) {
+    if (!departmentId) return;
+    const posts = await prismaService.prisma.post.findMany({
+      where: { departmentId },
+    });
+
+    return posts;
   }
 }

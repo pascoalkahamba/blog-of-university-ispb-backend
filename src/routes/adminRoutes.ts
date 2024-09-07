@@ -22,5 +22,6 @@ adminRoutes.post(
 );
 adminRoutes.delete("/deleteCoordinator", adminController.deleteCoordinator);
 adminRoutes.delete("/deleteStudent", adminController.deleteStudent);
+adminRoutes.delete("/deleteUser/:id", adminController.deleteAdmin);
 
 export { adminRoutes };

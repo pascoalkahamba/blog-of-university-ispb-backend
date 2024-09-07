@@ -199,6 +199,23 @@ export class DepartmentController {
     }
   }
 
+  async getAllCourses(req: Request, res: Response) {
+    try {
+      const allCourses = await departmentService.getAllCouses();
+
+      return res.status(StatusCodes.OK).json(allCourses);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromError(error);
+        const { details } = validationError;
+        const pathError = details[0].path[0] as TPathError;
+        departmentValidator.validator(pathError, res);
+      } else {
+        return handleError(error as BaseError, res);
+      }
+    }
+  }
+
   async getAllSubjectsFromCourse(req: Request, res: Response) {
     try {
       const { courseId, subjectId } =

@@ -24,7 +24,11 @@ postRoutes.post(
 postRoutes.post("/addLike/:id", postController.addLike);
 postRoutes.post("/addUnlike/:id", postController.addUnlike);
 postRoutes.delete("/delete/:id", postController.delete);
-postRoutes.get("/allPosts", postController.getAllPosts);
+postRoutes.get("/allPosts/:departmentId", postController.getAllPosts);
+postRoutes.get(
+  "/allPostsFromDepartment/:departmentId",
+  postController.getAllPostsFromDepartmenst
+);
 postRoutes.get("/onePost/:id", postController.getOnePost);
 
 export { postRoutes };

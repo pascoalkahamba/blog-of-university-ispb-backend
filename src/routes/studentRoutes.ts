@@ -12,7 +12,7 @@ studentRoutes.post("/forgotPassword", studentController.forgotPassword);
 studentRoutes.use(authMiddleware);
 
 studentRoutes.get("/getOneUser/:id", studentController.getOneStudent);
-studentRoutes.delete("/deleteStudent/:id", studentController.deleteStudent);
+studentRoutes.delete("/deleteUser/:id", studentController.deleteStudent);
 studentRoutes.post(
   "/updateInfoProfile/:id",
   studentController.updateInfoProfile

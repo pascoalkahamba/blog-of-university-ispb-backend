@@ -114,9 +114,9 @@ model Post {
   statusUnlike  Boolean
   unlikes       Int
   favorite      Boolean?
-  admin         Admin?       @relation(fields: [adminId], references: [id])
+  admin         Admin?       @relation(fields: [adminId], references: [id], onDelete: Cascade)
   adminId       Int?
-  coordinator   Coordinator? @relation(fields: [coordinatorId], references: [id])
+  coordinator   Coordinator? @relation(fields: [coordinatorId], references: [id], onDelete: Cascade)
   department    Department   @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   coordinatorId Int?
   departmentId  Int

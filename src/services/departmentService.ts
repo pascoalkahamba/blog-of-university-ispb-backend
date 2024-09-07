@@ -362,4 +362,10 @@ export class DepartmentService {
 
     return departments;
   }
+
+  async getAllCouses() {
+    const allCourses = await prismaService.prisma.course.findMany();
+
+    return allCourses;
+  }
 }

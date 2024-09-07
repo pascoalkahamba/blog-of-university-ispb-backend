@@ -73,7 +73,7 @@ const createCourseSchema = courseDataSchema.omit({ id: true });
 
 const departmentDataSchema = zod.object({
   id: zod.number(),
-  name: zod.string().min(6),
+  name: zod.string().min(5),
   courses: zod.array(courseDataSchema).nonempty(),
 });
 const createDepartmentSchema = departmentDataSchema.omit({ id: true });
