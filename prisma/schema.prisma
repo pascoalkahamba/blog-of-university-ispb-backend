@@ -12,8 +12,7 @@ model Student {
   email              String    @unique
   username           String
   password           String
-  blocked            Boolean?
-  blockedQuantity    Int?
+  isStudent          Boolean?
   registrationNumber String    @unique
   course             Course?
   active             Boolean

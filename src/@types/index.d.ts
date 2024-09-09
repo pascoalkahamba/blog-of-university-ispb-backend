@@ -3,7 +3,7 @@ import { IUpdateProfile } from "../interfaces";
 
 export type TDataBaseExtraValues = "createdAt" | "updatedAt" | "id" | "role";
 export type TJsonWebTokenError = "jwt malformed" | "jwt must be provided";
-export type TwhoPosted = "admin" | "coordinator" | "studant";
+export type TwhoPosted = "admin" | "coordinator" | "student";
 export type TKindOfFile = "file" | "photo" | "nothing";
 export type TPathError =
   | "email"

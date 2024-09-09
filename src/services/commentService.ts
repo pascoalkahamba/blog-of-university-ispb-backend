@@ -142,7 +142,7 @@ export default class CommentService {
 
       return coordinatorComment;
     }
-    if (whoCreator === "studant") {
+    if (whoCreator === "student") {
       const studantComment = await prismaService.prisma.comment.create({
         data: {
           content,

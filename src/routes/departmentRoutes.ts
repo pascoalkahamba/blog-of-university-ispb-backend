@@ -5,13 +5,13 @@ import { DepartmentController } from "../controllers/departmentController";
 const departmentController = new DepartmentController();
 const departmentRoutes = express.Router();
 
+departmentRoutes.get("/getAllCourses", departmentController.getAllCourses);
 departmentRoutes.use(authMiddleware);
 departmentRoutes.post("/create", departmentController.create);
 departmentRoutes.get(
   "/getAllDepartments",
   departmentController.getAllDepartments
 );
-departmentRoutes.get("/getAllCourses", departmentController.getAllCourses);
 departmentRoutes.get(
   "/getOneDepartment/:id",
   departmentController.getOneDepartment

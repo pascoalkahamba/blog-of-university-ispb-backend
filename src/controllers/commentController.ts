@@ -29,6 +29,7 @@ export default class CommentController {
     try {
       const { postId } = req.params as unknown as { postId: number };
       const parseBody = req.body as ICommentDataBoby;
+      console.log("body", parseBody);
       const creatorId = req.id;
       const { content, whoCreator } = createCommentSchema.parse(parseBody);
       const commentCreated = await commentService.create({
@@ -41,11 +42,13 @@ export default class CommentController {
       return res.status(StatusCodes.CREATED).json(commentCreated);
     } catch (error) {
       if (error instanceof ZodError) {
+        console.log("error", error);
         const validationError = fromError(error);
         const { details } = validationError;
         const pathError = details[0].path[0] as TPathError;
         commentValidator.validator(pathError, res);
       } else {
+        console.log("error", error);
         return handleError(error as BaseError, res);
       }
     }

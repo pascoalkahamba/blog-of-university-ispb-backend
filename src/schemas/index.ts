@@ -35,8 +35,9 @@ const createCoordinatorSchema = zod.object({
 const createStudentSchema = zod.object({
   username: zod.string().min(6),
   password: zod.string().min(6),
+  isStudent: zod.boolean(),
   courseId: zod.number(),
-  registrationNumber: zod.string().min(3),
+  registrationNumber: zod.string().min(2),
   email: zod.string().email(),
   contact: zod.string().min(9).max(9),
 });

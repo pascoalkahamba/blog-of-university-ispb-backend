@@ -6,8 +6,15 @@ import bcrypt from "bcrypt";
 
 export default class StudentService {
   async create(StudentModal: IStudentData) {
-    const { contact, email, password, username, registrationNumber, courseId } =
-      StudentModal;
+    const {
+      contact,
+      email,
+      password,
+      username,
+      registrationNumber,
+      courseId,
+      isStudent,
+    } = StudentModal;
     const hashPassword = await bcrypt.hash(password, 10);
     const student = await prismaService.prisma.student.findFirst({
       where: {
@@ -46,6 +53,7 @@ export default class StudentService {
         username,
         password: hashPassword,
         contact,
+        isStudent,
         active: true,
         registrationNumber,
         year: "não definido",

@@ -23,23 +23,18 @@ export default class StudentContoller {
   async create(req: Request, res: Response) {
     try {
       const parseBody = req.body as IStudentData;
-      const {
-        contact,
-        email,
-        password,
-        username,
-        registrationNumber,
-        courseId,
-      } = createStudentSchema.parse(parseBody);
-
-      const student = await studentService.create({
-        contact,
-        courseId,
-        email,
-        password,
-        username,
-        registrationNumber,
+      console.log("body", parseBody);
+      const studentData = createStudentSchema.parse({
+        contact: String(parseBody.contact),
+        registrationNumber: String(parseBody.registrationNumber),
+        email: parseBody.email,
+        password: parseBody.password,
+        username: parseBody.username,
+        isStudent: parseBody.isStudent,
+        courseId: parseBody.courseId,
       });
+
+      const student = await studentService.create({ ...studentData });
 
       if (student === "registrationAlreadyExist") {
         throw StudentError.registrationNumberAlreadyExist();
@@ -55,11 +50,13 @@ export default class StudentContoller {
       return res.status(StatusCodes.CREATED).json(student);
     } catch (error) {
       if (error instanceof ZodError) {
+        console.log("zod error", error);
         const validationError = fromError(error);
         const { details } = validationError;
         const pathError = details[0].path[0] as TPathError;
         studentValidator.validator(pathError, res);
       } else {
+        console.log("error", error);
         return handleError(error as BaseError, res);
       }
     }
@@ -102,7 +99,7 @@ export default class StudentContoller {
       );
 
       return res.status(StatusCodes.OK).json({
-        admin: logged,
+        user: logged,
         token,
       });
     } catch (error) {
@@ -149,10 +146,13 @@ export default class StudentContoller {
       const { id } = req.params as unknown as { id: number };
       const bodyData = studentUpdateProfileSchema.parse(req.body);
 
-      const updatedStudent = await studentService.updateInfoStudent(
-        +id,
-        bodyData
-      );
+      const updatedStudent = await studentService.updateInfoStudent(+id, {
+        ...bodyData,
+        photo: {
+          name: req.fileName ?? "",
+          url: req.fileUrl ?? "",
+        },
+      });
 
       if (!updatedStudent) throw StudentError.studentNotFound();
 

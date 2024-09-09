@@ -133,7 +133,7 @@ export default class ReplyService {
 
       return coordinatorReply;
     }
-    if (whoCreator === "studant") {
+    if (whoCreator === "student") {
       const studantReply = await prismaService.prisma.reply.create({
         data: {
           content,
