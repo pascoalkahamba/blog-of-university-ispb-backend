@@ -273,7 +273,18 @@ export default class CoordinatorService {
         contact: true,
         role: true,
         department: true,
-        course: true,
+        course: {
+          select: {
+            id: true,
+            name: true,
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
         departmentId: true,
         profile: {
           select: {

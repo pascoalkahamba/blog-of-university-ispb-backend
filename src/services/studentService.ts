@@ -117,18 +117,21 @@ export default class StudentService {
   }
 
   async updateInfoStudent(id: number, newData: IUpdateProfile) {
-    const {
-      bio,
-      contact,
-      email,
-      password,
-      courseId,
-      photo,
-      registrationNumber,
-      username,
-    } = newData;
+    const { bio, contact, email, password, courseId, photo, username } =
+      newData;
     const student = await prismaService.prisma.student.findFirst({
       where: { id },
+      select: {
+        id: true,
+        email: true,
+        contact: true,
+
+        profile: {
+          select: {
+            photo: true,
+          },
+        },
+      },
     });
 
     const hashPassword = await bcrypt.hash(password, 10);
@@ -141,13 +144,12 @@ export default class StudentService {
     const studentContact = await prismaService.prisma.student.findFirst({
       where: { contact },
     });
-    const studentRegistraionNumber =
-      await prismaService.prisma.student.findFirst({
-        where: { registrationNumber },
-      });
 
     const courses = await prismaService.prisma.course.findFirst({
       where: { id: courseId },
+      select: {
+        department: true,
+      },
     });
 
     if (!courses) return;
@@ -158,6 +160,7 @@ export default class StudentService {
       },
       data: {
         studentId: null,
+        departmentId: null,
       },
     });
 
@@ -167,16 +170,12 @@ export default class StudentService {
       where: { id: courseId },
       data: {
         studentId: student.id,
+        departmentId: courses.department?.id,
       },
     });
 
     if (email !== student.email && studentEmail) return;
     if (contact !== student.contact && studentContact) return;
-    if (
-      registrationNumber !== student.registrationNumber &&
-      studentRegistraionNumber
-    )
-      return;
 
     const updatedStudent = await prismaService.prisma.student.update({
       where: { id },
@@ -184,7 +183,6 @@ export default class StudentService {
         username,
         contact,
         password: hashPassword,
-        registrationNumber,
 
         email,
         profile: {
@@ -192,8 +190,8 @@ export default class StudentService {
             bio,
             photo: {
               update: {
-                name: photo.name,
-                url: photo.url,
+                name: photo.name ? photo.name : student.profile?.photo?.name,
+                url: photo.url ? photo.url : student.profile?.photo?.url,
               },
             },
           },
@@ -205,6 +203,7 @@ export default class StudentService {
         username: true,
         email: true,
         contact: true,
+
         registrationNumber: true,
         profile: {
           select: {
@@ -225,6 +224,7 @@ export default class StudentService {
             studentId: true,
           },
         },
+
         course: {
           select: {
             id: true,
@@ -268,6 +268,7 @@ export default class StudentService {
         username: true,
         email: true,
         contact: true,
+        registrationNumber: true,
         role: true,
         profile: {
           select: {
@@ -279,7 +280,19 @@ export default class StudentService {
             studentId: true,
           },
         },
-        course: true,
+        course: {
+          select: {
+            id: true,
+            name: true,
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            departmentId: true,
+          },
+        },
       },
     });
 

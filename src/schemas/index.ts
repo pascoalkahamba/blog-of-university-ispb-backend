@@ -1,5 +1,5 @@
 import { z as zod } from "zod";
-import { TwhoPosted } from "../@types";
+import { TOperation, TwhoPosted } from "../@types";
 
 const createAdminSchema = zod.object({
   username: zod.string().min(6),
@@ -95,23 +95,35 @@ const photoSchema = zod.object({
   name: zod.string(),
   url: zod.string().url(),
 });
+
+const requestVerificationCodeSchema = zod.object({
+  email: zod.string().email(),
+  operation: zod.string().min(5) as zod.ZodType<TOperation>,
+});
+const verifyCodeAndProceedSchema = zod.object({
+  email: zod.string().email(),
+  code: zod.string().min(6),
+  operation: zod.string().min(5) as zod.ZodType<TOperation>,
+});
 const studentUpdateProfileSchema = zod.object({
   password: zod.string().min(6),
   username: zod.string().min(6),
-  registrationNumber: zod.string().min(2),
   bio: zod.string().min(10),
   email: zod.string().email(),
   courseId: zod.number(),
   contact: zod.string().min(9).max(9),
-  departmentId: zod.number(),
 });
-const coordinatorUpdateProfileSchema = studentUpdateProfileSchema.omit({
-  registrationNumber: true,
+const coordinatorUpdateProfileSchema = zod.object({
+  password: zod.string().min(6),
+  username: zod.string().min(6),
+  bio: zod.string().min(10),
+  email: zod.string().email(),
+  courseId: zod.number(),
+  departmentId: zod.number(),
+  contact: zod.string().min(9).max(9),
 });
 const adminUpdateProfileSchema = studentUpdateProfileSchema.omit({
-  departmentId: true,
   courseId: true,
-  registrationNumber: true,
 });
 const loginStudentSchema = zod.object({
   password: zod.string().min(6),
@@ -159,6 +171,8 @@ export {
   adminUpdateProfileSchema,
   coordinatorUpdateProfileSchema,
   photoSchema,
+  requestVerificationCodeSchema,
+  verifyCodeAndProceedSchema,
   createStudentSchema,
   createPostSchema,
   fileModalSchema,

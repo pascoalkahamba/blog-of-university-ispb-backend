@@ -273,6 +273,17 @@ export class DepartmentService {
           select: {
             id: true,
             username: true,
+            profile: {
+              select: {
+                id: true,
+                photo: {
+                  select: {
+                    url: true,
+                    name: true,
+                  },
+                },
+              },
+            },
             role: true,
             course: true,
             contact: true,

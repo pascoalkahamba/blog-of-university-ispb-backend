@@ -23,7 +23,6 @@ export default class StudentContoller {
   async create(req: Request, res: Response) {
     try {
       const parseBody = req.body as IStudentData;
-      console.log("body", parseBody);
       const studentData = createStudentSchema.parse({
         contact: String(parseBody.contact),
         registrationNumber: String(parseBody.registrationNumber),
@@ -144,10 +143,18 @@ export default class StudentContoller {
   async updateInfoProfile(req: Request, res: Response) {
     try {
       const { id } = req.params as unknown as { id: number };
-      const bodyData = studentUpdateProfileSchema.parse(req.body);
+      const { bio, contact, courseId, email, password, username } = req.body;
+      const profileData = studentUpdateProfileSchema.parse({
+        bio,
+        contact,
+        courseId: +courseId,
+        email,
+        password,
+        username,
+      });
 
       const updatedStudent = await studentService.updateInfoStudent(+id, {
-        ...bodyData,
+        ...profileData,
         photo: {
           name: req.fileName ?? "",
           url: req.fileUrl ?? "",
@@ -160,10 +167,13 @@ export default class StudentContoller {
     } catch (error) {
       if (error instanceof ZodError) {
         const validationError = fromError(error);
+        console.log("zod error", error);
         const { details } = validationError;
         const pathError = details[0].path[0] as TPathError;
         studentValidator.validator(pathError, res);
       } else {
+        console.log(" error", error);
+
         return handleError(error as BaseError, res);
       }
     }

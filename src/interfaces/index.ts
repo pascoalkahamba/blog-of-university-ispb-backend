@@ -1,4 +1,9 @@
-import { TCoordinatorModal, TStudentModal, TwhoPosted } from "../@types";
+import {
+  TCoordinatorModal,
+  TOperation,
+  TStudentModal,
+  TwhoPosted,
+} from "../@types";
 
 export interface IPostDataBoby {
   title: string;
@@ -77,11 +82,29 @@ export interface IUpdateProfile {
   password: string;
   bio: string;
   photo: IPictureModal;
-  departmentId: number;
   courseId: number;
   registrationNumber?: string;
   email: string;
   contact: string;
+}
+
+export interface ISaveVerificationCode {
+  email: string;
+  operation: TOperation;
+}
+export interface IValidateVerificationCode {
+  email: string;
+  code: string;
+  operation: TOperation;
+}
+export interface ISendEmail {
+  userEmail: string;
+  validateCode: string;
+  subject: string;
+}
+
+export interface IUpdateProfileCoordinator extends IUpdateProfile {
+  departmentId: number;
 }
 
 export interface ILike {

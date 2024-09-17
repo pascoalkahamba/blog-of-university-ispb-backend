@@ -138,7 +138,6 @@ export default class CoordinatorContoller {
     try {
       const { id } = req.params as unknown as { id: number };
       const parseBody = req.body as TCoordinatorInfoUpdate;
-      console.log("formdata", parseBody);
       const updateBody = {
         departmentId: +parseBody.departmentId,
         courseId: +parseBody.courseId,
@@ -162,6 +161,7 @@ export default class CoordinatorContoller {
       if (error instanceof ZodError) {
         const validationError = fromError(error);
         const { details } = validationError;
+
         const pathError = details[0].path[0] as TPathError;
         coordinatorValidator.validator(pathError, res);
       } else {
