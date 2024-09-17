@@ -11,6 +11,7 @@ import { ZodError } from "zod";
 import { fromError } from "zod-validation-error";
 import { TPathError } from "../@types";
 import VerificationCodeValidator from "../validators/verificationCodeValidator";
+import { StatusCodes } from "http-status-codes";
 
 const verificationCode = new VerificationCode();
 const verificationCodeValidator = new VerificationCodeValidator();
@@ -20,7 +21,9 @@ export default class ValidateEmailController {
       const parseBody = requestVerificationCodeSchema.parse(req.body);
       // Inicia o processo de envio do código
       const code = await verificationCode.saveVerificationCode(parseBody);
-      res.status(200).json({ message: "Código de verificação enviado", code });
+      res
+        .status(StatusCodes.OK)
+        .json({ message: "Código de verificação enviado", code });
     } catch (error) {
       if (error instanceof ZodError) {
         const validationError = fromError(error);
@@ -44,7 +47,7 @@ export default class ValidateEmailController {
       if (!isValid) throw ValidateCodeError.invalidCode();
 
       // Se o código for válido, prossegue com a operação (ex: resetar senha ou deletar conta)
-      res.status(200).json({
+      res.status(StatusCodes.OK).json({
         message: "Código validado com sucesso, pode prosseguir com a operação",
       });
     } catch (error) {
