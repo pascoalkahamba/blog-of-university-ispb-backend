@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { BaseError } from "./baseError";
 
-export class ValidateCodeError {
+export class VerificationCodeError {
   static invalidCode() {
     return new BaseError(
       "Código de verificação inválido ou expirado",
@@ -12,6 +12,12 @@ export class ValidateCodeError {
     return new BaseError(
       "Operação do usuário inválido",
       StatusCodes.BAD_REQUEST
+    );
+  }
+  static emailNotFound() {
+    return new BaseError(
+      "Email do usuário não encontrado",
+      StatusCodes.NOT_FOUND
     );
   }
 }

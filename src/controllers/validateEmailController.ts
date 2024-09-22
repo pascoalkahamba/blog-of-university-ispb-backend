@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { VerificationCode } from "../services/verificationService";
 import { handleError } from "../errors/handleError";
 import { BaseError } from "../errors/baseError";
-import { ValidateCodeError } from "../errors/validateCodeError";
+import { VerificationCodeError } from "../errors/verificationCodeError";
 import {
   requestVerificationCodeSchema,
   verifyCodeAndProceedSchema,
@@ -19,8 +19,12 @@ export default class ValidateEmailController {
   async requestVerificationCode(req: Request, res: Response) {
     try {
       const parseBody = requestVerificationCodeSchema.parse(req.body);
+
+      console.log("body", req.body);
       // Inicia o processo de envio do código
       const code = await verificationCode.saveVerificationCode(parseBody);
+
+      if (!code) throw VerificationCodeError.emailNotFound();
       res
         .status(StatusCodes.OK)
         .json({ message: "Código de verificação enviado", code });
@@ -44,7 +48,7 @@ export default class ValidateEmailController {
         parseBody
       );
 
-      if (!isValid) throw ValidateCodeError.invalidCode();
+      if (!isValid) throw VerificationCodeError.invalidCode();
 
       // Se o código for válido, prossegue com a operação (ex: resetar senha ou deletar conta)
       res.status(StatusCodes.OK).json({

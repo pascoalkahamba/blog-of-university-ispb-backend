@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { TPathError } from "../@types";
 import { handleError } from "../errors/handleError";
-import { ValidateCodeError } from "../errors/validateCodeError";
+import { ValidateCodeError } from "../errors/verificationCodeError";
 
 export default class VerificationCodeValidator {
   validator(pathError: TPathError, res: Response) {

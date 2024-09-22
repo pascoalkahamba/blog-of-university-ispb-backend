@@ -13,6 +13,19 @@ export class VerificationCode {
     try {
       // Gera o código aleatório (6 caracteres hexadecimais)
       const verificationCode = crypto.randomBytes(3).toString("hex");
+      const admin = await prismaService.prisma.admin.findFirst({
+        where: { email },
+      });
+
+      const coordinator = await prismaService.prisma.coordinator.findFirst({
+        where: { email },
+      });
+
+      const student = await prismaService.prisma.student.findFirst({
+        where: { email },
+      });
+
+      if (!admin && !student && !coordinator) return;
 
       // Define o tempo de expiração (ex: 5 minutos)
       const expirationTime = new Date(Date.now() + 5 * 60 * 1000);
