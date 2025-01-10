@@ -14,7 +14,8 @@ model Student {
   password           String
   isStudent          Boolean?
   registrationNumber String    @unique
-  course             Course?
+  courseId           Int
+  course             Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
   active             Boolean
   role               Role      @default(USER)
   comments           Comment[]
@@ -61,7 +62,7 @@ model Profile {
   photo         Picture?
   student       Student?     @relation(fields: [studentId], references: [id], onDelete: Cascade)
   studentId     Int?         @unique
-  admin         Admin?       @relation(fields: [adminId], references: [id],onDelete: Cascade)
+  admin         Admin?       @relation(fields: [adminId], references: [id], onDelete: Cascade)
   adminId       Int?         @unique
   coordinator   Coordinator? @relation(fields: [coordinatorId], references: [id], onDelete: Cascade)
   coordinatorId Int?         @unique
@@ -70,11 +71,10 @@ model Profile {
 model Course {
   id            Int          @id @default(autoincrement())
   name          String
-  student       Student?     @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  studentId     Int?         @unique
+  students      Student[]
   subjects      Subject[]
-  department    Department?   @relation(fields: [departmentId], references: [id], onDelete: Cascade)
-  departmentId  Int?
+  department    Department   @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  departmentId  Int
   coordinator   Coordinator? @relation(fields: [coordinatorId], references: [id])
   coordinatorId Int?         @unique
 }
@@ -91,12 +91,12 @@ model Comment {
   post          Post?        @relation(fields: [postId], references: [id], onDelete: Cascade)
   published     Boolean      @default(false)
   replies       Reply[]
-  student       Student?     @relation(fields: [studentId], references: [id],onDelete: Cascade)
+  student       Student?     @relation(fields: [studentId], references: [id], onDelete: Cascade)
   studentId     Int?
-  admin         Admin?       @relation(fields: [adminId], references: [id] ,onDelete: Cascade)
+  admin         Admin?       @relation(fields: [adminId], references: [id], onDelete: Cascade)
   adminId       Int?
   postId        Int
-  coordinator   Coordinator? @relation(fields: [coordinatorId], references: [id],onDelete: Cascade)
+  coordinator   Coordinator? @relation(fields: [coordinatorId], references: [id], onDelete: Cascade)
   coordinatorId Int?
 }
 
@@ -132,13 +132,13 @@ model Reply {
   statusUnlike  Boolean
   unlikes       Int
   published     Boolean      @default(false)
-  student       Student?     @relation(fields: [studentId], references: [id],onDelete: Cascade)
+  student       Student?     @relation(fields: [studentId], references: [id], onDelete: Cascade)
   comment       Comment      @relation(fields: [commentId], references: [id], onDelete: Cascade)
   studentId     Int?
   commentId     Int
-  admin         Admin?       @relation(fields: [adminId], references: [id],onDelete: Cascade)
+  admin         Admin?       @relation(fields: [adminId], references: [id], onDelete: Cascade)
   adminId       Int?
-  coordinator   Coordinator? @relation(fields: [coordinatorId], references: [id],onDelete: Cascade)
+  coordinator   Coordinator? @relation(fields: [coordinatorId], references: [id], onDelete: Cascade)
   coordinatorId Int?
 }
 
@@ -184,12 +184,12 @@ model File {
   url          String
   createdAt    DateTime    @default(now())
 }
-model VerificationCode {
-  id         Int      @id @default(autoincrement())
-  email      String
-  code       String
-  operation  String
-  expiresAt  DateTime
-  createdAt  DateTime @default(now())
-}
 
+model VerificationCode {
+  id        Int      @id @default(autoincrement())
+  email     String
+  code      String
+  operation String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}

@@ -20,8 +20,6 @@ export default class ValidateEmailController {
     try {
       const parseBody = requestVerificationCodeSchema.parse(req.body);
 
-      console.log("body", req.body);
-      // Inicia o processo de envio do código
       const code = await verificationCode.saveVerificationCode(parseBody);
 
       if (!code) throw VerificationCodeError.emailNotFound();

@@ -132,15 +132,25 @@ export default class CoordinatorService {
 
     const courses = await prismaService.prisma.course.findFirst({
       where: { id: courseId },
+      select: {
+        coordinatorId: true,
+      },
     });
 
     if (!courses) return;
+    if (courses.coordinatorId) return;
 
     const existingCourse = departments.courses.some(
       (course) => course.id === courseId
     );
 
     if (!existingCourse) return;
+
+    // const coordinatorCourse = await prismaService.prisma.course.findFirst({
+    //   where: { coordinatorId: coordinator.id },
+    // });
+
+    // if (!coordinatorCourse) return;
 
     const course = await prismaService.prisma.course.update({
       where: {

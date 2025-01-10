@@ -196,7 +196,7 @@ export class DepartmentService {
         id: true,
         subjects: true,
         departmentId: true,
-        studentId: true,
+        students: true,
       },
     });
 
@@ -312,7 +312,7 @@ export class DepartmentService {
       select: {
         id: true,
         name: true,
-        studentId: true,
+        students: true,
         coordinatorId: true,
         departmentId: true,
         subjects: true,
@@ -322,25 +322,16 @@ export class DepartmentService {
     return courses;
   }
 
-  async getAllSubjectsFromCourse({
-    courseId,
-    subjectId,
-  }: IGetAllSubjectsFromCourse) {
-    const courses = await prismaService.prisma.course.findMany({
+  async getAllSubjectsFromCourse({ courseId }: IGetAllSubjectsFromCourse) {
+    const courses = await prismaService.prisma.course.findFirst({
       where: { id: courseId },
       select: {
         id: true,
         name: true,
         subjects: true,
-        studentId: true,
+        students: true,
       },
     });
-
-    const isThereSubject = courses.some(
-      (course) => course.studentId === subjectId
-    );
-
-    if (!isThereSubject) return;
 
     return courses;
   }
