@@ -86,6 +86,11 @@ const pictureModalSchema = zod.object({
   url: zod.string().url(),
 });
 
+const addCodeStudentSchema = zod.object({
+  code: zod.string().min(9),
+  email: zod.string().email(),
+});
+
 const loginAdminSchema = zod.object({
   password: zod.string().min(6),
   email: zod.string().email(),
@@ -175,6 +180,7 @@ export {
   verifyCodeAndProceedSchema,
   createStudentSchema,
   createPostSchema,
+  addCodeStudentSchema,
   fileModalSchema,
   studentUpdateProfileSchema,
   pictureModalSchema,

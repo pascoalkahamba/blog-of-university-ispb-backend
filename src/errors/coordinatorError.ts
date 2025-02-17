@@ -12,6 +12,12 @@ export class CoordinatorError {
       StatusCodes.CONFLICT
     );
   }
+  static coordinatorCannotAddCode() {
+    return new BaseError(
+      "Cordenador não pode adicionar código de matricula.",
+      StatusCodes.UNAUTHORIZED
+    );
+  }
 
   static emailOrPasswordWrong() {
     return new BaseError("Email ou senha errada.", StatusCodes.BAD_REQUEST);

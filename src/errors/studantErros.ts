@@ -19,6 +19,12 @@ export class StudentError {
       StatusCodes.CONFLICT
     );
   }
+  static codeStudentNotFound() {
+    return new BaseError(
+      "Número de matriculo do estudante não encontrado.",
+      StatusCodes.NOT_FOUND
+    );
+  }
 
   static emailOrPasswordWrong() {
     return new BaseError("Email ou senha errada.", StatusCodes.BAD_REQUEST);

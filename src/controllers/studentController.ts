@@ -46,6 +46,10 @@ export default class StudentContoller {
         throw StudentError.courseNotFound();
       }
 
+      if (student === "codeStudentNotFound") {
+        throw StudentError.codeStudentNotFound();
+      }
+
       return res.status(StatusCodes.CREATED).json(student);
     } catch (error) {
       if (error instanceof ZodError) {

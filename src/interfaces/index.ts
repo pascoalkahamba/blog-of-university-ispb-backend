@@ -12,6 +12,16 @@ export interface IPostDataBoby {
   whoPosted: TwhoPosted;
 }
 
+export interface ICodeStudent {
+  id: number;
+  code: string;
+}
+
+export interface IAddCodeStudent {
+  email: string;
+  code: string;
+}
+
 export interface ICommentDataBoby {
   content: string;
   postId: number;

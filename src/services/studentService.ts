@@ -37,6 +37,15 @@ export default class StudentService {
       return "registrationAlreadyExist";
     }
 
+    const codeStudent =
+      await prismaService.prisma.verificationCodeStudent.findFirst({
+        where: {
+          code: registrationNumber,
+        },
+      });
+
+    if (!codeStudent) return "codeStudentNotFound";
+
     const course = await prismaService.prisma.course.findFirst({
       where: { id: courseId },
     });
