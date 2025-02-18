@@ -134,6 +134,10 @@ const loginStudentSchema = zod.object({
   password: zod.string().min(6),
   email: zod.string().email(),
 });
+
+const updateCodeForStudentSchema = zod.object({
+  codeForStudent: zod.string().min(9),
+});
 const loginCoordinatorSchema = zod.object({
   password: zod.string().min(6),
   email: zod.string().email(),
@@ -175,6 +179,7 @@ export {
   deleteStudentSchema,
   adminUpdateProfileSchema,
   coordinatorUpdateProfileSchema,
+  updateCodeForStudentSchema,
   photoSchema,
   requestVerificationCodeSchema,
   verifyCodeAndProceedSchema,

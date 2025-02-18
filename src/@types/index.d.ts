@@ -8,6 +8,7 @@ export type TKindOfFile = "file" | "photo" | "nothing";
 export type TPathError =
   | "email"
   | "password"
+  | "codeForStudent"
   | "contact"
   | "username"
   | "bio"
