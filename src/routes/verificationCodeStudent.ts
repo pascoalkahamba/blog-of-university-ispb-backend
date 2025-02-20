@@ -1,31 +1,30 @@
 import express from "express";
 import { authMiddleware } from "../middlewares/authMiddleware";
-import VeficationCodeStudent from "../controllers/veficationCodeStudent";
-import { verificationCodeRoutes } from "./verificationCodeRoutes";
+import VeficationCodeStudentController from "../controllers/veficationCodeStudentController";
 
-const validateEmailController = new VeficationCodeStudent();
+const validateEmailController = new VeficationCodeStudentController();
 const verificationCodeStudentRoutes = express.Router();
 
+verificationCodeStudentRoutes.get(
+  "/getAllCodeStudent",
+  validateEmailController.getAllCodeStudent
+);
 verificationCodeStudentRoutes.use(authMiddleware);
 verificationCodeStudentRoutes.post(
   "/addCodeStudent",
   validateEmailController.addCodeStudent
 );
-verificationCodeStudentRoutes.get(
-  "/getAllCodeStudent",
-  validateEmailController.getAllCodeStudent
-);
 
-verificationCodeRoutes.get(
+verificationCodeStudentRoutes.get(
   "/getCodeStudent/:id",
   validateEmailController.getCodeStudent
 );
-verificationCodeRoutes.post(
+verificationCodeStudentRoutes.post(
   "/updateCodeStudent/:id",
   validateEmailController.updateCodeStudent
 );
 
-verificationCodeRoutes.delete(
+verificationCodeStudentRoutes.delete(
   "/deleteCodeStudent/:id",
   validateEmailController.deleteCodeStudent
 );

@@ -10,6 +10,12 @@ export default class VeficationCodeStudent {
       },
     });
 
+    const codeForStudentExist =
+      await prismaService.prisma.verificationCodeStudent.findFirst({
+        where: { code },
+      });
+    if (codeForStudentExist) return "codeStudentAlreadyExist";
+
     if (!admin) return;
 
     if (admin?.role !== "ADMIN") return "userCannotAddCode";

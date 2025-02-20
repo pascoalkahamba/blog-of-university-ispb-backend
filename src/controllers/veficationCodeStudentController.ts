@@ -27,7 +27,8 @@ export default class VeficationCodeStudentController {
       if (newCode === "userCannotAddCode")
         throw CoordinatorError.coordinatorCannotAddCode();
 
-      throw VerificationCodeStudentError.codeForStudentAlreadyExists();
+      if (newCode === "codeStudentAlreadyExist")
+        throw VerificationCodeStudentError.codeForStudentAlreadyExists();
 
       return res.status(StatusCodes.CREATED).json(newCode);
     } catch (error) {
@@ -89,11 +90,13 @@ export default class VeficationCodeStudentController {
         codeForStudent
       );
 
-      if (!updateCodeStudent)
+      if (!updateCodeStudent) {
         throw VerificationCodeStudentError.codeForStudentNotFound();
+      }
 
-      if (updateCodeStudent === "codeStudentAlreadyExist")
+      if (updateCodeStudent === "codeStudentAlreadyExist") {
         throw VerificationCodeStudentError.codeForStudentAlreadyExists();
+      }
 
       return res.status(StatusCodes.ACCEPTED).json(updateCodeStudent);
     } catch (error) {

@@ -85,6 +85,22 @@ export default class StudentService {
       },
       select: DEFAULT_SELECT,
     });
+    const codeStudentDeleted =
+      await prismaService.prisma.verificationCodeStudent.findFirst({
+        where: {
+          code: registrationNumber,
+        },
+        select: {
+          code: true,
+          id: true,
+        },
+      });
+
+    await prismaService.prisma.verificationCodeStudent.delete({
+      where: {
+        id: codeStudentDeleted?.id,
+      },
+    });
 
     return studentCreated;
   }
