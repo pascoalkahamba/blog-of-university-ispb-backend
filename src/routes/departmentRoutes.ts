@@ -6,6 +6,10 @@ const departmentController = new DepartmentController();
 const departmentRoutes = express.Router();
 
 departmentRoutes.get("/getAllCourses", departmentController.getAllCourses);
+departmentRoutes.get(
+  "/getAllCoursesFromDepartment/:departmentId",
+  departmentController.getAllCoursesFromDepartment
+);
 departmentRoutes.use(authMiddleware);
 departmentRoutes.post("/create", departmentController.create);
 departmentRoutes.get(
@@ -15,10 +19,6 @@ departmentRoutes.get(
 departmentRoutes.get(
   "/getOneDepartment/:id",
   departmentController.getOneDepartment
-);
-departmentRoutes.get(
-  "/getAllCoursesFromDepartment/:departmentId",
-  departmentController.getAllCoursesFromDepartment
 );
 departmentRoutes.get(
   "/getAllSubjectsFromCourse/:courseId/:subjectId",
