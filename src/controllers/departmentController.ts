@@ -182,9 +182,8 @@ export class DepartmentController {
       const { departmentId } = req.params as unknown as {
         departmentId: number;
       };
-      const courses = await departmentService.getAllCoursesFromDepartments(
-        +departmentId
-      );
+      const courses =
+        await departmentService.getAllCoursesFromDepartments(+departmentId);
 
       return res.status(StatusCodes.OK).json(courses);
     } catch (error) {

@@ -30,7 +30,7 @@ export default class AdminController {
   async create(req: Request, res: Response) {
     try {
       const { email, password, username, contact } = createAdminSchema.parse(
-        req.body
+        req.body,
       );
 
       const adminCreated = await adminService.create({
@@ -70,7 +70,7 @@ export default class AdminController {
       const token = jwt.sign(
         { id: logged.id },
         process.env.JWT_SECRET_KEY as string,
-        { expiresIn: "8h" }
+        { expiresIn: "8h" },
       );
 
       return res.status(StatusCodes.OK).json({
@@ -94,7 +94,7 @@ export default class AdminController {
       const { email, password: newPassword } = loginAdminSchema.parse(req.body);
       const newAdminInfo = await adminService.forgotPassword(
         email,
-        newPassword
+        newPassword,
       );
 
       if (!newAdminInfo) {
@@ -171,7 +171,7 @@ export default class AdminController {
             url: req.fileUrl ?? "",
           },
         },
-        +id
+        +id,
       );
 
       if (!adminUpdated) {
@@ -220,9 +220,8 @@ export default class AdminController {
   async deleteStudent(req: Request, res: Response) {
     try {
       const { registrationNumber } = deleteStudentSchema.parse(req.body);
-      const studentDeleted = await adminService.deleteStudent(
-        registrationNumber
-      );
+      const studentDeleted =
+        await adminService.deleteStudent(registrationNumber);
 
       if (!studentDeleted) {
         throw StudentError.registrationNumberNotFound();

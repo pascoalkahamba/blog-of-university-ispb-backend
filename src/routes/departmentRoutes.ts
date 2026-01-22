@@ -7,32 +7,34 @@ const departmentRoutes = express.Router();
 
 departmentRoutes.get("/getAllCourses", departmentController.getAllCourses);
 departmentRoutes.get(
-  "/getAllCoursesFromDepartment/:departmentId",
-  departmentController.getAllCoursesFromDepartment
-);
-departmentRoutes.use(authMiddleware);
-departmentRoutes.post("/create", departmentController.create);
-departmentRoutes.get(
   "/getAllDepartments",
-  departmentController.getAllDepartments
+  departmentController.getAllDepartments,
+);
+departmentRoutes.get(
+  "/getAllCoursesFromDepartment/:departmentId",
+  departmentController.getAllCoursesFromDepartment,
 );
 departmentRoutes.get(
   "/getOneDepartment/:id",
-  departmentController.getOneDepartment
+  departmentController.getOneDepartment,
 );
+
+departmentRoutes.use(authMiddleware);
+departmentRoutes.post("/create", departmentController.create);
+
 departmentRoutes.get(
   "/getAllSubjectsFromCourse/:courseId/:subjectId",
-  departmentController.getAllSubjectsFromCourse
+  departmentController.getAllSubjectsFromCourse,
 );
 departmentRoutes.post("/update/:id", departmentController.update);
 departmentRoutes.delete(
   "/deleteCourseFromDepartment/:departmentId/:courseId",
-  departmentController.deleteCourseFromDepartment
+  departmentController.deleteCourseFromDepartment,
 );
 departmentRoutes.delete("/delete/:id", departmentController.delete);
 departmentRoutes.delete(
   "/deleteSubjectFromCourse/:departmentId/:courseId/:subjectId",
-  departmentController.deleteSubjectFromCourse
+  departmentController.deleteSubjectFromCourse,
 );
 
 export { departmentRoutes };
