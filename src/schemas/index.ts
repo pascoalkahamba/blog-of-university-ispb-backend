@@ -87,7 +87,7 @@ const pictureModalSchema = zod.object({
 });
 
 const addCodeStudentSchema = zod.object({
-  code: zod.string().min(9),
+  codeForStudent: zod.string().min(9),
   email: zod.string().email(),
 });
 

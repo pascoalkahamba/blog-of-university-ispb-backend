@@ -17,9 +17,10 @@ const verificationCodeStudent = new VeficationCodeStudent();
 export default class VeficationCodeStudentController {
   async addCodeStudent(req: Request, res: Response) {
     try {
-      const { code, email } = addCodeStudentSchema.parse(req.body);
+      const { codeForStudent, email } = addCodeStudentSchema.parse(req.body);
+
       const newCode = await verificationCodeStudent.addCodeStudent({
-        code,
+        code: codeForStudent,
         email,
       });
 
@@ -36,6 +37,7 @@ export default class VeficationCodeStudentController {
         const validationError = fromError(error);
         const { details } = validationError;
         const pathError = details[0].path[0] as TPathError;
+        console.log("Path error:", pathError);
         verificationCodeValidator.validator(pathError, res);
       } else {
         return handleError(error as BaseError, res);
@@ -63,7 +65,7 @@ export default class VeficationCodeStudentController {
     try {
       const { id } = req.params as unknown as { id: string };
       const deleteCodeStudent = await verificationCodeStudent.deleteCodeStudent(
-        Number(id)
+        Number(id),
       );
 
       if (!deleteCodeStudent)
@@ -87,7 +89,7 @@ export default class VeficationCodeStudentController {
       const { codeForStudent } = updateCodeForStudentSchema.parse(req.body);
       const updateCodeStudent = await verificationCodeStudent.updateCodeStudent(
         Number(id),
-        codeForStudent
+        codeForStudent,
       );
 
       if (!updateCodeStudent) {
@@ -115,7 +117,7 @@ export default class VeficationCodeStudentController {
     try {
       const { id } = req.params as unknown as { id: string };
       const getCodeStudent = await verificationCodeStudent.getCodeStudent(
-        Number(id)
+        Number(id),
       );
 
       if (!getCodeStudent)
